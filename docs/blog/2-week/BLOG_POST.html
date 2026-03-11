@@ -1,0 +1,561 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 1.85;
+    color: #1a1a1a;
+    word-break: keep-all;
+}
+
+/* ===== 코드 블록 ===== */
+.container pre {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin: 16px 0 18px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.65;
+    border: 1px solid #333;
+}
+
+.container pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 인라인 코드 ===== */
+.container code {
+    background: #f1f3f5;
+    color: #c7254e;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 테이블 ===== */
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.93em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.container table thead tr {
+    background: #2c3e50;
+    color: #fff;
+}
+
+.container table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+}
+
+.container table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+
+.container table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.container table tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.15s ease;
+}
+
+/* ===== 인용구 ===== */
+.container blockquote {
+    border-left: 3px solid #3b82f6;
+    background: #f8fafc;
+    margin: 16px 0;
+    padding: 14px 20px;
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+}
+
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul {
+    margin: 14px 0;
+    padding-left: 24px;
+}
+
+.container ul li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+/* ===== 구분선 ===== */
+.container hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin: 36px 0;
+}
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 {
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #111;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+    letter-spacing: -0.01em;
+}
+
+/* ===== h3 소제목 ===== */
+.container h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+</style>
+
+<div class="container">
+<p data-ke-size="size16"><br />"재고가 딱 1개 남았는데 두 명이 동시에 주문하면 어떻게 되지?"</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이번에 이커머스 프로젝트의 설계를 진행하면서, 주문 생성 흐름을 생각하고 있었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">상품 조회 &rarr; 재고 확인 &rarr; 재고 차감 &rarr; 주문 생성</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">글로 적으면 단순한 흐름인데, 막상 "동시에 요청이 들어오면?" 의 제대로 답을 하지 못했습니다.</p>
+<p data-ke-size="size16">재고는 이커머스에서는 상당히 중요한 존재이면서 동시에 외부몰, 자사몰, SCM 등 많은 도메인에 얽혀 있는 복잡한 문제입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">재고가 한번 틀어지면 그 틀어진 구간을 바로 잡기가 정말 어렵습니다. 실제로 회사에서 외부몰과 자사몰의 재고 싱크가 어긋나서, CS 팀이 하루 종일 수동으로 주문 취소 처리를 했던 적도 있습니다. 재고 -1이 만들어낸 나비효과가 고객 불만, 보상 비용, 운영 리소스 낭비로 이어지는 걸 직접 봤습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">실무에서 동시성 이슈를 직접 겪어본 적은 있지만, 발생한 DB락에 따른 주문 처리 상황을 해결하기 급급했지 한번도 락에 대해 명확하게 고민하고 해결하고자 마음먹기 어려웠던것 같습니다.</p>
+<p data-ke-size="size16">그만큼&nbsp; 동시성 이슈라는건 적어도 저에게는 어려웠던 내용인것 같습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이번 기회에 제대로 정리해보겠습니다!</p>
+<p data-ke-size="size16"><span style="color: #333333; text-align: start;">저와 같은 생각을 하셨다면 지금부터 함께 가보시죠!</span></p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">상황: 재고가 1개인데 주문이 동시에 들어온다면?</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">한정판 유산균이 딱 1개 남았습니다. A와 B가 거의 동시에 주문 버튼을 누릅니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523493" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>fun createOrder(productId: Long, quantity: Int) {
+    val product = productRepository.findById(productId)  // 1. 재고 조회
+
+    if (product.stock &gt;= quantity) {                      // 2. 재고 확인
+        product.stock -= quantity                         // 3. 재고 차감
+        productRepository.save(product)
+        orderRepository.save(Order(...))                  // 4. 주문 생성
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">코드만 보면 문제 없어 보이죠? 근데 A와 B가<span>&nbsp;</span><b>동시에</b><span>&nbsp;</span>1번을 실행하면 둘 다 stock = 1을 읽습니다. 둘 다 "재고 있네!" 하고 차감하면, 재고는 -1이 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote style="color: #666666; text-align: left;" data-ke-style="style2">
+    <p style="color: #666666;" data-ke-size="size16">"재고가 1개인데 주문이 2개 생겼다. 누구한테 보내지?"</p>
+</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">간단해 보이시죠? 맞습니다. 이게 바로 저희가 그렇게 어렵게 생각했던<span>&nbsp;</span><b>동시성 문제</b>입니다.</p>
+<p data-ke-size="size16">동시성 문제는 읽기와 쓰기 사이의 시간 차이 때문에 발생합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">락(Lock)이 왜 필요한가?</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">락 없이 위 코드가 동시에 실행되면 이런 일이 벌어집니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523494" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>A: 재고 조회 &rarr; 1개 있네!
+B: 재고 조회 &rarr; 1개 있네!
+A: 재고 차감 &rarr; stock = 0 =&gt; Good!
+B: 재고 차감 &rarr; stock = -1 =&gt; Exception 발생ㅜㅜ</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">두 트랜잭션이 같은 데이터를 읽고, 각자 "나만 바꾸면 되겠지"라고 생각하는 게 문제입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이걸 막으려면 <b>"내가 읽고 있으니까 잠깐 기다려"라고 알려주거나, "내가 읽은 시점과 달라졌으면 다시 해"</b>라고 검증하는 방법이 필요합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">전자가<span>&nbsp;</span><b>비관적 락</b>, 후자가<span>&nbsp;</span><b>낙관적 락</b>입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">비관적 락(Pessimistic Lock)</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">비관적 락은 이름 그대로 "충돌이 날 거야"라고 비관적으로 가정하고,<span>&nbsp;</span><b>데이터를 읽는 시점에 락을 거는</b><span>&nbsp;</span>방식입니다. 내가 이 데이터를 쓰고 있으니까 다른 사람은 내가 끝날 때까지 기다려야 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">DB에서는<span>&nbsp;</span>SELECT ... FOR UPDATE<span>&nbsp;</span>구문으로 구현하고, JPA에서는<span>&nbsp;</span>@Lock(PESSIMISTIC_WRITE)을 사용합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523494" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>// JPA에서 비관적 락 적용
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT p FROM Product p WHERE p.id IN :ids")
+fun findAllByIdWithLock(ids: List&lt;Long&gt;): List&lt;Product&gt;</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">동작 방식</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523494" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>A: SELECT FOR UPDATE &rarr; 1개 있네!
+B: SELECT FOR UPDATE &rarr; A가 락 잡고 있어서 대기...
+A: 재고 차감 &rarr; stock = 0, COMMIT
+B: 락 풀림 &rarr; 재고 조회 &rarr; 0개... 주문 실패 ❌</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">A가 락을 잡고 있는 동안 B는 기다립니다.</p>
+<p data-ke-size="size16">A가 커밋하면 B가 읽는데, 이미 재고가 0이라 주문이 실패합니다.<span>&nbsp;</span></p>
+<p data-ke-size="size16"><b>재고가 마이너스가 되는 일은 절대 없습니다.</b></p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">장점과 단점</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>장점</b>: 데이터 정합성을 확실하게 보장합니다. 충돌이 발생해도 재시도 로직이 필요 없고, 구현이 단순합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>단점</b>: 락을 잡고 있는 동안 다른 트랜잭션이 대기하기 때문에, 동시 요청이 많으면 병목이 됩니다. 또한 여러 테이블에 락을 걸 경우 데드락이 발생할 수 있습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">낙관적 락(Optimistic Lock)</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">낙관적 락은 "충돌이 잘 안 날 거야"라고 낙관적으로 가정하고,<span>&nbsp;</span><b>DB에 락을 걸지 않습니다.</b><span>&nbsp;</span>대신 데이터를 수정할 때 "내가 읽은 시점과 지금이 같은지" 버전을 비교해서 검증합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">JPA에서는 Entity에<span>&nbsp;</span>@Version<span>&nbsp;</span>필드를 추가해서 구현합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523494" class="less" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>@Entity
+class Product(
+    // ...
+    var stock: Int,
+
+    @Version
+    var version: Long = 0  // 수정할 때마다 자동 증가
+)</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">UPDATE 할 때 JPA가 자동으로 이런 쿼리를 만듭니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523495" class="sql" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="sql"><code>UPDATE product SET stock = 0, version = 2
+WHERE id = 1 AND version = 1
+-- version이 다르면 영향받은 row = 0 &rarr; ObjectOptimisticLockingFailureException 발생</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">동작 방식</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523495" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>A: 재고 조회 &rarr; stock=1, version=1
+B: 재고 조회 &rarr; stock=1, version=1
+A: UPDATE WHERE version=1 &rarr; 성공! version=2 ✅
+B: UPDATE WHERE version=1 &rarr; 해당 row 없음 &rarr; OptimisticLockException ‼️</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">A가 먼저 커밋하면 version이 2로 바뀝니다. B가 커밋할 때 "version = 1인 데이터"를 찾는데 이미 없으니까 예외가 발생합니다. B는 이 예외를 잡아서<span>&nbsp;</span><b>재시도하거나 실패 처리</b>를 해야 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">장점과 단점</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>장점</b>: DB에 락을 걸지 않아서 동시 처리 성능이 좋습니다. 읽기가 많고 충돌이 적은 상황에서 유리합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>단점</b>: 충돌이 발생하면 예외가 터지기 때문에 재시도 로직을 직접 구현해야 합니다. 충돌이 자주 발생하는 상황에서는 재시도가 계속 반복되면서 오히려 성능이 더 나빠질 수 있습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">비관적 락 vs 낙관적 락, 비교</h2>
+<table style="border-collapse: collapse; width: 100%;" border="1" data-ke-align="alignLeft">
+    <tbody>
+    <tr>
+        <td>구분</td>
+        <td>비관적 락</td>
+        <td>낙관적 락</td>
+    </tr>
+    <tr>
+        <td>전략</td>
+        <td>충돌이 날 거라고 가정</td>
+        <td>충돌이 안 날 거라고 가정</td>
+    </tr>
+    <tr>
+        <td>락 시점</td>
+        <td>읽을 때 (SELECT FOR UPDATE)</td>
+        <td>쓸 때 (version 비교)</td>
+    </tr>
+    <tr>
+        <td>충돌 처리</td>
+        <td>대기 후 순차 처리</td>
+        <td>예외 발생 &rarr; 재시도 필요</td>
+    </tr>
+    <tr>
+        <td>성능 (충돌 많을 때)</td>
+        <td>대기 시간 발생, 그래도 안정적</td>
+        <td>재시도 폭주로 오히려 느림</td>
+    </tr>
+    <tr>
+        <td>성능 (충돌 적을 때)</td>
+        <td>불필요한 락 오버헤드</td>
+        <td>락 없으니 빠름</td>
+    </tr>
+    <tr>
+        <td>구현 난이도</td>
+        <td>단순 (어노테이션 하나)</td>
+        <td>재시도 로직 직접 구현 필요</td>
+    </tr>
+    <tr>
+        <td>적합한 상황</td>
+        <td>재고 차감, 결제, 좌석 예매</td>
+        <td>게시글 수정, 설정 변경</td>
+    </tr>
+    </tbody>
+</table>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">실제 프로젝트에 어떻게 적용했는가</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">개념은 이해했으니, 실제로 프로젝트에 어떻게 녹여냈는지 보여드리겠습니다. 이 부분이 가장 고민을 많이 했던 구간입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">주문 생성 전체 흐름</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">주문 생성의 핵심 흐름은 이렇습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>1. 비관적 락으로 상품 조회 (락 획득)
+2. 재고 예약 (차감)
+3. 주문 생성
+4. 커밋 (락 해제)</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이 전체 흐름을 <code>OrderFacade</code>가 하나의 트랜잭션으로 묶어서 관리합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>@Component
+class OrderFacade(
+    private val orderService: OrderService,
+    private val productService: ProductService,
+    private val brandService: BrandService,
+) {
+    @Transactional
+    fun createOrder(userId: Long, criteria: List&lt;OrderItemCriteria&gt;): OrderResultInfo {
+        // 1. 비관적 락으로 상품 조회
+        val productIds = criteria.map { it.productId }
+        val products = productService.getProductsWithLock(productIds)
+
+        // 2. 재고 예약
+        val reservation = productService.reserveStock(products, criteria)
+
+        if (reservation.reservedProducts.isEmpty()) {
+            val reasons = reservation.failedReservations.joinToString(", ") { it.reason }
+            throw CoreException(ErrorType.BAD_REQUEST, "주문 가능한 상품이 없습니다. ($reasons)")
+        }
+
+        // 3. 주문 생성
+        val orderItemCommands = reservation.reservedProducts.map { reserved -&gt;
+            OrderItemCommand(
+                productId = reserved.productId,
+                productName = reserved.productName,
+                brandName = brandMap[reserved.brandId]?.name ?: "-",
+                quantity = reserved.quantity,
+                unitPrice = reserved.unitPrice,
+            )
+        }
+        val order = orderService.createOrder(userId, orderItemCommands)
+
+        return OrderResultInfo.of(order, excludedItems)
+        // 4. 메서드 종료 시 커밋 &rarr; 락 해제
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">왜 트랜잭션 경계를 OrderFacade에 잡았는가</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">처음에는 <code>ProductService</code>에서 재고 차감만 트랜잭션으로 묶으면 되지 않을까 생각했습니다. 그런데 이런 시나리오를 떠올렸습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>1. 재고 차감 성공 (ProductService 트랜잭션 커밋)
+2. 주문 생성 실패 (OrderService에서 예외 발생)
+&rarr; 재고는 줄었는데 주문은 없다!</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">재고 차감과 주문 생성은 반드시 하나의 원자적 단위여야 합니다. 둘 중 하나라도 실패하면 전부 롤백되어야 합니다. 그래서 두 서비스를 조합하는 <code>OrderFacade</code>에 <code>@Transactional</code>을 걸었습니다. 이렇게 하면 락 획득부터 재고 차감, 주문 생성까지 하나의 트랜잭션 안에서 처리되고, 어디서든 예외가 발생하면 전부 롤백됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">재고 차감을 엔티티에 캡슐화한 이유</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">재고 차감 로직을 Service에 두지 않고 <code>Product</code> 엔티티 안에 넣었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>// Product 엔티티
+fun reserve(quantity: Int): Boolean {
+    if (quantity &lt;= 0) {
+        throw CoreException(ErrorType.BAD_REQUEST, "예약 수량은 1 이상이어야 합니다.")
+    }
+    if (!hasEnoughStock(quantity)) return false
+    this.stock -= quantity
+    return true
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">"재고가 충분한지 확인하고, 충분하면 차감한다"는 건 <b>Product의 비즈니스 규칙</b>입니다. 이 규칙이 Service에 흩어져 있으면, 다른 곳에서 재고를 건드릴 때 검증을 빼먹을 수 있습니다. 엔티티 안에 넣으면 <code>Product.reserve()</code>를 호출하는 것만으로 항상 규칙이 지켜집니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">부분 주문 처리: 전체 실패 vs 부분 성공</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">여기서 하나 더 고민했던 부분이 있습니다. 장바구니에 상품 3개를 담아서 주문하는데, 그 중 1개만 재고가 부족하면 어떻게 할까?</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>선택지 1: 전체 실패</b> &mdash; 하나라도 재고 부족이면 주문 자체를 거부</p>
+<p data-ke-size="size16"><b>선택지 2: 부분 성공</b> &mdash; 재고 있는 상품만으로 주문 생성, 실패 항목은 알려주기</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">저는 <b>부분 성공</b>을 선택했습니다. 실무에서 장바구니에 10개 담았는데 1개 때문에 전체 주문이 안 되면, 고객 입장에서 상당히 불편하기 때문입니다. 그래서 <code>StockReservationResult</code>에 성공/실패 목록을 분리해서 담고, 실패한 항목은 응답에 포함시켜 사용자에게 알려주는 구조로 설계했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>fun reserveStock(
+    products: List&lt;Product&gt;,
+    criteria: List&lt;OrderItemCriteria&gt;,
+): StockReservationResult {
+    val reservedProducts = mutableListOf&lt;ReservedProduct&gt;()
+    val failedReservations = mutableListOf&lt;FailedReservation&gt;()
+
+    for (item in criteria) {
+        val product = productMap[item.productId]
+        if (product == null) {
+            failedReservations.add(FailedReservation(item.productId, "존재하지 않는 상품입니다."))
+            continue
+        }
+        if (!product.reserve(item.quantity)) {
+            failedReservations.add(FailedReservation(item.productId, "재고가 부족합니다."))
+            continue
+        }
+        reservedProducts.add(ReservedProduct(...))
+    }
+    return StockReservationResult(reservedProducts, failedReservations)
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">다만 전체 상품이 다 실패하면 주문 자체를 생성하지 않습니다. 빈 주문을 만드는 건 의미가 없으니까요.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">데드락, 생각해봤나?</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">비관적 락을 선택하고 나서, 한 가지 더 고민해야 할 문제가 있었습니다. 바로 <b>데드락(Deadlock)</b>입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">장바구니에 상품이 여러 개 담겨있을 때, 각 상품에 순차적으로 락을 건다고 생각해봅시다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>A: 상품1 락 획득 &rarr; 상품2 락 대기...
+B: 상품2 락 획득 &rarr; 상품1 락 대기...
+&rarr; 서로 상대방이 들고 있는 락을 기다림 &rarr; 데드락!</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">A는 상품1의 락을 잡은 상태에서 상품2의 락을 기다리고, B는 상품2의 락을 잡은 상태에서 상품1의 락을 기다립니다. 둘 다 영원히 기다리게 됩니다. 물론 MySQL은 데드락을 감지하면 한쪽 트랜잭션을 강제 롤백하지만, 그 자체가 사용자에게는 "주문 실패"로 이어집니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 style="color: #000000;" data-ke-size="size23">해결: IN 절로 한 번에 락 잡기</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이 문제를 어떻게 해결했을까요? 답은 의외로 단순했습니다. 상품을 하나씩 조회하면서 락을 거는 게 아니라, <b>IN 절로 한 번에 모든 상품의 락을 획득</b>하는 것입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="kotlin" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="kotlin"><code>// 데드락 위험 &mdash; 하나씩 순차적으로 락 획득
+fun getProductWithLock(productId: Long): Product {
+    return productRepository.findByIdWithLock(productId)
+}
+
+// 데드락 회피 &mdash; IN 절로 한 번에 락 획득
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT p FROM Product p WHERE p.id IN :ids AND p.deletedAt IS NULL")
+fun findAllByIdWithLock(ids: List&lt;Long&gt;): List&lt;Product&gt;</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">IN 절을 사용하면 DB가 하나의 쿼리로 여러 row의 락을 동시에 잡습니다. 쿼리가 하나이기 때문에 락 획득 순서로 인한 데드락이 발생하지 않습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>A: SELECT ... WHERE id IN (1, 2) FOR UPDATE &rarr; 상품1, 2 동시에 락 획득
+B: SELECT ... WHERE id IN (2, 1) FOR UPDATE &rarr; A가 끝날 때까지 대기
+A: 재고 차감, COMMIT &rarr; 락 해제
+B: 락 획득 &rarr; 정상 처리</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">처음에는 "상품마다 개별로 <code>findByIdWithLock()</code>을 호출하면 되지 않나?"라고 생각했습니다. 하지만 데드락 시나리오를 그려보고 나서 IN 절 방식을 선택했습니다. 비관적 락을 사용한다면 <b>"여러 row에 락을 걸 때 순서 문제가 생기지 않는가?"</b>는 반드시 점검해야 할 포인트입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">왜 비관적 락을 선택했는가</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">우선 저는 이번 이커머스 프로젝트 설계단계에서 주문 생성 시 재고 차감에<span>&nbsp;</span><b>비관적 락</b>을 선택했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">사실 이 프로젝트는 많은 유저들이 사용하는 이커머스가 될 확률이 0에 수렴하기도하고..낙관적 락이 성능 면에서 유리하다는 건 알고 있었기에 낙관적 락을 사용하는게 좋다고 생각했습니다.</p>
+<p data-ke-size="size16">그런데 제가 실무에서 부딫혔던 재고 동시성 문제를 한번 제대로 파고 싶기도했고, 만약 이 프로젝트의 확장성을 고려해서 재고라는 도메인의 특성을 생각해봤습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">판단의 기준이 됐던 핵심 근거들을 정리하면 이렇습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>1. 재고는 돈과 직결됩니다.</b></p>
+<p data-ke-size="size16">재고가 -1이 되면 그건 단순한 데이터 오류가 아닙니다. 존재하지 않는 상품을 팔았다는 의미입니다. 고객에게 "죄송합니다, 품절입니다" 연락하고, 환불 처리하고, CS 대응하고... 실무에서 이 후처리 비용이 얼마나 큰지 직접 겪어봤습니다. 재고 정합성은 타협할 수 없는 영역이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>2. 낙관적 락의 retry storm이 사용자 경험을 해칩니다.</b></p>
+<p data-ke-size="size16">"재고 1개 남은 상품에 동시 주문"이라는 상황은 충돌이 거의 확실한 상황입니다. 특히 한정판이나 타임세일 이벤트에서는 동시 요청이 한 순간에 몰립니다. 낙관적 락을 쓰면 대부분의 요청이 <code>OptimisticLockException</code>을 맞고, 재시도를 합니다. 그 재시도가 또 충돌하고, 또 재시도하고... 이게 retry storm입니다. 사용자 입장에서는 "주문 버튼 눌렀는데 한참 걸린다"가 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>3. 단일 서버에서 DB 레벨 락은 가장 단순한 선택입니다.</b></p>
+<p data-ke-size="size16">이 프로젝트는 단일 서버 환경입니다. 분산 환경이 아니기 때문에 Redis 분산 락 같은 추가 인프라 없이, DB가 제공하는 <code>SELECT FOR UPDATE</code>만으로 동시성을 제어할 수 있습니다. 추가 의존성 없이 어노테이션 하나로 해결되는 단순함이 매력적이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote style="color: #666666; text-align: left;" data-ke-style="style2">
+    <p style="color: #666666;" data-ke-size="size16">"충돌이 확실한 상황에서 낙관적 락을 쓰면, 재시도 비용이 락 대기 비용보다 더 커진다."</p>
+</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">결정의 핵심은<span>&nbsp;</span><b>"충돌 빈도"</b>였습니다. 재고 차감은 충돌이 높으니까 비관적 락, 만약 게시글 수정처럼 같은 데이터를 동시에 건드릴 일이 거의 없는 경우라면 낙관적 락을 선택했을 겁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">그러면 트래픽이 더 커지면?</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">사실 이게 가장 고민이였습니다.</p>
+<p data-ke-size="size16">솔직히 저희 회사는 이커머스이긴 하지만 엄청난 대용량 트래픽이 들어오는 경우는 아니기 때문에 지금까지 깊게 고민해본 적이 없었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">하지만 비관적 락의 구조적 한계를 생각해보면, 트래픽이 커졌을 때 문제가 명확합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>DB 커넥션 점유 시간 증가:</b> 비관적 락은 트랜잭션이 끝날 때까지 락을 잡고 있습니다. 동시 요청이 100개 들어오면, 99개는 락이 풀릴 때까지 대기하면서 DB 커넥션을 점유합니다. 커넥션 풀의 크기가 10이라면, 10개만 처리되고 나머지는 커넥션 풀 자체에서 대기합니다. 결국 <b>커넥션 풀 고갈</b>로 이어지고, 재고와 무관한 다른 API까지 영향을 받게 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>락 대기 타임아웃:</b> 대기 시간이 길어지면 DB 자체적으로 타임아웃을 발생시킵니다. 사용자 입장에서는 "주문 실패"입니다. 동시에 몰리는 요청이 많을수록 타임아웃 비율이 올라가고, 사용자 경험이 급격히 나빠집니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>그럼 어떻게 해야 할까요?</b></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이런 경우에는 DB 밖에서 락을 관리하는<span>&nbsp;</span><b>분산 락(Redis 등)</b>을 고려해야 합니다.</p>
+<p data-ke-size="size16">DB 커넥션을 점유하지 않고도 동시성을 제어할 수 있으니까요.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">단계별로 생각하면 이런 흐름이 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>단일 서버 + 적당한 트래픽  &rarr;  비관적 락 (DB 레벨)
+   - DB가 직접 동시성 제어, 추가 인프라 불필요
+   - 커넥션 풀 범위 내에서 안정적
+
+대규모 트래픽            &rarr;  분산 락 (Redis / Redisson)
+   - DB 커넥션 점유 없이 락 관리
+   - 락 획득 후 빠르게 DB 작업만 수행
+   - 전환 시점: 커넥션 풀 고갈이 관측될 때
+
+초대규모 트래픽           &rarr;  메시지 큐 기반 순차 처리
+   - 락 자체를 없애고, 요청을 큐에 넣어 순차 소비
+   - 전환 시점: 분산 락으로도 경합이 심해질 때</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">여기서 중요한 건 <b>전환 시점의 판단 기준</b>입니다. "대규모니까 Redis"가 아니라, 실제로 커넥션 풀 사용률이 80%를 넘거나 락 대기 타임아웃이 발생하기 시작할 때가 전환을 고려할 시점이라고 생각합니다. 인프라를 추가하는 건 복잡성을 높이는 일이니까, 문제가 실제로 관측될 때 전환해도 늦지 않습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이번 프로젝트에서는 단일 서버 기준의 설계이기 때문에 비관적 락으로 충분하다고 판단했지만,</p>
+<p data-ke-size="size16">실무에서 트래픽이 커지면 분산 락으로 전환하는 시점이 올 거라고 생각합니다.</p>
+<p data-ke-size="size16">(아직 Redis 분산 락 적용 경험이 없어서 이 부분은 앞으로 더 공부해봐야 할 것 같은데, 곧 프로젝트에 적용하고 포스팅으로 한번 다루겠습니다!)</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-style="style1" data-ke-type="horizontalRule" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 style="color: #000000;" data-ke-size="size26">결론</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">비관적 락과 낙관적 락은 "뭐가 더 좋다"가 아니라<span>&nbsp;</span><b>"충돌이 얼마나 자주 일어나느냐"</b>에 따라 선택하는 문제였습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li>충돌이 자주 일어나는 상황 (재고, 결제, 좌석 예매) &rarr;<span>&nbsp;</span><b>비관적 락</b></li>
+    <li>충돌이 거의 없는 상황 (게시글 수정, 프로필 변경) &rarr;<span>&nbsp;</span><b>낙관적 락</b></li>
+</ul>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이번 프로젝트를 통해 동시성 문제를 만났을 때 제 나름의 판단 프레임워크가 생겼습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1770969523496" class="bash" style="background-color: #f8f8f8; color: #383a42;" data-ke-type="codeblock" data-ke-language="bash"><code>1. 이 데이터는 충돌이 자주 발생하는가?
+   &rarr; 자주 발생: 비관적 락 / 거의 없음: 낙관적 락
+
+2. 데이터 정합성이 깨지면 어떤 비용이 발생하는가?
+   &rarr; 돈과 직결(재고, 결제): 정합성 최우선 &rarr; 비관적 락
+   &rarr; 불편함 수준(프로필, 설정): 성능 우선 &rarr; 낙관적 락
+
+3. 현재 인프라가 감당할 수 있는가?
+   &rarr; DB 커넥션 풀 여유 있음: DB 레벨 락
+   &rarr; 커넥션 고갈 조짐: 분산 락 전환 검토</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">솔직히 이전에는 동시성 문제 앞에서 "일단 해결하고 보자"였습니다. 실무에서 데드락이 터지면 구글링해서 급하게 해결하고, 왜 그런 선택을 했는지는 제대로 정리하지 못했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이번에 직접 비관적 락을 적용하면서, 트랜잭션 경계를 어디에 잡을지, 데드락은 어떻게 회피할지, 부분 실패는 어떻게 처리할지를 하나하나 고민하고 나니, 락이 단순한 "동시성 해결 도구"가 아니라 <b>설계의 일부</b>라는 걸 느꼈습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote data-ke-style="style3">동시성 문제의 답은 기술이 아니라 판단이다. 충돌 빈도, 데이터의 가치, 인프라 상황을 보고 결정하는 것이라고 생각합니다.</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">그럼 포스팅은 여기까지 마치겠습니다!</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">긴글 함께 학습해주셔서 감사합니다!</p>
+</div>

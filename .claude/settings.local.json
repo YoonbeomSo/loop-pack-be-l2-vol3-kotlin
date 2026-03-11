@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(wc:*)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin log --oneline --all)",
+      "Bash(./gradlew:*)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin status --short)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin log --oneline -5)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin status -u)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin diff --stat)",
+      "Bash(git -C /Users/soyoonbeom/github/loopers/loop-pack-be-l2-vol3-kotlin diff)",
+      "Bash(git -C:*)",
+      "Bash(find:*)",
+      "Bash(gh pr list:*)",
+      "Bash(grep:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker exec:*)",
+      "Bash(xargs:*)",
+      "Bash(git log:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}

@@ -1,0 +1,499 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * {
+    box-sizing: border-box;
+}
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 1.85;
+    color: #1a1a1a;
+    word-break: keep-all;
+    overflow-x: hidden;
+}
+.container table {
+    display: block;
+    overflow-x: auto;
+}
+
+/* ===== 코드 블록 ===== */
+.container pre {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin: 16px 0 18px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.65;
+    border: 1px solid #333;
+}
+
+.container pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 인라인 코드 ===== */
+.container code {
+    background: #f1f3f5;
+    color: #c7254e;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 테이블 ===== */
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.93em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.container table thead tr {
+    background: #2c3e50;
+    color: #fff;
+}
+
+.container table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+}
+
+.container table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+
+.container table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.container table tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.15s ease;
+}
+
+/* ===== 인용구 ===== */
+.container blockquote {
+    border-left: 3px solid #3b82f6;
+    background: #f8fafc;
+    margin: 16px 0;
+    padding: 14px 20px;
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+}
+
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul {
+    margin: 14px 0;
+    padding-left: 24px;
+}
+
+.container ul li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+/* ===== 구분선 ===== */
+.container hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin: 36px 0;
+}
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 {
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #111;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+    letter-spacing: -0.01em;
+}
+
+/* ===== h3 소제목 ===== */
+.container h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+</style>
+
+<!-- 제목 : @Transactional 하나 때문에 아키텍처를 뜯어고쳤다 — DIP에서 역할과 책임 -->
+<div class="container">
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이커머스 프로젝트에서 브랜드 도메인을 구현하다가 문득 이런 생각이 들었습니다.</p>
+<p data-ke-size="size16">" DDD 구현중인데 이 <code>@Transactional</code>,&nbsp; 도메인에 있어도 되는 거 맞아?"</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">발단: 어노테이션 하나에서 시작된 의문</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">브랜드 CRUD를 구현하고 나서, 코드를 보고 있었습니다. 겉보기에는 아무 문제 없었습니다. 테스트도 다 통과하고, API도 잘 동작했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Domain Service
+@Transactional
+class BrandService(
+    private val brandRepository: BrandRepository,
+) {
+    fun createBrand(name: String, description: String?): Brand {
+        val brand = Brand(name = name, description = description)
+        return brandRepository.save(brand)
+    }
+
+    fun deleteBrand(brandId: Long) {
+        val brand = brandRepository.findById(brandId)
+            ?: throw CoreException(ErrorType.NOT_FOUND)
+        brand.delete()
+        brandRepository.save(brand)
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">근데 하나 걸리는 게 있었습니다. <code>@Transactional</code>. 이건 Spring 프레임워크의 기능입니다. 그리고 <code>BrandService</code>는 도메인 레이어에 있습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote data-ke-style="style2">
+    <p data-ke-size="size16">"도메인 레이어가 Spring을 알아도 되나?"</p>
+</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이 질문 하나가 아키텍처 전체를 다시 들여다보게 만들었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">DIP가 뭔데?</h2>
+<p data-ke-size="size16">DIP(Dependency Inversion Principle, 의존성 역전 원칙)는 SOLID 원칙 중 하나입니다. 핵심은 간단합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote data-ke-style="style2">
+    <p data-ke-size="size16">"상위 모듈이 하위 모듈에 의존하면 안 된다. 둘 다 추상화에 의존해야 한다."</p>
+</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">말이 어렵습니다. 이커머스 프로젝트에서 실제로 겪은 걸로 설명하겠습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">DIP가 없는 구조</h3>
+<pre id="code_2" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Domain Service가 JPA(인프라 기술)를 직접 의존
+class BrandService(
+    private val brandJpaRepository: BrandJpaRepository  // Spring Data JPA
+)</code></pre>
+<pre id="code_3" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code>BrandService &rarr; BrandJpaRepository
+(도메인)         (인프라)</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">의존 방향이 <b>도메인 &rarr; 인프라</b>입니다. 도메인이라는 상위 모듈이 인프라라는 하위 모듈에 의존하고 있습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이게 왜 문제일까요? 나중에 JPA를 Redis로 바꾸고 싶으면 어떻게 될까요? <code>BrandService</code>의 코드를 전부 수정해야 합니다. 비즈니스 로직은 하나도 안 바뀌었는데, 저장소 기술이 바뀌었다는 이유만으로요.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">*멘토링에서 JPA를 Redis로 바꿀 확률이 너무 희박하기 때문에 완벽하기 분리하려는 작업은 오히려 오버엔지니어링 일수 있다. 라는 의견도 들었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">DIP가 적용된 구조</h3>
+<pre id="code_4" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// 도메인 레이어 &mdash; 인터페이스 정의
+interface BrandRepository {
+    fun save(brand: Brand): Brand
+    fun findById(id: Long): Brand?
+}
+
+// 도메인 레이어 &mdash; 인터페이스에만 의존
+class BrandService(
+    private val brandRepository: BrandRepository  // 인터페이스
+)
+
+// 인프라 레이어 &mdash; 인터페이스를 구현
+@Component
+class BrandRepositoryImpl(
+    private val brandJpaRepository: BrandJpaRepository,
+) : BrandRepository {
+    override fun save(brand: Brand) = brandJpaRepository.save(brand)
+    override fun findById(id: Long) = brandJpaRepository.findById(id).orElse(null)
+}</code></pre>
+<pre id="code_5" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code>BrandService &rarr; BrandRepository (인터페이스, 도메인 레이어)
+                     &uarr; 구현
+              BrandRepositoryImpl (인프라 레이어)</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">의존 방향이 바뀌었습니다. <code>BrandService</code>는 같은 도메인 레이어에 있는 <code>BrandRepository</code> <b>인터페이스</b>에만 의존합니다. 그리고 인프라 레이어의 <code>BrandRepositoryImpl</code>이 그 인터페이스를 <b>구현</b>합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">원래 <b>도메인 &rarr; 인프라</b>였던 의존 방향이 <b>인프라 &rarr; 도메인</b>으로 뒤집혔습니다. 이게 "역전"입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">"역전"의 핵심은 인터페이스의 위치</h3>
+<p data-ke-size="size16">여기서 중요한 건 <b>인터페이스가 어느 레이어에 있는가</b>입니다.</p>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li>인터페이스가 <b>도메인 레이어</b>에 있으면 &rarr; 인프라가 도메인을 향해 의존 &rarr; <b>DIP</b></li>
+    <li>인터페이스가 <b>인프라 레이어</b>에 있으면 &rarr; 그냥 추상화 &rarr; DIP 아님</li>
+</ul>
+<p data-ke-size="size16">단순히 "인터페이스를 만들었다"가 아니라 "인터페이스를 도메인에 뒀다"가 DIP의 핵심이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">그래서 @Transactional이 왜 문제인데? 원래 Service에 있는거잖아</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">DIP를 이해하고 나니, 처음 코드가 다시 보였습니다.</p>
+<pre id="code_6" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>@Transactional       // &larr; Spring 프레임워크 (인프라 기술)
+class BrandService   // &larr; 도메인 레이어</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Repository는 인터페이스로 DIP를 적용해서 도메인을 순수하게 만들었는데, <code>@Transactional</code> 하나 때문에 도메인 레이어가 다시 Spring에 의존하고 있었습니다. 앞문으로는 인프라를 내보내고, 뒷문으로 다시 들인 셈입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><code>@Transactional</code>은 "이 메서드를 하나의 트랜잭션으로 묶어라"라는 <b>기술적 지시</b>입니다. 비즈니스 로직이 아닙니다. "브랜드를 저장해라", "삭제 시 상품도 함께 삭제해라"가 비즈니스 규칙이지, "이걸 하나의 DB 트랜잭션으로 처리해라"는 인프라 관심사입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">각 레이어의 역할과 책임</h2>
+<p data-ke-size="size16">이 문제를 해결하려면 먼저 각 레이어가 무슨 일을 해야 하는지 명확히 해야 했습니다. 코드를 짜다 보면 "이 로직을 어디에 넣지?"라는 고민이 계속 생기는데, 역할이 명확하면 판단 기준이 생깁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">Domain 레이어 &mdash; "무엇을 해야 하는가"</h3>
+<p data-ke-size="size16">비즈니스의 중심입니다. 다른 레이어를 몰라야 합니다. Spring도 모르고, JPA도 모르고, Controller도 모릅니다. 오직 비즈니스 규칙만 알고 있습니다.</p>
+<pre id="code_7" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Entity &mdash; 비즈니스 규칙을 캡슐화
+class Product(
+    var stock: Int,
+    // ...
+) {
+    fun reserve(quantity: Int): Boolean {
+        if (quantity &lt;= 0) throw CoreException(ErrorType.BAD_REQUEST, "수량은 1 이상이어야 합니다.")
+        if (!hasEnoughStock(quantity)) return false
+        this.stock -= quantity
+        return true
+    }
+
+    private fun hasEnoughStock(quantity: Int): Boolean = this.stock &gt;= quantity
+}
+
+// Domain Service &mdash; 여러 Entity를 조합하는 순수 비즈니스 로직
+class BrandDomainService {
+    fun deleteBrand(brand: Brand, products: List&lt;Product&gt;) {
+        brand.delete()
+        products.forEach { it.delete() }
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><code>Product.reserve()</code>는 "재고가 충분한지 확인하고 차감한다"는 비즈니스 규칙입니다. <code>BrandDomainService.deleteBrand()</code>는 "브랜드를 삭제하면 하위 상품도 함께 삭제한다"는 비즈니스 규칙입니다. 프레임워크 의존이 없고, 순수 Kotlin 코드입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">Application 레이어 &mdash; "어떤 순서로 해야 하는가"</h3>
+<p data-ke-size="size16">유스케이스를 조율합니다. 데이터를 가져와서 Domain에 넘기고, 결과를 저장합니다. 트랜잭션 경계도 여기서 잡습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_8" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>@Component
+class BrandService(
+    private val brandRepository: BrandRepository,
+    private val productRepository: ProductRepository,
+    private val brandDomainService: BrandDomainService,
+) {
+    @Transactional
+    fun deleteBrand(brandId: Long) {
+        val brand = brandRepository.findById(brandId)
+            ?: throw CoreException(ErrorType.NOT_FOUND)
+        val products = productRepository.findAllByBrandId(brandId)
+
+        brandDomainService.deleteBrand(brand, products)  // 비즈니스 로직은 위임
+
+        brandRepository.save(brand)
+        productRepository.saveAll(products)
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Application Service가 하는 일은 "조율"입니다. 브랜드를 가져오고, 상품을 가져오고, Domain Service에게 비즈니스 규칙을 실행시키고, 결과를 저장합니다. "삭제 시 상품도 함께 삭제한다"는 규칙은 <code>BrandDomainService</code>에 있고, Application Service는 그 규칙을 <b>호출만</b> 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">그리고 <code>@Transactional</code>은 여기에 있습니다. "브랜드 삭제와 상품 삭제가 하나의 트랜잭션으로 묶여야 한다"는 건 기술적 관심사이니까요.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">의존 방향 정리</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_10" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code>Interfaces &rarr; Application &rarr; Domain &larr; Infrastructure
+
+Controller    Facade/Service    Entity        RepositoryImpl
+              @Transactional    DomainService JpaRepository
+              Criteria/Info     Repository(I)
+                                Command</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">화살표 방향을 보면 <b>Domain이 중심</b>입니다. 모든 레이어가 Domain을 향해 의존하고, Domain은 아무것도 의존하지 않습니다. Infrastructure의 화살표가 <b>&larr;</b> 방향인 게 DIP입니다. 인프라가 도메인의 인터페이스를 구현하면서, 의존 방향이 역전됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">실제로 리팩토링한 과정</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">개념을 이해하고 나서, 실제 코드를 고쳤습니다. 3단계에 걸쳐 진행했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">1단계: @Transactional을 Application 레이어로 이동</h3>
+<pre id="code_11" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code># Before
+Domain Service (@Transactional) &rarr; Repository
+
+# After
+Application Service (@Transactional) &rarr; Repository</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Domain Service를 모두 Application Service로 변경했습니다.&nbsp;</p>
+<p data-ke-size="size16">이제 트랜잭션과 Spring 은 Domain에 없습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">2단계: 비즈니스 규칙을 Domain Service로 추출</h3>
+<p data-ke-size="size16">"브랜드 삭제 시 상품도 cascade 삭제"라는 규칙이 Application Service에 흩어져 있었습니다. 이걸 <code>BrandDomainService</code>로 추출했습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_12" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Before &mdash; 비즈니스 규칙이 Application Service에 있음
+@Transactional
+fun deleteBrand(brandId: Long) {
+    val brand = brandRepository.findById(brandId)!!
+    val products = productRepository.findAllByBrandId(brandId)
+    brand.delete()                          // 여기와
+    products.forEach { it.delete() }        // 여기가 비즈니스 규칙
+    brandRepository.save(brand)
+    productRepository.saveAll(products)
+}
+
+// After &mdash; 비즈니스 규칙은 Domain Service로, 조율만 Application에
+@Transactional
+fun deleteBrand(brandId: Long) {
+    val brand = brandRepository.findById(brandId)!!
+    val products = productRepository.findAllByBrandId(brandId)
+    brandDomainService.deleteBrand(brand, products)  // 위임
+    brandRepository.save(brand)
+    productRepository.saveAll(products)
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">코드 줄 수는 비슷합니다. 하지만 <b>책임이 분리</b>되었습니다. Application Service는 "뭘 가져오고 뭘 저장하는가"(조율)만 알고, "삭제 시 어떤 규칙이 적용되는가"는 Domain Service가 압니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">3단계: 재고 정책을 Aggregate로 이동</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">주문 도메인에서도 같은 문제가 있었습니다. <code>OrderDomainService</code>가 재고 검증 + 분류 + Order 조립을 모두 담당하고 있었습니다. 재고는 Product의 상태인데, Order가 관리하고 있었습니다.</p>
+<pre id="code_13" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Before &mdash; OrderDomainService가 재고까지 관리
+class OrderDomainService {
+    fun classifyAndBuildOrder(userId: Long, products: List&lt;Product&gt;, ...) {
+        // 재고 확인 (Product의 관심사)
+        // 성공/실패 분류 (Product의 관심사)
+        // Order 조립 (Order의 관심사)
+    }
+}
+
+// After &mdash; 각자의 책임
+class Product {
+    fun reserve(quantity: Int): Boolean { ... }  // 재고는 Product가 관리
+}
+
+class ProductService {
+    fun reserveStock(...): StockReservationResult { ... }  // 예약 결과 분류
+}
+
+class OrderDomainService {
+    fun buildOrder(userId: Long, items: List&lt;OrderItemCommand&gt;): Order { ... }  // 확정된 아이템만 조립
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">재고 정책을 Product Aggregate로 옮기니까, <code>OrderDomainService</code>는 "확정된 아이템으로 Order를 만든다"는 본래의 책임만 남았습니다. 각 객체가 자기 상태를 자기가 관리하는 구조가 되었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">이렇게 나누면 뭐가 좋은데?</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">솔직히 처음에는 "코드만 늘어나는 거 아닌가?"라고 생각했습니다. 하지만 실제로 구현해보니 체감이 달랐습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">1. 테스트가 쉬워진다</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Domain Service에 <code>@Transactional</code>이 없으니까, Spring Context 없이 순수 단위 테스트가 가능합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_14" class="kotlin" data-ke-language="kotlin" data-ke-type="codeblock"><code>// Spring 없이 테스트 가능
+class BrandDomainServiceTest {
+    private val brandDomainService = BrandDomainService()
+
+    @Test
+    fun deletesBrandAndProducts_whenCalled() {
+        val brand = Brand(name = "나이키", description = "스포츠 브랜드")
+        val products = listOf(Product(brandId = 1L, name = "에어맥스", ...))
+
+        brandDomainService.deleteBrand(brand, products)
+
+        assertAll(
+            { assertThat(brand.deletedAt).isNotNull() },
+            { assertThat(products[0].deletedAt).isNotNull() },
+        )
+    }
+}</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">어노테이션도 없고, Mock도 없고, DB도 없습니다. 비즈니스 규칙만 검증합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">2. 변경 영향이 격리된다</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">JPA를 다른 기술로 바꿀 때 <code>RepositoryImpl</code>만 새로 만들면 됩니다. Service는 수정 없습니다. 실제로 이 프로젝트에서 <code>BrandRepository</code>의 메서드를 추가할 때도, 인터페이스에 시그니처를 추가하고 <code>BrandRepositoryImpl</code>에 구현만 추가하면 Service 코드는 건드리지 않았습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">3. "이 로직 어디에 넣지?"가 명확해진다</h3>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">가장 큰 장점은 이거였습니다. 레이어별 역할이 명확하니까, 새로운 기능을 추가할 때 고민이 줄었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>질문</th>
+        <th>답</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>"재고가 충분한지 확인"은 어디에?</td>
+        <td>Domain (Product.reserve())</td>
+    </tr>
+    <tr>
+        <td>"여러 상품의 재고를 한번에 예약"은 어디에?</td>
+        <td>Application (ProductService.reserveStock())</td>
+    </tr>
+    <tr>
+        <td>"트랜잭션으로 묶어라"는 어디에?</td>
+        <td>Application (@Transactional)</td>
+    </tr>
+    <tr>
+        <td>"JPA로 저장해라"는 어디에?</td>
+        <td>Infrastructure (RepositoryImpl)</td>
+    </tr>
+    <tr>
+        <td>"요청을 받아 응답을 만들어라"는 어디에?</td>
+        <td>Interfaces (Controller)</td>
+    </tr>
+    </tbody>
+</table>
+<p data-ke-size="size16">&nbsp;</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">단점도 있다</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">무조건 좋은 구조는 없습니다. 솔직하게 느낀 단점도 적어봅니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>코드량이 늘어납니다.</b> Repository 하나에 3개 파일, 간단한 CRUD에도 Controller &rarr; Service &rarr; Domain Service &rarr; Repository를 다 거칩니다. 위임만 하는 패스스루 코드가 생깁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>프로젝트 규모가 작으면 오버엔지니어링입니다.</b> JPA를 Redis로 바꿀 일이 없는 프로젝트에서 추상화 비용을 지불하는 건 낭비일 수 있습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>DTO 변환이 많아집니다.</b> API DTO &rarr; Criteria &rarr; Command &rarr; Info &rarr; API DTO. 레이어 간 격리를 위한 건데, 간단한 기능에서는 변환 코드가 본 로직보다 길어질 때도 있었습니다.</p>
+<hr contenteditable="false" data-ke-type="horizontalRule" data-ke-style="style1" />
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26">결론</h2>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><code>@Transactional</code> 하나에서 시작된 의문이 아키텍처 전체를 다시 보게 만들었습니다. 결국 DIP에서 배운 건 기술적인 것이 아니었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<blockquote data-ke-style="style2">
+    <p data-ke-size="size16">"각 레이어가 자기 역할만 하면, 전체가 깔끔해진다."</p>
+</blockquote>
+<p data-ke-size="size16">&nbsp;</p>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>Domain</b>은 비즈니스 규칙만 안다. 프레임워크를 모른다.</li>
+    <li><b>Application</b>은 순서를 조율한다. 뭘 가져와서 누구에게 넘기고 뭘 저장할지 안다.</li>
+    <li><b>Infrastructure</b>는 기술 구현을 담당한다. 도메인이 정한 계약을 지킨다.</li>
+</ul>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이 원칙을 지키면 어노테이션 하나의 위치도 자연스럽게 정해집니다. <code>@Transactional</code>은 기술적 관심사니까 Application에. 비즈니스 규칙은 Domain에. 저장 방법은 Infrastructure에.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">"이 코드 어디에 넣지?"라는 질문에 항상 같은 답을 줄 수 있는 구조. 그게 DIP를 적용하면서 얻은 가장 큰 수확이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">DDD, DIP를 학습 멘토링 시간에 &nbsp;Facade가 꼭 필요한가요? 라는 질문이 있었는데 팀의 컨베션 관점에서 바라봐야 한다고 하신 내용이 기억 남습니다.</p>
+<p data-ke-size="size16">또&nbsp; 멘토링 이후 팀원분이 회사 팀장님과 나누신 대화 내용을 slack 에 공유해주셨는데 "어떤 기술에 대해 팀원들에게 전파하려했지만 공감을 얻지는 못하셨다" 라는 내용이였습니다.&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p style="color: #333333; text-align: start;" data-ke-size="size16">어떤 좋은기술도 단점은 존재할수 있습니다.<span>&nbsp;만약&nbsp;</span><b>"왜 이렇게 했는지"를 설명할 수 있고, 팀원의 공감을 얻을 수 있다면 </b>좋은 기술의 단점을 극복할수 있지 않을까요? 팀원 모두가 함께 트레이드오프를 이해하고 선택한것이니깐요!</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">긴글 읽어주셔서 감사합니다!</p>
+</div>

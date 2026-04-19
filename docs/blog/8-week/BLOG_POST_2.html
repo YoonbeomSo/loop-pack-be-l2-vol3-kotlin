@@ -1,0 +1,161 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * { box-sizing: border-box; }
+.container { max-width: 100%; margin: 0 auto; line-height: 1.85; color: #1a1a1a; word-break: keep-all; overflow-x: hidden; }
+.container table { display: table; overflow-x: auto; }
+
+/* ===== 헤더 ===== */
+.post-header { text-align: center; padding: 20px 0 10px; margin-bottom: 8px; }
+.post-header h1 { font-size: 1.7em; font-weight: 800; line-height: 1.4; color: #111; margin-bottom: 12px; letter-spacing: -0.02em; }
+.subtitle { font-size: 1.05em; color: #666; font-style: italic; }
+
+/* ===== TL;DR 섹션 ===== */
+.tldr blockquote { background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%); border-left: 4px solid #006dd7; border-radius: 0 8px 8px 0; padding: 20px 24px; margin: 16px 0; font-size: 0.97em; line-height: 1.9; }
+
+/* ===== 코드 라벨 ===== */
+.code-label { display: inline-block; background: #2d2d2d; color: #ccc; font-size: 0.78em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; padding: 4px 14px; border-radius: 6px 6px 0 0; margin-top: 18px; margin-bottom: -2px; letter-spacing: 0.03em; }
+
+/* ===== 코드 블록 ===== */
+.container pre { background: #1e1e1e !important; color: #d4d4d4 !important; border-radius: 0 6px 6px 6px; padding: 20px 22px; margin-top: 0; margin-bottom: 18px; overflow-x: auto; font-size: 0.88em; line-height: 1.65; border: 1px solid #333; }
+.container pre code { background: transparent !important; color: inherit !important; padding: 0; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+.container p + pre, .container blockquote + pre { border-radius: 6px; }
+
+/* ===== 인라인 코드 ===== */
+.container code { background: #f1f3f5; color: #c7254e; padding: 2px 7px; border-radius: 4px; font-size: 0.88em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+
+/* ===== 테이블 ===== */
+.container table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.93em; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.container table thead tr { background: #2c3e50; color: #fff; }
+.container table th { padding: 13px 16px; text-align: left; font-weight: 600; font-size: 0.92em; letter-spacing: 0.02em; }
+.container table td { padding: 12px 16px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+.container table tbody tr:nth-child(even) { background: #f8f9fa; }
+.container table tbody tr:hover { background: #e9f5ff; transition: background 0.15s ease; }
+
+/* ===== 시나리오 박스 ===== */
+.scenario { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 18px 0; }
+.step { padding: 10px 16px; margin: 6px 0; border-radius: 6px; font-size: 0.94em; background: #fff; border-left: 4px solid #adb5bd; color: #333; }
+.step.success { background: #f0fdf4; border-left-color: #22c55e; color: #15803d; font-weight: 500; }
+.step.fail { background: #fef2f2; border-left-color: #ef4444; color: #b91c1c; font-weight: 500; }
+
+/* ===== 인용구 ===== */
+.container blockquote { border-left: 3px solid #3b82f6; background: #f8fafc; margin: 16px 0; padding: 14px 20px; border-radius: 0 6px 6px 0; color: #374151; }
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul { margin: 14px 0; padding-left: 24px; }
+.container ul li { margin-bottom: 8px; line-height: 1.8; }
+
+/* ===== 구분선 ===== */
+.container hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #d1d5db, transparent); margin: 36px 0; }
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 { font-size: 1.45em; font-weight: 700; color: #111; margin-top: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3b82f6; letter-spacing: -0.01em; }
+
+/* ===== h3 소제목 ===== */
+.container h3 { font-size: 1.15em; font-weight: 600; color: #1e3a5f; margin-top: 28px; margin-bottom: 12px; }
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+
+/* ===== source 클래스 ===== */
+.source { font-size: 0.85em; color: #999; text-align: right; }
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+<header class="post-header">
+    <h1>대기열 구축, Kafka vs Redis<br />(같은 &ldquo;줄 세우기&rdquo;인데 왜 기술이 다른가)</h1>
+    <p class="subtitle" data-ke-size="size16">&ldquo;Kafka도 줄 세우기 아냐?&rdquo;라는 질문에 처음엔 답하지 못했습니다.</p>
+</header>
+
+<p data-ke-size="size16">&nbsp;</p>
+
+<!-- TL;DR -->
+<div class="tldr">
+    <blockquote data-ke-style="style3"><span style="color: #006dd7;">TL;DR</span><br />Kafka는 &ldquo;넣고 나면 내 위치를 모른다&rdquo; &mdash; 순번 조회가 불가능해서 대기열에 부적합하다.<br />Redis Sorted Set은 ZRANK로 즉시 순번 조회 + SET TTL로 토큰 관리까지 단일 인프라로 해결한다.<br />Kafka는 비동기 파이프라인(주문 후), Redis는 실시간 관문(주문 전) &mdash; 양자택일이 아니라 각자의 위치가 있다.</blockquote>
+</div>
+
+<hr data-ke-style="style1" />
+
+<!-- 섹션 1 -->
+<h2 data-ke-size="size26">&ldquo;Kafka도 줄 세우기 아냐?&rdquo;</h2>
+
+<p data-ke-size="size16">7주차에서 Kafka로 선착순 쿠폰 발급을 구현했습니다. 요청을 토픽에 넣고, Consumer가 순서대로 꺼내서 처리합니다. 분명히 &ldquo;줄 세우기&rdquo;입니다.</p>
+
+<p data-ke-size="size16">그런데 8주차 대기열도 &ldquo;줄 세우기&rdquo;입니다. 유저를 줄 세우고, 순서대로 입장시킵니다.</p>
+
+<p data-ke-size="size16">같은 건데 왜 Kafka가 아닌 Redis를 선택했을까요?</p>
+
+<hr data-ke-style="style1" />
+
+<!-- 섹션 2 -->
+<h2 data-ke-size="size26">핵심 차이 &mdash; &ldquo;내 위치를 알 수 있는가&rdquo;</h2>
+
+<p data-ke-size="size16">Kafka에 메시지를 넣으면 offset이 할당됩니다. 하지만 Producer는 이 offset으로 &ldquo;내 앞에 몇 명이 있는지&rdquo;를 알 수 없습니다. Kafka는 Consumer가 순서대로 꺼내가는 파이프라인이지, 대기 중인 메시지의 위치를 조회하는 용도가 아닙니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>요구사항</th><th>Kafka</th><th>Redis Sorted Set</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>순번 조회</b> (&ldquo;지금 몇 번째?&rdquo;)</td><td>불가능</td><td><code>ZRANK</code> O(log N)</td></tr>
+    <tr><td><b>총 대기 인원</b></td><td>Consumer lag로 간접 추정</td><td><code>ZCARD</code> O(1)</td></tr>
+    <tr><td><b>예상 대기시간</b></td><td>산출 불가</td><td>position / TPS</td></tr>
+    <tr><td><b>중복 진입 방지</b></td><td>별도 구현 필요</td><td><code>ZADD NX</code> 내장</td></tr>
+    <tr><td><b>토큰 관리 (TTL)</b></td><td>별도 저장소 필요</td><td><code>SET EX</code> 내장</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">대기열은 유저가 화면 앞에서 &ldquo;지금 342번째, 약 2분 후 입장&rdquo;을 보는 시나리오입니다. <b>실시간 피드백이 핵심인데, Kafka는 이걸 제공할 수 없습니다.</b></p>
+
+<hr data-ke-style="style1" />
+
+<!-- 섹션 3 -->
+<h2 data-ke-size="size26">각자의 자리 &mdash; 주문 전 vs 주문 후</h2>
+
+<p data-ke-size="size16">정리하면, 둘은 양자택일이 아니라 파이프라인의 서로 다른 위치에 있습니다.</p>
+
+<div class="scenario">
+    <div class="step">유저 요청</div>
+    <div class="step success">Redis 대기열 (주문 전, 관문) &rarr; 순번 + 토큰</div>
+    <div class="step">주문 API &rarr; 주문 생성</div>
+    <div class="step success">Kafka 파이프라인 (주문 후, 비동기 처리) &rarr; 집계, 쿠폰, 로깅</div>
+</div>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>구분</th><th>Redis 대기열 (R8)</th><th>Kafka 파이프라인 (R7)</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>위치</b></td><td>주문 API 앞단</td><td>주문 API 뒷단</td></tr>
+    <tr><td><b>목적</b></td><td>트래픽 조절 + 유저 피드백</td><td>이벤트 전파 + 비동기 처리</td></tr>
+    <tr><td><b>유저 인지</b></td><td>&ldquo;342번째입니다&rdquo; (실시간)</td><td>유저 모름 (백엔드 내부)</td></tr>
+    <tr><td><b>유실 시 영향</b></td><td>줄 서있던 유저 소멸</td><td>후속 처리(집계, 쿠폰) 누락</td></tr>
+    <tr><td><b>내구성 요구</b></td><td>낮음 (일시적 상태)</td><td>높음 (비즈니스 이벤트)</td></tr>
+    </tbody>
+</table>
+
+<hr data-ke-style="style1" />
+
+<!-- 섹션 4 -->
+<h2 data-ke-size="size26">Kafka로 대기열을 만들 수는 없는 건가?</h2>
+
+<p data-ke-size="size16">완전히 불가능한 건 아닙니다. Kafka에 진입 요청을 넣고, Consumer가 소비하면서 Redis나 DB에 순번 정보를 기록하면 순번 조회는 가능합니다.</p>
+
+<p data-ke-size="size16">하지만 이 경우 Kafka는 &ldquo;메시지 큐&rdquo; 역할만 하고, 실제 대기열 상태 관리는 Redis/DB가 합니다. <b>결국 Redis Sorted Set 하나로 끝나는 걸, Kafka + Redis 두 개를 조합해서 하는 셈입니다.</b> 복잡도만 올라가고 얻는 게 없습니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- 마무리 -->
+<h2 data-ke-size="size26">마무리</h2>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>&ldquo;기술 선택은 기능이 아니라 시나리오에 맞춰야 한다.&rdquo;</b></p>
+</blockquote>
+
+<p data-ke-size="size16">Kafka와 Redis는 둘 다 &ldquo;줄 세우기&rdquo;를 할 수 있지만, <b>&ldquo;유저가 자기 순번을 알아야 하는가?&rdquo;</b>라는 한 가지 질문으로 답이 갈립니다. 같은 버퍼링이라도 유저 경험에 따라 적합한 기술이 완전히 달라진다는 걸 이번 과제에서 배웠습니다.</p>
+
+</div>

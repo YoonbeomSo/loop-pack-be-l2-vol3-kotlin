@@ -1,0 +1,749 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * {
+    box-sizing: border-box;
+}
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 1.85;
+    color: #1a1a1a;
+    word-break: keep-all;
+    overflow-x: hidden;
+}
+.container table {
+    display: block;
+    overflow-x: auto;
+}
+
+/* ===== 헤더 ===== */
+.post-header {
+    text-align: center;
+    padding: 20px 0 10px;
+    margin-bottom: 8px;
+}
+
+.post-header h1 {
+    font-size: 1.7em;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 1.05em;
+    color: #666;
+    font-style: italic;
+}
+
+/* ===== TL;DR 섹션 ===== */
+.tldr blockquote {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    border-left: 4px solid #006dd7;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 0.97em;
+    line-height: 1.9;
+}
+
+/* ===== 코드 라벨 ===== */
+.code-label {
+    display: inline-block;
+    background: #2d2d2d;
+    color: #ccc;
+    font-size: 0.78em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    padding: 4px 14px;
+    border-radius: 6px 6px 0 0;
+    margin-top: 18px;
+    margin-bottom: -2px;
+    letter-spacing: 0.03em;
+}
+
+/* ===== 코드 블록 ===== */
+.container pre {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 0 6px 6px 6px;
+    padding: 20px 22px;
+    margin-top: 0;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.65;
+    border: 1px solid #333;
+}
+
+.container pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* code-label 없는 단독 pre는 둥근 모서리 전부 적용 */
+.container p + pre,
+.container blockquote + pre {
+    border-radius: 6px;
+}
+
+/* ===== 인라인 코드 ===== */
+.container code {
+    background: #f1f3f5;
+    color: #c7254e;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 테이블 ===== */
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.93em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.container table thead tr {
+    background: #2c3e50;
+    color: #fff;
+}
+
+.container table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+    letter-spacing: 0.02em;
+}
+
+.container table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+
+.container table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.container table tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.15s ease;
+}
+
+/* ===== 시나리오 (쿠폰 섹션) ===== */
+.scenario {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 18px 0;
+}
+
+.step {
+    padding: 10px 16px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 0.94em;
+    background: #fff;
+    border-left: 4px solid #adb5bd;
+    color: #333;
+}
+
+.step.success {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+    color: #15803d;
+    font-weight: 500;
+}
+
+.step.fail {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+    color: #b91c1c;
+    font-weight: 500;
+}
+
+/* ===== 인용구 ===== */
+.container blockquote {
+    border-left: 3px solid #3b82f6;
+    background: #f8fafc;
+    margin: 16px 0;
+    padding: 14px 20px;
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+}
+
+.container blockquote i {
+    color: #555;
+}
+
+.container blockquote b {
+    color: #1e3a5f;
+}
+
+/* ===== 리스트 ===== */
+.container ul {
+    margin: 14px 0;
+    padding-left: 24px;
+}
+
+.container ul li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+/* ===== 구분선 ===== */
+.container hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin: 36px 0;
+}
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 {
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #111;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+    letter-spacing: -0.01em;
+}
+
+/* ===== h3 소제목 ===== */
+.container h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* ===== 강조 ===== */
+.container b {
+    color: #111;
+}
+
+/* ===== source 클래스 ===== */
+.source {
+    font-size: 0.85em;
+    color: #999;
+    text-align: right;
+}
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container"><!-- Header --><header class="post-header">
+    <h1>비관적 락 하나로 다 해결한 줄 알았다<br />(도메인 순수성과 성능 사이에서 락전략)</h1>
+    <p class="subtitle" data-ke-size="size16">비관적 락 하나로 락을 정복한 줄 알았습니다..</p>
+    <p class="subtitle" data-ke-size="size16">&nbsp;</p>
+</header>[##_Image|kage@ttZaB/dJMcadulkop/AAAAAAAAAAAAAAAAAAAAADUBdz7d1TlabMbjjiBNEEnckQQ2_zbD31wRktvahwlr/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&amp;expires=1774969199&amp;allow_ip=&amp;allow_referer=&amp;signature=auirS8J50P%2FCUfjN0LD56HUkB%2Bg%3D|CDM|1.3|{"originWidth":1104,"originHeight":912,"style":"alignCenter","width":445,"height":421,"caption":"잘못된 락..","filename":"blob"}_##]
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <!-- TL;DR -->
+    <div class="tldr">
+        <blockquote data-ke-style="style3"><span style="color: #006dd7;">TL;DR</span><br />동시성 전략은 하나로 통일하는 게 아니라,&nbsp;도메인 특성에 따라 달라야 한다.<br />좋아요 &rarr;&nbsp;Atomic Update&nbsp;/ 쿠폰 &rarr;&nbsp;비관적 락&nbsp;/ 재고 &rarr;&nbsp;비관적 락&nbsp;으로 결정한 이유<br />그런데 도메인 아키텍처에 집착하면,&nbsp;더 가벼운 도구를 놓칠 수도 있다.</blockquote>
+        <p data-ke-size="size16">&nbsp;</p>
+    </div>
+    <hr data-ke-style="style1" /><!-- Section 1 -->
+    <h2 data-ke-size="size26">비관적 락이면 되는 거 아니야?</h2>
+    <p data-ke-size="size16">이전까지 비관적락과 낙관적락을 비교하는 포스팅을 할정도로 저는 꽤 자신감이 있었습니다.</p>
+    <p data-ke-size="size16">재고 차감? <code>SELECT ... FOR UPDATE</code>로 줄 세우면 끝. 쿠폰 이중 사용? 마찬가지로 비관적 락. 동시성 문제가 나오면 비관적 락을 꺼내면 되는 거 아닌가?</p>
+    <p data-ke-size="size16">그런데 멘토링에서 이런 말씀을 하셨습니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"동시성 해결의 우선순위는 <b>Atomic Update &rarr; 낙관적 락 &rarr; 비관적 락</b> 순입니다."</p>
+    </blockquote>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">순간 멈칫했습니다. 저는 1순위(Atomic Update)를 검토조차 하지 않고, 바로 3순위(비관적 락)로 달려간 거였거든요.</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>"아, 나는 무거운 도구를 먼저 꺼냈구나."<br /><br /></i></p>
+    </blockquote>
+    <p data-ke-size="size16">이 깨달음에서 고민이 시작됐습니다. 도메인별로 다시 점검해보자. 정말 비관적 락이 최선인가?</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>우선순위</th>
+            <th>전략</th>
+            <th>특징</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>1순위</b></td>
+            <td>Atomic Update</td>
+            <td>DB 한 문장으로 처리. 락 보유 시간 &asymp; 0</td>
+        </tr>
+        <tr>
+            <td><b>2순위</b></td>
+            <td>낙관적 락</td>
+            <td>먼저 실행, 나중에 충돌 감지. 충돌 적을 때 유리</td>
+        </tr>
+        <tr>
+            <td><b>3순위</b></td>
+            <td>비관적 락</td>
+            <td>줄 세우기. 정합성 강하지만 처리량 낮아질 수 있음</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr data-ke-style="style1" /><!-- Section 2 -->
+    <h2 data-ke-size="size26">좋아요 &mdash; Atomic Update가 딱 맞는 케이스</h2>
+    <h3 data-ke-size="size23">기존 상태</h3>
+    <p data-ke-size="size16">기존에는 <code>Product</code> 엔티티에 <code>likeCount</code> 필드 자체가 없었습니다. 좋아요 수를 알려면 <code>likes</code> 테이블의 행 수를 세야 했죠.</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>"좋아요는 단순 +1/-1이잖아. 이게 Atomic Update의 교과서적 케이스 아닌가?"<br /><br /></i></p>
+    </blockquote>
+    <p data-ke-size="size16">맞았습니다. 좋아요 카운트는 현재 값을 읽을 필요가 없습니다. "지금 몇 개인지 모르겠지만, 1 올려줘"면 되니까요.</p>
+    <h3 data-ke-size="size23">왜 엔티티 메서드로 안 하나?</h3>
+    <p data-ke-size="size16">처음에는 이렇게 하려 했습니다:</p>
+    <span class="code-label">kotlin &mdash; AS-IS</span>
+    <pre class="kotlin"><code>// AS-IS: 엔티티 메서드로 처리
+fun incrementLikeCount() {
+    this.likeCount += 1  // Read-Modify-Write &rarr; Lost Update 위험
+}</code></pre>
+    <p data-ke-size="size16">이게 왜 문제냐면, JPA의 dirty checking은 <b>Read-Modify-Write</b> 패턴이거든요.</p>
+    <pre class="yaml"><code>Thread A: likeCount = 0을 읽음
+Thread B: likeCount = 0을 읽음
+Thread A: 0 + 1 = 1로 UPDATE
+Thread B: 0 + 1 = 1로 UPDATE  &larr; Lost Update!
+&rarr; 2명이 좋아요했는데 likeCount = 1</code></pre>
+    <p data-ke-size="size16">그래서 DB에게 직접 맡겼습니다:</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <span class="code-label">kotlin &mdash; TO-BE</span>
+    <pre class="less"><code>// TO-BE: DB가 원자적으로 처리
+@Modifying(clearAutomatically = true)
+@Query(
+    "UPDATE products SET like_count = like_count + 1 WHERE id = :productId",
+    nativeQuery = true,
+)
+fun incrementLikeCount(@Param("productId") productId: Long)</code></pre>
+    <p data-ke-size="size16"><code>like_count = like_count + 1</code>은 DB가 row-level lock을 잡고 현재 값 기준으로 연산합니다. 애플리케이션이 현재 값을 읽을 필요가 없으니 Lost Update가 원천 차단됩니다.</p>
+    <h3 data-ke-size="size23">구현하면서 마주친 함정들</h3>
+    <p data-ke-size="size16"><b>1) JPA 1차 캐시 불일치</b></p>
+    <p data-ke-size="size16"><code>@Modifying</code> 쿼리는 JPA 영속성 컨텍스트를 <b>우회</b>해서 DB를 직접 업데이트합니다. DB의 <code>like_count</code>는 1인데 영속성 컨텍스트에는 여전히 0이 남아있는 거죠.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">해결: <code>clearAutomatically = true</code>로 UPDATE 실행 후 영속성 컨텍스트를 자동 클리어.<br /><br /></p>
+    </blockquote>
+    <p data-ke-size="size16"><b>2) 음수 방지</b></p>
+    <span class="code-label">kotlin</span>
+    <pre class="less"><code>@Modifying(clearAutomatically = true)
+@Query(
+    "UPDATE products SET like_count = GREATEST(like_count - 1, 0) WHERE id = :productId",
+    nativeQuery = true,
+)
+fun decrementLikeCount(@Param("productId") productId: Long)</code></pre>
+    <p data-ke-size="size16">정상 흐름에서는 음수가 될 일이 없지만, 데이터 마이그레이션 오류나 수동 DB 조작으로 불일치가 생길 수 있습니다. <code>GREATEST(like_count - 1, 0)</code>으로 DB 레벨에서 방어했습니다.</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16"><b>3) 멱등성 &mdash; 아무 때나 +1 하면 안 된다</b></p>
+    <p data-ke-size="size16">좋아요를 누를 때 무조건 <code>incrementLikeCount()</code>를 호출하면, 이미 좋아요한 상태에서 다시 눌렀을 때도 카운트가 올라갑니다. 그래서 <code>LikeService</code>에서 <b>상태에 따라 분기</b>했습니다:</p>
+    <span class="code-label">kotlin &mdash; LikeService.kt</span>
+    <pre class="reasonml"><code>@Transactional
+fun addLike(userId: Long, productId: Long): LikeInfo {
+    val existingLike = likeRepository.findByUserIdAndProductId(userId, productId)
+
+    if (existingLike != null) {
+        if (existingLike.isDeleted()) {
+            existingLike.restore()                          // 복원 &rarr; +1
+            productService.incrementLikeCount(productId)
+            return LikeInfo.from(likeRepository.save(existingLike))
+        }
+        return LikeInfo.from(existingLike)                  // 이미 활성 &rarr; no-op
+    }
+
+    val saved = likeRepository.save(Like(userId = userId, productId = productId))
+    productService.incrementLikeCount(productId)            // 신규 &rarr; +1
+    return LikeInfo.from(saved)
+}</code></pre>
+    <p data-ke-size="size16">&nbsp;</p>
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>
+                <p data-ke-size="size16">&nbsp;</p>
+                <p data-ke-size="size16">기존 상태</p>
+            </th>
+            <th>동작</th>
+            <th>likeCount 변화</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>없음 (신규)</td>
+            <td>Like 생성 + increment</td>
+            <td><b>+1</b></td>
+        </tr>
+        <tr>
+            <td>활성 (중복 요청)</td>
+            <td>no-op</td>
+            <td><b>0</b></td>
+        </tr>
+        <tr>
+            <td>삭제됨 (재좋아요)</td>
+            <td>restore + increment</td>
+            <td><b>+1</b></td>
+        </tr>
+        </tbody>
+    </table>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">실제로 좋아요 상태가 변하는 경우에만 카운트를 조작합니다. 이게 빠지면 <code>likes</code> 테이블과 <code>like_count</code>의 싱크가 어긋납니다.</p>
+    <h3 data-ke-size="size23">동시성 테스트 &mdash; 10명이 동시에 좋아요</h3>
+    <span class="code-label">kotlin &mdash; LikeConcurrencyTest.kt</span>
+    <pre class="reasonml"><code>@DisplayName("서로 다른 10명이 동시에 좋아요하면, likeCount가 정확히 10이 된다.")
+@Test
+fun maintainsCorrectLikeCount_whenConcurrentLikesFromDifferentUsers() {
+    // arrange
+    val threadCount = 10
+    val product = productJpaRepository.save(Product(...))
+    val latch = CountDownLatch(1)
+    val executorService = Executors.newFixedThreadPool(threadCount)
+
+    // act
+    repeat(threadCount) { index -&gt;
+        val userId = (index + 1).toLong()
+        executorService.submit {
+            latch.await()
+            likeService.addLike(userId = userId, productId = product.id)
+        }
+    }
+    latch.countDown()
+    executorService.shutdown()
+    executorService.awaitTermination(10, TimeUnit.SECONDS)
+
+    // assert
+    val updatedProduct = productJpaRepository.findById(product.id).get()
+    assertThat(updatedProduct.likeCount).isEqualTo(threadCount) // 정확히 10!
+}</code></pre>
+    <p data-ke-size="size16">만약 엔티티 메서드(<code>this.likeCount += 1</code>)로 했다면 Lost Update로 10이 안 나왔을 겁니다.</p>
+    <p data-ke-size="size16"><b>Atomic Update 덕분에 정확히 10.</b></p>
+    <hr data-ke-style="style1" /><!-- Section 3 -->
+    <h2 data-ke-size="size26">쿠폰 &mdash; 낙관적 락을 고려했는데 포기한 이유</h2>
+    <h3 data-ke-size="size23">처음 생각: "쿠폰은 낙관적 락이 맞지 않나?"</h3>
+    <p data-ke-size="size16">쿠폰은 한 유저에게 발급된 것이기 때문에, 동시 요청이라 해봐야 같은 유저가 다중 기기에서 동시에 쓰는 정도입니다. 충돌 빈도가 낮으니 낙관적 락이 맞는 것 같았습니다.</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">멘토링에서 다른 수강생 님도 같은 판단을 했더군요:</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"쿠폰은 한 유저 소유 &rarr; 동시 요청은 다중 기기뿐 &rarr; 1건만 성공하고 나머지는 실패시키면 충분 &rarr; 낙관적 락"</p>
+    </blockquote>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">합리적인 판단이었습니다. <b>쿠폰만 놓고 보면요.</b></p>
+    <h3 data-ke-size="size23">문제: 쿠폰은 주문 트랜잭션 안에서 사용된다</h3>
+    <p data-ke-size="size16">쿠폰 사용은 독립된 API가 아니라, <code>OrderFacade.createOrder()</code> 안에서 일어납니다:</p>
+    <span class="code-label">kotlin &mdash; OrderFacade.kt</span>
+    <pre class="reasonml"><code>@Transactional
+fun createOrder(userId: Long, criteria: List&lt;OrderItemCriteria&gt;, couponId: Long?): OrderInfo {
+    // 1. 상품 비관적 락 획득 + 재고 차감
+    val products = productService.getProductsWithLock(productIds)
+    val reservedProducts = productService.reserveStock(products, criteria)
+
+    // 2. 쿠폰 적용
+    if (couponId != null) {
+        val issuedCoupon = couponService.getIssuedCouponWithLock(couponId)
+        issuedCoupon.validateOwner(userId)
+        issuedCoupon.validateUsable()
+        // ... 할인 계산 + 쿠폰 사용 처리
+    }
+
+    // 3. 주문 생성
+    val order = orderService.createOrder(userId, orderItemCommands, couponId)
+    return OrderInfo.from(order)
+}</code></pre>
+    <p data-ke-size="size16">여기서 <b>낙관적 락을 쓰면 어떻게 되나</b> 생각해봤습니다:</p>
+    <div class="scenario">
+        <div class="step">1. Thread A, B가 동시에 같은 쿠폰으로 주문 시도</div>
+        <div class="step">2. 둘 다 재고 차감 성공 (비관적 락으로 순차 처리)</div>
+        <div class="step success">3. Thread A가 쿠폰을 USED로 변경 &rarr; 커밋 성공</div>
+        <div class="step fail">4. Thread B가 쿠폰 변경 시도 &rarr; OptimisticLockException</div>
+        <div class="step fail">5. 이미 차감된 재고까지 전체 롤백</div>
+    </div>
+    <p data-ke-size="size16">재시도하면 될까요? Thread A가 이미 쿠폰을 USED로 바꿨으니, 재시도해도 <code>validateUsable()</code>에서 실패합니다. 결과는 똑같이 실패.</p>
+    <p data-ke-size="size16">멘토님 세션에서 이 부분이 정확히 짚혔습니다:</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><b>"주의: 재시도하는 것이 낙관적 락이 아님! 실패해도 괜찮을 때 낙관적 락을 써야 함."<br /><br /></b></p>
+    </blockquote>
+    <p data-ke-size="size16">쿠폰 단독이면 낙관적 락이 맞습니다. 충돌이 나면 "이미 사용된 쿠폰입니다"라고 알려주면 끝이니까요. 하지만 <b>주문 플로우 안에서는 쿠폰 충돌이 재고 롤백까지 연쇄</b>시키는 문제가 있었습니다.</p>
+    <h3 data-ke-size="size23">결론: 비관적 락</h3>
+    <p data-ke-size="size16">주문 트랜잭션의 원자성을 깨뜨리지 않으려면, 쿠폰도 비관적 락으로 "줄 세우기"를 하는 게 합리적이었습니다.</p>
+    <span class="code-label">kotlin</span>
+    <pre class="less"><code>@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT ic FROM IssuedCoupon ic WHERE ic.id = :id")
+fun findByIdWithLock(id: Long): IssuedCoupon?</code></pre>
+    <h3 data-ke-size="size23">동시성 테스트 &mdash; 같은 쿠폰으로 10명이 동시에 주문</h3>
+    <span class="code-label">kotlin &mdash; CouponConcurrencyTest.kt</span>
+    <pre class="reasonml"><code>@DisplayName("동일 발급 쿠폰으로 10개 스레드가 동시에 주문하면, 정확히 1개만 성공한다.")
+@Test
+fun allowsOnlyOneUsage_whenConcurrentCouponUse() {
+    // arrange
+    val threadCount = 10
+    val userId = 1L
+    // ... 상품(재고 100), 쿠폰, 발급 쿠폰 생성
+
+    val latch = CountDownLatch(1)
+    val successCount = AtomicInteger(0)
+    val failCount = AtomicInteger(0)
+
+    // act
+    repeat(threadCount) {
+        executorService.submit {
+            latch.await()
+            orderFacade.createOrder(userId = userId, criteria = criteria, couponId = issuedCoupon.id)
+            successCount.incrementAndGet()
+        }
+    }
+    latch.countDown()
+
+    // assert
+    assertThat(successCount.get()).isEqualTo(1)                          // 1건만 성공
+    assertThat(failCount.get()).isEqualTo(9)                             // 9건 실패
+    assertThat(updatedCoupon.status).isEqualTo(IssuedCouponStatus.USED)  // 쿠폰 USED
+}</code></pre>
+    <p data-ke-size="size16">1건만 성공하고 9건은 실패. 쿠폰은 USED. 정확합니다.</p>
+    <hr data-ke-style="style1" /><!-- Section 4 -->
+    <h2 data-ke-size="size26">재고 &mdash; 비관적 락이 합리적이었던 진짜 이유</h2>
+    <h3 data-ke-size="size23">"재고도 Atomic Update 가능하지 않나?"</h3>
+    <p data-ke-size="size16">이론적으로는 가능합니다:</p>
+    <span class="code-label">sql</span>
+    <pre class="sql"><code>UPDATE products SET stock = stock - 3 WHERE id = 1 AND stock &gt;= 3;</code></pre>
+    <p data-ke-size="size16">DB가 알아서 "재고 충분하면 차감, 부족하면 실패" 처리합니다. 간단하고 빠릅니다.</p>
+    <h3 data-ke-size="size23">그런데 왜 안 썼나 &mdash; 도메인 모델이 이미 결정했다</h3>
+    <p data-ke-size="size16">저는 Rich Domain Model을 먼저 설계했습니다:</p>
+    <span class="code-label">kotlin &mdash; Product.kt</span>
+    <pre class="kotlin"><code>// 도메인 엔티티에 비즈니스 로직을 캡슐화
+fun reserve(quantity: Int): Boolean {
+    if (quantity &lt;= 0) {
+        throw CoreException(ErrorType.BAD_REQUEST, "예약 수량은 1 이상이어야 합니다.")
+    }
+    if (!hasEnoughStock(quantity)) return false
+    this.stock -= quantity
+    return true
+}</code></pre>
+    <p data-ke-size="size16"><b><code>product.reserve()</code>라는 도메인 메서드를 만든 순간, "엔티티를 메모리에 올려서 메서드를 호출한다"는 Read-Modify-Write 패턴이 확정된 겁니다.</b></p>
+    <p data-ke-size="size16">Atomic Update는 엔티티를 거치지 않는 쿼리입니다. 풍부한 도메인 메서드와 정면 충돌합니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>돌이켜보면, 동시성 전략은 "락을 뭘 쓸까?" 시점에서 결정된 게 아니라,</i></p>
+        <p data-ke-size="size16"><i>도메인 모델을 설계하는 시점에서 이미 방향이 정해져 있었습니다.<br /><br /></i></p>
+    </blockquote>
+    <p data-ke-size="size16">설계할 때는 동시성을 아직 고민하기 전이었으니까 자연스럽게 놓친 거죠.</p>
+    <h3 data-ke-size="size23">"그러면 낙관적 락은?"</h3>
+    <p data-ke-size="size16">재고는 인기 상품에 동시 주문이 몰리는 케이스입니다. 충돌 빈도가 높죠.</p>
+    <p data-ke-size="size16">여기에 더해서, 주문에 상품이 여러 개 담기면 충돌 확률이 <b>곱</b>으로 증가합니다. 상품 A 성공 확률 80%, 상품 B 성공 확률 80%라면 둘 다 성공할 확률은 64%로 떨어지고, 상품이 더 많아지면 재시도 폭풍이 옵니다.</p>
+    <p data-ke-size="size16">비관적 락은 줄 세우기입니다. 선착순이 보장되고, 실패한 요청이 재시도 루프를 돌지 않아도 됩니다.</p>
+    <span class="code-label">kotlin &mdash; ProductJpaRepository.kt</span>
+    <pre class="kotlin"><code>// IN절로 한번에 여러 상품의 락을 획득 &mdash; 데드락 방지
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT p FROM Product p WHERE p.id IN :ids AND p.deletedAt IS NULL")
+fun findAllByIdWithLock(ids: List&lt;Long&gt;): List&lt;Product&gt;</code></pre>
+    <h3 data-ke-size="size23">동시성 테스트 &mdash; 재고 5개에 10명이 동시 주문</h3>
+    <span class="code-label">kotlin &mdash; StockConcurrencyTest.kt</span>
+    <pre class="reasonml"><code>@DisplayName("재고 5개인 상품에 10개 스레드가 동시에 주문하면, 정확히 5개만 성공한다.")
+@Test
+fun maintainsStockIntegrity_whenConcurrentOrders() {
+    // arrange
+    val threadCount = 10
+    val initialStock = 5
+
+    val latch = CountDownLatch(1)
+    val successCount = AtomicInteger(0)
+    val failCount = AtomicInteger(0)
+
+    // act
+    repeat(threadCount) { index -&gt;
+        executorService.submit {
+            latch.await()
+            orderFacade.createOrder(userId = index.toLong() + 1, criteria = criteria)
+            successCount.incrementAndGet()
+        }
+    }
+    latch.countDown()
+
+    // assert
+    assertThat(successCount.get()).isEqualTo(initialStock)                // 5개만 성공
+    assertThat(failCount.get()).isEqualTo(threadCount - initialStock)     // 5개 실패
+    assertThat(updatedProduct.stock).isEqualTo(0)                         // 재고 0
+}</code></pre>
+    <p data-ke-size="size16">락이 없었다면 10개 스레드가 모두 "재고 5개 남았네" 읽고 동시에 차감해서 재고가 음수가 됐을 겁니다. <b>비관적 락 덕분에 정확히 5개만 성공.</b></p>
+    <hr data-ke-style="style1" /><!-- Section 5: 트레이드오프 -->
+    <h2 data-ke-size="size26">잠깐, 도메인 모델에 너무 집착한 건 아닐까?</h2>
+    <p data-ke-size="size16">여기까지 정리하고 나니 한 가지 찜찜한 게 남았습니다.</p>
+    <p data-ke-size="size16">재고 섹션에서 저는 "Rich Domain Model이 Read-Modify-Write를 강제했기 때문에 비관적 락을 선택했다"고 썼습니다. 그런데 이걸 뒤집어 보면 이런 질문이 됩니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>"도메인 모델을 지키려고, 성능상 더 나은 선택지를 포기한 거 아닌가?"</i></p>
+    </blockquote>
+    <p data-ke-size="size16">솔직히 맞습니다.</p>
+    <h3 data-ke-size="size23">재고 Atomic Update가 가능했던 세계</h3>
+    <p data-ke-size="size16">다시 한번 봐보겠습니다.</p>
+    <span class="code-label">sql</span>
+    <pre class="sql"><code>UPDATE products SET stock = stock - 3 WHERE id = 1 AND stock &gt;= 3;</code></pre>
+    <p data-ke-size="size16">이 한 줄이면 됩니다. DB가 <code>stock &gt;= 3</code> 검증과 <code>stock - 3</code> 차감을 <b>원자적으로</b> 처리합니다. 락 보유 시간은 거의 0이고, 애플리케이션이 재고를 읽을 필요도 없습니다.</p>
+    <p data-ke-size="size16">멘토님도 세션에서 정확히 이 부분을 짚어주셨습니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"조건 검증 + 상태 변경을 DB에 위임할 수 있을 때 Atomic Update가 1순위."</p>
+        <p data-ke-size="size16">"애플리케이션의 재고를 읽고 계산할 필요 없이 DB 위임으로 충돌을 줄일 수 있다."</p>
+        <p class="source" data-ke-size="size16"><br /><br /></p>
+    </blockquote>
+    <p data-ke-size="size16">그런데 저는 <code>product.reserve()</code>라는 도메인 메서드를 먼저 만들어놓고, "이미 R-M-W 패턴이니까 Atomic Update는 안 되지"라고 결론 내렸습니다.</p>
+    <h3 data-ke-size="size23">진짜 문제: 도구를 목적으로 착각한 것</h3>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"Atomic Update를 쓰려면 도메인 로직을 쿼리로 내려야 하는데, 그러면 도메인 모델이 빈약해지는 트레이드오프를 어떻게 판단하시나요?"<br /><br /></p>
+    </blockquote>
+    <p data-ke-size="size16">이 질문을 던지면서도 속으로는 "Rich Domain Model이 맞으니까 비관적 락이 정답이겠지"라고 생각하고 있었습니다.</p>
+    <p data-ke-size="size16">DDD, 헥사고날 아키텍처 같은 설계 원칙을 <b>지켜야 할 목표</b>로 놓고 있었던 거죠.</p>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">그런데 생각해보면, <code>product.reserve()</code> 안에 있는 로직은 결국 이겁니다:</p>
+    <span class="code-label">pseudocode</span>
+    <pre class="angelscript"><code>1. quantity &gt; 0 검증
+2. stock &gt;= quantity 검증
+3. stock -= quantity</code></pre>
+    <p data-ke-size="size16">이건 SQL WHERE절 하나로 충분히 표현 가능합니다. 굳이 엔티티를 메모리에 올리고, 비관적 락으로 줄 세우고, 트랜잭션이 끝날 때까지 커넥션을 점유할 이유가 있었을까요?</p>
+    <h3 data-ke-size="size23">트레이드오프를 직시하면</h3>
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Rich Domain Model + 비관적 락</th>
+            <th>Atomic Update</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>도메인 표현력</b></td>
+            <td><code>product.reserve()</code> &mdash; 비즈니스 의도가 명확</td>
+            <td>SQL에 로직이 숨음</td>
+        </tr>
+        <tr>
+            <td><b>단위 테스트</b></td>
+            <td>Mock 없이 순수 도메인 테스트 가능</td>
+            <td>Repository 레벨 테스트 필요</td>
+        </tr>
+        <tr>
+            <td><b>동시성 성능</b></td>
+            <td>트랜잭션 끝까지 락 보유, 커넥션 점유</td>
+            <td>락 보유 시간 &asymp; 0, 커넥션 즉시 반환</td>
+        </tr>
+        <tr>
+            <td><b>확장성</b></td>
+            <td>트래픽 증가 시 커넥션 풀 고갈 위험</td>
+            <td>트래픽 증가에 강함</td>
+        </tr>
+        </tbody>
+    </table>
+    <p data-ke-size="size16">표에 적어놓고 보니 "커넥션 풀 고갈 위험"이 눈에 밟혔습니다. 이론으로만 끝내면 찜찜하니까, 진짜 고갈되는지 테스트로 증명해봤습니다.</p>
+    <h3 data-ke-size="size23">커넥션 풀 고갈 &mdash; 테스트로 증명하기</h3>
+    <p data-ke-size="size16">테스트 환경을 극단적으로 만들었습니다. <code>@TestPropertySource</code>로 커넥션 풀을 5개로 줄이고, connection-timeout을 HikariCP 최솟값인 250ms로 설정했습니다.</p>
+    <span class="code-label">kotlin &mdash; ConnectionPoolExhaustionTest.kt</span>
+    <pre class="less"><code>@SpringBootTest
+@TestPropertySource(
+    properties = [
+        "datasource.mysql-jpa.main.maximum-pool-size=5",
+        "datasource.mysql-jpa.main.minimum-idle=5",
+        "datasource.mysql-jpa.main.connection-timeout=250",
+    ],
+)
+class ConnectionPoolExhaustionTest {</code></pre>
+    <p data-ke-size="size16">재고 100개인 상품에 100개 스레드가 동시에 1개씩 주문합니다. 재고는 충분합니다. 비즈니스 로직상 100건 모두 성공해야 합니다.</p>
+    <span class="code-label">kotlin &mdash; 핵심 검증 로직</span></div>
+<div class="container">
+    <p data-ke-size="size16">&nbsp;</p>
+    <pre class="kotlin"><code>@DisplayName("커넥션 풀(5개)보다 훨씬 많은 스레드(100개)가 비관적 락을 사용하면, 커넥션 풀 고갈로 일부 주문이 실패한다.")
+@Test
+fun connectionPoolExhaustion_whenConcurrentPessimisticLockOrders() {
+    val threadCount = 100
+    val initialStock = 100
+    // ... 상품 생성, CountDownLatch + ExecutorService로 동시 실행
+
+    // assert
+    val updatedProduct = productJpaRepository.findById(product.id).get()
+    assertAll(
+        // 커넥션 풀 고갈로 일부 스레드가 실패해야 한다
+        { assertThat(failCount.get()).isGreaterThan(0) },
+        // 재고가 남아있다 = 비즈니스 로직이 아닌 인프라 한계로 실패
+        { assertThat(updatedProduct.stock).isGreaterThan(0) },
+        // 성공 + 실패 = 전체 스레드 수
+        { assertThat(successCount.get() + failCount.get()).isEqualTo(threadCount) },
+    )
+}</code></pre>
+    <p data-ke-size="size16">결과는 명확했습니다. <b>재고가 남아있는데도 주문이 실패합니다.</b><b></b></p>
+    <p data-ke-size="size16">비관적 락이 <code>SELECT FOR UPDATE</code>로 row를 잠그면, 그 트랜잭션이 끝날 때까지 커넥션을 반환하지 않습니다. 5개 커넥션이 모두 락 대기 중이면, 나머지 95개 스레드는 커넥션 자체를 얻지 못하고 250ms 후 <code>SQLTransientConnectionException</code>으로 실패합니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>재고는 충분하다. 비즈니스 로직은 문제없다.</i></p>
+        <p data-ke-size="size16"><i>그런데 주문이 실패한다. 인프라가 병목이 된 것이다.</i></p>
+    </blockquote>
+    <p data-ke-size="size16">&nbsp;</p>
+    <p data-ke-size="size16">멘토님이 하신 말씀이 떠오릅니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"DB 커넥션 풀을 소중하게 여겨야 된다는 사명감을 안고 달리는 회사에 있다 보니까, <br />비관적 락으로 풀어도 절대 문제 생기지 않는다고 확신할 수 있는 부분에 대해서만 비관적 락을 썼다."<br /><br /></p>
+    </blockquote>
+    <p data-ke-size="size16">실무에서는 도메인 모델의 우아함보다 <b>커넥션 풀 몇 개를 아끼느냐</b>가 서비스의 생사를 가를 수 있다는 거죠.</p>
+    <p data-ke-size="size16">이론이 아니라 테스트 코드가 보여주는 현실입니다.</p>
+    <h3 data-ke-size="size23">그래서 실무에서는 비관적 락을 잘 안 쓴다</h3>
+    <p data-ke-size="size16">이 테스트를 돌리고 나니 확실히 깨달았습니다. 비관적 락은 <b>정합성은 완벽하지만, 처리량에 구조적 한계</b>가 있습니다.</p>
+    <p data-ke-size="size16">트래픽이 적으면 문제없습니다. 하지만 인기 상품에 주문이 몰리는 순간, 커넥션 풀이 병목이 됩니다.</p>
+    <p data-ke-size="size16">커넥션 풀을 늘리면 DB 부하가 올라가고, 그렇다고 안 늘리면 주문이 실패하고. 진퇴양난입니다.</p>
+    <p data-ke-size="size16">그래서 실무에서는 비관적 락 대신 다른 선택지를 씁니다:</p>
+    <ul style="list-style-type: disc;" data-ke-list-type="disc">
+        <li><b>Atomic Update</b>: <code>UPDATE SET stock = stock - 1 WHERE stock &gt;= 1</code>. 락 보유 시간 &asymp; 0, 커넥션 즉시 반환</li>
+        <li><b>낙관적 락</b>: 먼저 실행, 충돌 나면 재시도. 충돌이 적은 도메인에 적합</li>
+        <li><b>Redis 분산 락</b>: DB 커넥션을 아예 안 쓰고 Redis에서 순서를 제어</li>
+        <li><b>메시지 큐</b>: 주문 요청을 큐에 넣고 순차 처리. 트래픽 급증에도 안정적</li>
+    </ul>
+    <p data-ke-size="size16">이번 포스팅에서는 비관적/낙관적 락에 딥다이브하는 시간이었지만, 비관적 락의 구조적 한계를 직접 확인했으니</p>
+    <p data-ke-size="size16"><b>다음 포스팅에서 분산 락과 메시지 큐 같은 실무적 해결책을 다뤄보겠습니다.</b></p>
+    <hr data-ke-style="style1" /><!-- Section 6: 정리 -->
+    <h2 data-ke-size="size26">정리 &mdash; 도메인이 전략을 골라주되, 맹목적으로 따르지 말자</h2>
+    <h3 data-ke-size="size23">한눈에 보는 비교표</h3>
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>도메인</th>
+            <th>전략</th>
+            <th>왜 이 전략인가</th>
+            <th>놓친 것은 없나?</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>좋아요</b></td>
+            <td>Atomic Update</td>
+            <td>단순 +1/-1. 현재 값을 읽을 필요 없음</td>
+            <td>도메인 특성과 기술 선택이 일치하는 케이스</td>
+        </tr>
+        <tr>
+            <td><b>쿠폰</b></td>
+            <td>비관적 락</td>
+            <td>주문 트랜잭션 안에서 충돌 시 재고까지 롤백</td>
+            <td>단독 API였다면 낙관적 락이 맞았을 것</td>
+        </tr>
+        <tr>
+            <td><b>재고</b></td>
+            <td>비관적 락</td>
+            <td>Rich Domain Model이 R-M-W를 강제</td>
+            <td>Atomic Update가 성능상 더 나았을 수 있음</td>
+        </tr>
+        </tbody>
+    </table>
+    <h3 data-ke-size="size23">돌아보며</h3>
+    <p data-ke-size="size16">처음에는 "비관적 락 하나로 통일하면 되지"라고 생각했습니다.</p>
+    <p data-ke-size="size16">멘토님의 <b>"Atomic Update &rarr; 낙관적 락 &rarr; 비관적 락 순으로 검토하라"</b>는 피드백을 받고 도메인별로 다시 점검했더니, 좋아요는 Atomic Update가 딱 맞는 케이스였고, 쿠폰은 낙관적 락을 고려했다가 주문 플로우의 특성 때문에 포기했고, 재고는 도메인 모델 설계가 이미 비관적 락을 결정해놓은 상태였습니다.</p>
+    <p data-ke-size="size16">그런데 여기서 멈추면 안 됩니다. 비관적 락을 선택했더니 커넥션 풀 고갈이라는 <b>구조적 한계</b>를 만났습니다. 테스트로 직접 증명했듯이, 재고가 충분한데도 주문이 실패하는 상황은 비즈니스적으로 용납할 수 없습니다.</p>
+    <p data-ke-size="size16">도메인 아키텍처는 <b>의사결정을 돕는 도구</b>이지, 다른 선택지를 차단하는 벽이 되면 안 됩니다. "Rich Domain Model이니까"라는 이유로 Atomic Update를 검토조차 안 한 건 제 실수였습니다.</p>
+    <p data-ke-size="size16">중요한 건 "비관적 락을 썼다"가 아니라, <b>"이 선택의 비용을 알고 있으며, 한계를 넘어서면 어떻게 대응할 것인지"</b>를 설명할 수 있느냐입니다.</p>
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>가장 가벼운 도구부터 꺼내고, 그것으로 안 될 때 다음 도구로 가자.</i></p>
+        <p data-ke-size="size16"><i>"안 된다"가 기술적 제약인지, 내가 만든 설계적 제약인지는 구분하자.</i></p>
+        <p data-ke-size="size16"><i>다음 포스팅에서는 이 한계를 넘어서는 방법들을 다뤄보겠습니다.</i></p>
+    </blockquote>
+    <p data-ke-size="size16">&nbsp;</p>
+</div>

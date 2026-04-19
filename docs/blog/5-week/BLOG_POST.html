@@ -1,0 +1,1439 @@
+<style>
+    /* ===== 전체 레이아웃 ===== */
+    .container, .container * {
+        box-sizing: border-box;
+    }
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        line-height: 1.85;
+        color: #1a1a1a;
+        word-break: keep-all;
+        overflow-x: hidden;
+    }
+    .container table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    /* ===== 헤더 ===== */
+    .post-header {
+        text-align: center;
+        padding: 20px 0 10px;
+        margin-bottom: 8px;
+    }
+
+    .post-header h1 {
+        font-size: 1.7em;
+        font-weight: 800;
+        line-height: 1.4;
+        color: #111;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+        font-size: 1.05em;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* ===== TL;DR 섹션 ===== */
+    .tldr blockquote {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+        border-left: 4px solid #006dd7;
+        border-radius: 0 8px 8px 0;
+        padding: 20px 24px;
+        margin: 16px 0;
+        font-size: 0.97em;
+        line-height: 1.9;
+    }
+
+    /* ===== 목차 ===== */
+    .toc {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin: 16px 0;
+    }
+
+    .toc ol {
+        margin: 0;
+        padding-left: 24px;
+    }
+
+    .toc ol li {
+        margin-bottom: 6px;
+        line-height: 1.8;
+    }
+
+    .toc a {
+        color: #006dd7;
+        text-decoration: none;
+    }
+
+    .toc a:hover {
+        text-decoration: underline;
+    }
+
+    /* ===== 코드 라벨 ===== */
+    .code-label {
+        display: inline-block;
+        background: #2d2d2d;
+        color: #ccc;
+        font-size: 0.78em;
+        font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+        padding: 4px 14px;
+        border-radius: 6px 6px 0 0;
+        margin-top: 18px;
+        margin-bottom: -2px;
+        letter-spacing: 0.03em;
+    }
+
+    /* ===== 코드 블록 ===== */
+    .container pre {
+        background: #1e1e1e !important;
+        color: #d4d4d4 !important;
+        border-radius: 0 6px 6px 6px;
+        padding: 20px 22px;
+        margin-top: 0;
+        margin-bottom: 18px;
+        overflow-x: auto;
+        font-size: 0.88em;
+        line-height: 1.65;
+        border: 1px solid #333;
+    }
+
+    .container pre code {
+        background: transparent !important;
+        color: inherit !important;
+        padding: 0;
+        font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    }
+
+    /* code-label 없는 단독 pre는 둥근 모서리 전부 적용 */
+    .container p + pre,
+    .container blockquote + pre {
+        border-radius: 6px;
+    }
+
+    /* ===== 인라인 코드 ===== */
+    .container code {
+        background: #f1f3f5;
+        color: #c7254e;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 0.88em;
+        font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    }
+
+    /* ===== 테이블 ===== */
+    .container table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 0.93em;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .container table thead tr {
+        background: #2c3e50;
+        color: #fff;
+    }
+
+    .container table th {
+        padding: 13px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.92em;
+        letter-spacing: 0.02em;
+    }
+
+    .container table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: top;
+    }
+
+    .container table tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+
+    .container table tbody tr:hover {
+        background: #e9f5ff;
+        transition: background 0.15s ease;
+    }
+
+    /* ===== 시나리오 박스 ===== */
+    .scenario {
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin: 18px 0;
+    }
+
+    .step {
+        padding: 10px 16px;
+        margin: 6px 0;
+        border-radius: 6px;
+        font-size: 0.94em;
+        background: #fff;
+        border-left: 4px solid #adb5bd;
+        color: #333;
+    }
+
+    .step.success {
+        background: #f0fdf4;
+        border-left-color: #22c55e;
+        color: #15803d;
+        font-weight: 500;
+    }
+
+    .step.fail {
+        background: #fef2f2;
+        border-left-color: #ef4444;
+        color: #b91c1c;
+        font-weight: 500;
+    }
+
+    /* ===== 인용구 ===== */
+    .container blockquote {
+        border-left: 3px solid #3b82f6;
+        background: #f8fafc;
+        margin: 16px 0;
+        padding: 14px 20px;
+        border-radius: 0 6px 6px 0;
+        color: #374151;
+    }
+
+    .container blockquote i {
+        color: #555;
+    }
+
+    .container blockquote b {
+        color: #1e3a5f;
+    }
+
+    /* ===== 리스트 ===== */
+    .container ul {
+        margin: 14px 0;
+        padding-left: 24px;
+    }
+
+    .container ul li {
+        margin-bottom: 8px;
+        line-height: 1.8;
+    }
+
+    /* ===== 구분선 ===== */
+    .container hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(to right, transparent, #d1d5db, transparent);
+        margin: 36px 0;
+    }
+
+    /* ===== h2 섹션 제목 ===== */
+    .container h2 {
+        font-size: 1.45em;
+        font-weight: 700;
+        color: #111;
+        margin-top: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #3b82f6;
+        letter-spacing: -0.01em;
+    }
+
+    /* ===== h3 소제목 ===== */
+    .container h3 {
+        font-size: 1.15em;
+        font-weight: 600;
+        color: #1e3a5f;
+        margin-top: 28px;
+        margin-bottom: 12px;
+    }
+
+    /* ===== 강조 ===== */
+    .container b {
+        color: #111;
+    }
+
+    /* ===== source 클래스 ===== */
+    .source {
+        font-size: 0.85em;
+        color: #999;
+        text-align: right;
+    }
+
+    /* ===== 플로우차트 ===== */
+    .flowchart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 24px 0;
+        padding: 24px 16px;
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+    }
+
+    .flow-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .flow-box {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 0.88em;
+        font-weight: 500;
+        text-align: center;
+        min-width: 120px;
+        max-width: 260px;
+        line-height: 1.5;
+    }
+
+    .flow-box.start {
+        background: #2c3e50;
+        color: #fff;
+        border-radius: 20px;
+    }
+
+    .flow-box.process {
+        background: #fff;
+        color: #333;
+        border: 2px solid #3b82f6;
+    }
+
+    .flow-box.decision {
+        background: #fef3c7;
+        color: #92400e;
+        border: 2px solid #f59e0b;
+        transform: rotate(0deg);
+        border-radius: 4px;
+    }
+
+    .flow-box.success {
+        background: #f0fdf4;
+        color: #15803d;
+        border: 2px solid #22c55e;
+    }
+
+    .flow-box.fail {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 2px solid #ef4444;
+    }
+
+    .flow-box.db {
+        background: #ede9fe;
+        color: #5b21b6;
+        border: 2px solid #8b5cf6;
+        border-radius: 4px;
+    }
+
+    .flow-box.cache {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 2px solid #0ea5e9;
+    }
+
+    .flow-arrow {
+        font-size: 1.3em;
+        color: #9ca3af;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    .flow-arrow.down { }
+    .flow-arrow.right { }
+
+    .flow-branch {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .flow-branch-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .flow-label {
+        font-size: 0.78em;
+        color: #6b7280;
+        font-weight: 600;
+    }
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+    <!-- Header -->
+    <header class="post-header">
+        <h1>인덱스, 캐시 그래서 언제 어떻게 사용하는 거야?</h1>
+        <p class="subtitle" data-ke-size="size16">10만 건 상품 데이터로 EXPLAIN 찍고, 부하테스트 돌려보니까 보이더라</p>
+    </header>
+
+    <!-- TL;DR -->
+    <div class="tldr">
+        <blockquote data-ke-style="style3">
+            <span style="color: #006dd7;">TL;DR</span><br />
+            복합 인덱스 하나로 읽은 행이 5,000 &rarr; 20으로 줄고, 실행 시간이 <b>76~231배</b> 개선됐다.<br />
+            Redis 캐시만 쓰면 네트워크 왕복이 병목. 로컬 캐시(Caffeine)를 앞에 두니 목록 조회 p95가 <b>10.71ms &rarr; 7.08ms</b>로 떨어졌다.<br />
+            "캐시 쓰면 빨라진다"는 감이 아니라, EXPLAIN과 부하테스트로 <b>숫자로 증명</b>하는 게 중요했다.
+        </blockquote>
+    </div>
+
+    <!-- 목차 -->
+    <div class="toc">
+        <ol>
+            <li><a href="#section-1">인덱스가 뭘까?</a></li>
+            <li><a href="#section-2">캐시는 뭘까?</a></li>
+            <li><a href="#section-3">인덱스는 언제 써야할까?</a></li>
+            <li><a href="#section-4">캐시는 언제 써야할까?</a></li>
+            <li><a href="#section-5">로컬 캐시는 뭐야? - 우리 회사에서는 Ehcache를 쓰는데, 요즘은 Caffeine이라며?</a></li>
+            <li><a href="#section-6">Redis 캐시는 뭐야?</a></li>
+            <li><a href="#section-7">로컬 캐시 vs Redis 캐시 vs 로컬 + Redis 캐시 &mdash; 부하테스트로 비교</a></li>
+            <li><a href="#section-8">결론</a></li>
+        </ol>
+    </div>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 1 -->
+    <h2 id="section-1" data-ke-size="size26">1. 인덱스가 뭘까?</h2>
+
+    <p data-ke-size="size16">DB에서 데이터를 찾을 때, 인덱스가 없으면 테이블 전체를 처음부터 끝까지 훑어야 한다. 10만 건이면 10만 행을 다 읽는 거다. 이걸 <b>Full Table Scan</b>이라고 한다.</p>
+
+    <p data-ke-size="size16">인덱스는 책의 목차 같은 거다. "brand_id가 1인 상품"을 찾을 때, 목차에서 바로 해당 페이지로 점프할 수 있다. 내부적으로는 <b>B-Tree</b>라는 자료구조로 데이터를 정렬 상태로 유지하며, O(log n) 탐색을 보장한다. 10만 건이어도 3~4번 비교면 원하는 데이터를 찾는다.</p>
+
+    <div class="scenario">
+        <p data-ke-size="size16"><b>Full Table Scan (인덱스 없음)</b></p>
+        <div class="step fail">1행 &rarr; 2행 &rarr; 3행 &rarr; ... &rarr; 99,999행 &rarr; 100,000행 (10만 행 전부 읽음)</div>
+        <p data-ke-size="size16">&nbsp;</p>
+        <p data-ke-size="size16"><b>B-Tree Index Scan (인덱스 있음)</b></p>
+        <div class="step success">Root &rarr; Branch &rarr; Leaf &rarr; 데이터 (3~4번 비교로 도착)</div>
+    </div>
+
+    <h3 data-ke-size="size23">단일 인덱스 vs 복합 인덱스</h3>
+
+    <p data-ke-size="size16"><b>단일 인덱스</b>는 컬럼 하나에 거는 인덱스다.</p>
+
+    <span class="code-label">sql</span>
+    <pre class="sql"><code>CREATE INDEX idx_products_brand_id ON products (brand_id);</code></pre>
+
+    <p data-ke-size="size16"><code>WHERE brand_id = 1</code>로 필터링하면 인덱스를 타서 빠르게 찾는다. 하지만 여기에 <code>ORDER BY created_at DESC</code>가 붙으면? 인덱스로 brand_id = 1인 행은 빠르게 찾지만, 정렬은 메모리에서 따로 해야 한다. 이게 <b>filesort</b>다.</p>
+
+    <p data-ke-size="size16"><b>복합 인덱스</b>는 컬럼 여러 개를 조합한 인덱스다.</p>
+
+    <span class="code-label">sql</span>
+    <pre class="sql"><code>CREATE INDEX idx_products_brand_created ON products (brand_id, created_at DESC);</code></pre>
+
+    <p data-ke-size="size16">brand_id로 필터링하고, 그 안에서 created_at 순으로 이미 정렬되어 있다. <code>ORDER BY created_at DESC</code>를 추가해도 별도 정렬이 필요 없다.</p>
+
+    <p data-ke-size="size16">내 프로젝트에서는 상품 목록에 3가지 정렬이 있었다.</p>
+
+    <span class="code-label">kotlin &mdash; ProductSortType.kt</span>
+    <pre class="kotlin"><code>enum class ProductSortType(
+    val fieldName: String,
+    val direction: Sort.Direction,
+) {
+    LATEST("createdAt", DESC),
+    PRICE_ASC("price", ASC),
+    LIKES_DESC("likeCount", DESC),
+}</code></pre>
+
+    <p data-ke-size="size16">각 정렬에 맞는 복합 인덱스를 3개 만들었다.</p>
+
+    <span class="code-label">kotlin &mdash; Product.kt</span>
+    <pre class="less"><code>@Table(
+    name = "products",
+    indexes = [
+        Index(name = "idx_products_brand_created", columnList = "brand_id, created_at DESC"),
+        Index(name = "idx_products_brand_price", columnList = "brand_id, price ASC"),
+        Index(name = "idx_products_brand_like_count", columnList = "brand_id, like_count DESC"),
+    ],
+)</code></pre>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 2 -->
+    <h2 id="section-2" data-ke-size="size26">2. 캐시는 뭘까?</h2>
+
+    <p data-ke-size="size16">캐시의 본질은 단순하다. 자주 읽는 데이터를 빠른 저장소에 미리 넣어두는 것. "빠른 Map&lt;String, String&gt;"이라고 생각하면 감이 잡힌다.</p>
+
+    <h3 data-ke-size="size23">캐시의 3가지 구성요소</h3>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>구성요소</th>
+            <th>핵심 질문</th>
+            <th>설명</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>삽입</b></td>
+            <td>언제 넣을까?</td>
+            <td>Cache-Aside: 조회 시 없으면 DB에서 가져와 저장</td>
+        </tr>
+        <tr>
+            <td><b>TTL</b></td>
+            <td>얼마나 둘까?</td>
+            <td>짧으면 정합성 좋고 성능 낮음, 길면 정합성 떨어지고 성능 좋음</td>
+        </tr>
+        <tr>
+            <td><b>Evict</b></td>
+            <td>언제 강제로 뺄까?</td>
+            <td>데이터 변경 시 TTL 전에 강제 삭제</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">TTL은 보험, Evict는 능동적 대응. 둘 다 있어야 안전하다.</p>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 3 -->
+    <h2 id="section-3" data-ke-size="size26">3. 인덱스는 언제 써야할까?</h2>
+
+    <p data-ke-size="size16">"인덱스를 걸면 빨라진다"는 알겠는데, 진짜 얼마나 차이가 나는 걸까? 10만 건을 넣고 <code>EXPLAIN ANALYZE</code>를 돌려봤다. 브랜드 20개, 브랜드당 약 5,000건.</p>
+
+    <h3 data-ke-size="size23">EXPLAIN으로 증명하기</h3>
+
+    <span class="code-label">sql</span>
+    <pre class="sql"><code>SELECT * FROM products
+WHERE brand_id = 1 AND deleted_at IS NULL
+ORDER BY created_at DESC LIMIT 20;</code></pre>
+
+    <p data-ke-size="size16"><b>단일 인덱스(brand_id)만 있을 때:</b></p>
+
+    <pre class="yaml"><code>Index lookup using idx_products_brand_id (brand_id=1)
+&rarr; Filter &rarr; Sort &rarr; Limit
+&rarr; 실제 읽은 행: 5,000행 | 실행 시간: 7.58ms</code></pre>
+
+    <p data-ke-size="size16">5,000건을 전부 읽고, 메모리에서 정렬한 다음, 앞에서 20개를 잘라냈다. LIMIT 20인데 5,000건을 다 읽은 거다.</p>
+
+    <div class="scenario">
+        <p data-ke-size="size16"><b>단일 인덱스 실행 흐름</b></p>
+        <div class="step">1. brand_id = 1 인덱스로 5,000행 찾음</div>
+        <div class="step fail">2. 5,000행을 메모리에 올려서 created_at DESC 정렬 (filesort)</div>
+        <div class="step">3. 정렬된 결과에서 앞 20개를 잘라냄 (LIMIT)</div>
+    </div>
+
+    <p data-ke-size="size16"><b>복합 인덱스(brand_id, created_at DESC)를 추가하니:</b></p>
+
+    <pre class="yaml"><code>Index lookup using idx_products_brand_created (brand_id=1)
+&rarr; Filter &rarr; Limit
+&rarr; 실제 읽은 행: 20행 | 실행 시간: 0.08ms</code></pre>
+
+    <p data-ke-size="size16">인덱스 안에 이미 정렬이 되어 있으니까, 앞에서 20개만 읽고 멈췄다. <b>Early Termination</b>. 이게 복합 인덱스의 진짜 이점이다.</p>
+
+    <div class="scenario">
+        <p data-ke-size="size16"><b>복합 인덱스 실행 흐름</b></p>
+        <div class="step">1. (brand_id, created_at DESC) 인덱스에서 brand_id = 1 위치로 점프</div>
+        <div class="step success">2. 이미 created_at DESC로 정렬되어 있으므로 앞에서 20개만 읽고 멈춤 (Early Termination)</div>
+        <div class="step success">3. filesort 없음, 5,000행 &rarr; 20행만 읽음</div>
+    </div>
+
+    <h3 data-ke-size="size23">4개 쿼리 전부 비교</h3>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>쿼리</th>
+            <th>인덱스 없음 (행 / 시간)</th>
+            <th>인덱스 있음 (행 / 시간)</th>
+            <th>개선</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>브랜드별 최신순</b></td>
+            <td>5,000행 / 7.58ms</td>
+            <td><b>20행 / 0.08ms</b></td>
+            <td>95배</td>
+        </tr>
+        <tr>
+            <td><b>브랜드별 가격순</b></td>
+            <td>5,000행 / 13.9ms</td>
+            <td><b>20행 / 0.06ms</b></td>
+            <td>231배</td>
+        </tr>
+        <tr>
+            <td><b>브랜드별 좋아요순</b></td>
+            <td>5,000행 / 5.34ms</td>
+            <td><b>20행 / 0.07ms</b></td>
+            <td>76배</td>
+        </tr>
+        <tr>
+            <td><b>전체 좋아요순</b></td>
+            <td>100,000행 / 40.1ms</td>
+            <td>100,000행 / 44.2ms</td>
+            <td>효과 없음</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">마지막 쿼리가 흥미롭다. brand_id 필터 없이 전체 좋아요순으로 정렬하면, 복합 인덱스의 선두 컬럼(brand_id)을 사용할 수 없어서 Full Table Scan이 발생한다. <b>인덱스도 만능이 아니다.</b></p>
+
+    <h3 data-ke-size="size23">인덱스를 3개나 만들어도 괜찮을까?</h3>
+
+    <p data-ke-size="size16">"인덱스 3개면 쓰기 성능이 떨어지지 않나?" 멘토링에서도 이 질문이 나왔다.</p>
+
+    <p data-ke-size="size16">상품 테이블은 <b>읽기:쓰기 비율이 압도적으로 읽기 쪽</b>이다. 상품 등록은 하루 수십~수백 건이지만, 목록 조회는 초당 수백~수천 건. B-Tree에 노드 하나 추가하는 건 O(log n)이라 10만 건이어도 5~6번 비교면 끝. 쓰기 비용 대비 읽기 이득이 압도적이다.</p>
+
+    <p data-ke-size="size16">멘토님도 같은 맥락의 답변을 주셨다.</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"정렬에 사용되는 컬럼은 반드시 인덱스를 걸어야 슬로우 쿼리를 방지할 수 있다.<br> filesort가 발생하면 데이터가 많아질수록 급격히 느려지기 때문."</p>
+    </blockquote>
+
+    <h3 data-ke-size="size23">deleted_at IS NULL은 인덱스에 안 넣은 이유</h3>
+
+    <p data-ke-size="size16">모든 읽기 쿼리에 <code>deleted_at IS NULL</code> 조건이 붙는다. 이걸 인덱스에 포함해야 할까?</p>
+
+    <p data-ke-size="size16">멘토링에서 팀원분이 직접 <code>EXPLAIN ANALYZE</code>로 실험한 결과를 공유해주셨다. <code>(brand_id, price, deleted_at)</code> vs <code>(brand_id, price)</code> &mdash; 결과가 거의 동일했다.</p>
+
+    <p data-ke-size="size16">이유는 간단하다. <b>삭제된 상품이 거의 없으니까.</b> deleted_at IS NULL 조건은 99%의 행을 통과시킨다. 거의 못 거르는 조건은 인덱스에 넣어도 효과가 없다. 인덱스 크기만 커질 뿐.</p>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 4 -->
+    <h2 id="section-4" data-ke-size="size26">4. 캐시는 언제 써야할까?</h2>
+
+    <p data-ke-size="size16">앞에서 복합 인덱스로 0.08ms까지 줄였다. 그런데 왜 캐시까지 필요할까?</p>
+
+    <p data-ke-size="size16">멘토링에서 이 질문에 대한 답이 명확했다. <b>단계적으로 도입하는 것이 원칙</b>이다.</p>
+
+    <pre class="angelscript"><code>1단계: 인덱스 최적화 (비용 거의 0, 효과 큼) &larr; 대부분 여기서 충분
+2단계: 비정규화 (JOIN이 병목일 때)
+3단계: 캐시 (인덱스 + 비정규화로도 QPS를 못 버틸 때)</code></pre>
+
+    <p data-ke-size="size16">10만 건 + 인덱스면 조회가 수 ms. 초당 수천 요청이 아니면 캐시 없이도 충분하다. 그런데 트래픽이 올라가면? DB 커넥션 풀이 고갈될 정도의 요청이 오면? 그때 캐시가 필요하다.</p>
+
+    <p data-ke-size="size16">실무에서는 "QPS가 몇 이상이면 캐시"라는 공식보다 <b>증상을 보고 판단</b>한다.</p>
+
+    <ul style="list-style-type: disc;" data-ke-list-type="disc">
+        <li>DB 커넥션 풀 대기 시간이 늘어남</li>
+        <li>슬로우 쿼리 로그에 동일한 조회 쿼리가 반복적으로 찍힘</li>
+        <li>같은 데이터를 같은 조건으로 반복 조회하는 패턴이 모니터링에 보임</li>
+    </ul>
+
+    <p data-ke-size="size16">이번 과제에서는 학습 목적으로 캐시까지 구현했지만, 실무에서는 이런 증상이 보일 때 도입을 검토하는 게 맞다.</p>
+
+    <p data-ke-size="size16">멘토님도 데이터 성격에 따라 전략을 나누라고 강조하셨다.</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"이 값이 1분 동안 틀리면 돈이 날아가는가?"<br />
+            - Yes (재고, 결제 금액) &rarr; <b>캐시 안 함</b>. 항상 DB에서 실시간 조회<br />
+            - No (좋아요 수, 상품 설명) &rarr; TTL이나 AFTER_COMMIT으로 허용</p>
+    </blockquote>
+
+    <p data-ke-size="size16">캐시는 <b>"대부분 맞고, 아주 가끔 짧은 시간 틀릴 수 있음"을 허용</b>하는 전략이다. 모든 데이터에 적용하면 안 된다.</p>
+
+    <div class="flowchart">
+        <div class="flow-row"><div class="flow-box start">읽기 성능이 느리다</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-row"><div class="flow-box decision">인덱스가 적절한가?</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-branch">
+            <div class="flow-branch-item">
+                <div class="flow-label">NO</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box process">인덱스 최적화 (1단계)<br />비용 &asymp; 0</div>
+            </div>
+            <div class="flow-branch-item">
+                <div class="flow-label">YES, 그래도 느리다</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box decision">잠깐 틀려도 되는 데이터인가?</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-branch">
+                    <div class="flow-branch-item">
+                        <div class="flow-label">NO (재고, 결제)</div>
+                        <div class="flow-arrow down">&darr;</div>
+                        <div class="flow-box fail">캐시 안 함<br />항상 DB 조회</div>
+                    </div>
+                    <div class="flow-branch-item">
+                        <div class="flow-label">YES (좋아요, 설명)</div>
+                        <div class="flow-arrow down">&darr;</div>
+                        <div class="flow-box success">캐시 도입 (3단계)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 5 -->
+    <h2 id="section-5" data-ke-size="size26">5. 로컬 캐시는 뭐야? - 우리 회사에서는 Ehcache를 쓰는데, 요즘은 Caffeine이라며?</h2>
+
+    <p data-ke-size="size16">캐시를 쓰기로 했다면, 어떤 캐시를 쓸지 골라야 한다. 회사에서 로컬 캐시로 Ehcache를 쓰고 있어서 처음에는 Ehcache를 적용하려 했다. 그런데 요즘 프로젝트들을 보면 Caffeine을 쓰는 경우가 많다. 뭐가 다른 걸까?</p>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>비교</th>
+            <th>Ehcache</th>
+            <th>Caffeine</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>출신</b></td>
+            <td>Java EE 시절부터 쓰던 전통적인 캐시</td>
+            <td>Google Guava Cache의 후속작</td>
+        </tr>
+        <tr>
+            <td><b>기능 범위</b></td>
+            <td>로컬 캐시 + 디스크 저장 + 클러스터링</td>
+            <td>로컬 인메모리 캐시에 집중</td>
+        </tr>
+        <tr>
+            <td><b>Eviction 알고리즘</b></td>
+            <td>LRU (Least Recently Used)</td>
+            <td>W-TinyLFU (Window TinyLFU)</td>
+        </tr>
+        <tr>
+            <td><b>성능</b></td>
+            <td>좋음</td>
+            <td>더 좋음 (벤치마크 기준 읽기 성능 우위)</td>
+        </tr>
+        <tr>
+            <td><b>설정</b></td>
+            <td>XML 기반 설정이 전통 (Java Config도 가능)</td>
+            <td>빌더 패턴으로 코드에서 설정</td>
+        </tr>
+        <tr>
+            <td><b>Spring 지원</b></td>
+            <td>Spring Boot에서 공식 지원</td>
+            <td>Spring Boot에서 공식 지원</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">핵심 차이는 <b>Eviction 알고리즘</b>이다. Ehcache의 LRU는 "가장 오래전에 접근한 것을 제거"하는 단순한 전략이다. Caffeine의 W-TinyLFU는 "접근 빈도와 최근성을 모두 고려"해서 캐시 히트율이 더 높다. 자주 접근하지만 잠깐 안 쓴 데이터를 LRU는 쫓아내고, W-TinyLFU는 유지한다.</p>
+
+    <p data-ke-size="size16">Ehcache는 디스크 저장, 클러스터링 같은 무거운 기능까지 지원하는 "풀 패키지"고, Caffeine은 인메모리 캐시 하나에 집중하는 "경량 라이브러리"다. 이번 프로젝트처럼 Redis가 이미 분산 캐시 역할을 하고 있으면, 로컬 캐시는 가볍고 빠른 게 낫다. 그래서 Caffeine을 선택했다.</p>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 6 -->
+    <h2 id="section-6" data-ke-size="size26">6. Redis 캐시는 뭐야?</h2>
+
+    <p data-ke-size="size16">Caffeine은 서버 프로세스 안의 메모리에 저장하는 <b>로컬 캐시</b>다. 빠르지만 서버가 여러 대면 각각 다른 값을 가질 수 있다.</p>
+
+    <p data-ke-size="size16">Redis는 별도 서버에서 동작하는 <b>원격 캐시</b>다. 네트워크를 통해 접근하지만, 서버가 여러 대여도 같은 캐시를 공유한다.</p>
+
+    <h3 data-ke-size="size23">Cache-Aside 패턴 구현</h3>
+
+    <span class="code-label">kotlin &mdash; ProductService.kt</span>
+    <pre class="kotlin"><code>@Transactional(readOnly = true)
+fun getProductInfo(productId: Long): ProductInfo {
+    // 1. 캐시에서 먼저 조회
+    val cached = productCacheService.getProductDetail(productId)
+    if (cached != null) return cached
+
+    // 2. 캐시 미스 &rarr; DB 조회
+    val info = ProductInfo.from(getProduct(productId))
+
+    // 3. 캐시에 저장
+    productCacheService.setProductDetail(productId, info)
+    return info
+}</code></pre>
+
+    <p data-ke-size="size16">단순하다. 캐시에 있으면 캐시에서, 없으면 DB에서 읽고 캐시에 넣는다.</p>
+
+    <div class="flowchart">
+        <div class="flow-row"><div class="flow-box start">클라이언트 요청</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-row"><div class="flow-box cache">Redis 캐시 조회</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-row"><div class="flow-box decision">캐시에 데이터가 있는가?</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-branch">
+            <div class="flow-branch-item">
+                <div class="flow-label">YES (캐시 히트)</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box success">캐시 데이터 즉시 반환<br />(DB 접근 없음)</div>
+            </div>
+            <div class="flow-branch-item">
+                <div class="flow-label">NO (캐시 미스)</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box db">DB 조회</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box cache">캐시에 저장 (TTL 설정)</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box success">DB 결과 반환</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 data-ke-size="size23">TTL &mdash; 상세 10분, 목록 5분의 이유</h3>
+
+    <span class="code-label">kotlin &mdash; ProductCacheRepository.kt</span>
+    <pre class="kotlin"><code>companion object {
+    private const val DETAIL_KEY_PREFIX = "product:detail:"
+    private const val LIST_KEY_PREFIX = "product:list:"
+    private val DETAIL_TTL = Duration.ofMinutes(10)
+    private val LIST_TTL = Duration.ofMinutes(5)
+}</code></pre>
+
+    <p data-ke-size="size16">TTL을 결정할 때 일반적으로 알려진 경험적 공식이 있다.</p>
+
+    <pre class="yaml"><code>TTL = 평균 데이터 변경 주기 &times; 허용 가능한 stale 비율</code></pre>
+
+    <p data-ke-size="size16">예를 들어 상품 정보가 평균 1시간에 1번 변경되고, 10% stale을 허용하면 TTL = 60분 &times; 0.1 = 6분.</p>
+
+    <p data-ke-size="size16">목록 TTL을 상세보다 짧게 잡은 이유는, 목록은 어떤 상품이든 변경(생성/수정/삭제/좋아요)되면 전체 목록 캐시에 영향을 준다. 변경 빈도가 높으니 TTL을 짧게 잡았다. 상세는 해당 상품만 변경될 때 무효화되니까 상대적으로 안정적이다.</p>
+
+    <p data-ke-size="size16">솔직히 10분/5분은 명확한 근거 없이 경험적 초기값이다. TTL은 처음에 정확히 맞추는 것보다, <b>부하 테스트 후 캐시 히트율을 측정하고 조정하는 게 현실적</b>이다.</p>
+
+    <h3 data-ke-size="size23">PageImpl 직렬화 문제 &mdash; 선택지가 3가지 있었다</h3>
+
+    <p data-ke-size="size16">Redis에 상품 목록을 캐시하려면 <code>Page&lt;ProductInfo&gt;</code>를 저장해야 하는데, Spring의 <code>PageImpl</code>은 Jackson 역직렬화가 불가능하다. 기본 생성자가 없고, 내부에 <code>Pageable</code>, <code>Sort</code> 같은 인터페이스 타입이 있어서 Jackson이 객체를 복원할 수 없다.</p>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>선택지</th>
+            <th>방식</th>
+            <th>장점</th>
+            <th>단점</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>RestPageImpl</b></td>
+            <td><code>PageImpl</code>을 상속 + <code>@JsonCreator</code></td>
+            <td><code>Page</code> 인터페이스 그대로 사용</td>
+            <td>불필요한 상속, Spring 의존</td>
+        </tr>
+        <tr>
+            <td><b>CachedPage DTO</b></td>
+            <td>순수 data class로 캐시 전용 DTO</td>
+            <td>Spring 의존 없는 순수 구조</td>
+            <td>변환 메서드 필요</td>
+        </tr>
+        <tr>
+            <td><b>content 분리 저장</b></td>
+            <td>Page를 캐시하지 않고 필드별로 따로 저장</td>
+            <td>가장 단순</td>
+            <td>캐시 키/값 구조 복잡</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">구글에서 "Spring Redis Page 캐시"를 검색하면 가장 많이 나오는 게 1번, RestPageImpl이다. 간편하고 <code>Page</code> 인터페이스도 그대로 쓸 수 있다.</p>
+
+    <p data-ke-size="size16">그런데 현재 개발중인 프로젝트는 DDD 기반 레이어드 아키텍처로 설계했다. 인프라 레이어(캐시)에 저장하는 객체가 Spring의 <code>PageImpl</code>을 상속하고 있다는 건, <b>캐시 저장 구조가 프레임워크에 의존하게 된다</b>는 뜻이다. 역직렬화 문제의 근본 원인 자체가 "프레임워크 클래스를 그대로 저장하려 한 것"이었는데, 상속으로 해결하면 같은 구조적 문제를 안고 가는 거다.</p>
+
+    <p data-ke-size="size16">그래서 2번, CachedPage DTO를 선택했다.</p>
+
+    <span class="code-label">kotlin &mdash; CachedPage.kt</span>
+    <pre class="reasonml"><code>data class CachedPage&lt;T&gt;(
+    val content: List&lt;T&gt;,
+    val page: Int,
+    val size: Int,
+    val totalElements: Long,
+) {
+    fun toPage(): Page&lt;T&gt; = PageImpl(content, PageRequest.of(page, size), totalElements)
+
+    companion object {
+        fun &lt;T&gt; from(page: Page&lt;T&gt;): CachedPage&lt;T&gt; = CachedPage(
+            content = page.content,
+            page = page.number,
+            size = page.size,
+            totalElements = page.totalElements,
+        )
+    }
+}</code></pre>
+
+    <p data-ke-size="size16"><b>캐시에 저장하는 데이터는 프레임워크에 의존하지 않는 순수한 구조가 좋다고 생각했다.</b> 나중에 캐시 저장소를 바꿔도 CachedPage는 그대로 쓸 수 있다.</p>
+
+    <h3 data-ke-size="size23">Redis 장애가 서비스를 죽이면 안 된다</h3>
+
+    <span class="code-label">kotlin &mdash; ProductCacheRepository.kt</span>
+    <pre class="reasonml"><code>fun getProductDetail(productId: Long): ProductInfo? {
+    return try {
+        val json = redisTemplate.opsForValue()
+            .get("$DETAIL_KEY_PREFIX$productId") ?: return null
+        objectMapper.readValue&lt;ProductInfo&gt;(json)
+    } catch (e: Exception) {
+        log.warn("Redis 캐시 조회 실패 - product:detail:{}", productId, e)
+        null  // 캐시 실패 &rarr; DB로 폴백
+    }
+}</code></pre>
+
+    <p data-ke-size="size16">try-catch로 감싸서 Redis 장애를 무시한다. "캐시는 있으면 좋고, 없으면 DB에서 읽으면 된다."</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"같은 VPC 내에서 네트워크 장애 확률이 낮고, 조회형 캐시(Cache-Aside)는 저장 실패해도 큰 리스크가 없다. 다음 요청에서 DB에서 다시 읽어 채우면 되니까."</p>
+    </blockquote>
+
+    <h3 data-ke-size="size23">캐시 삭제의 함정 &mdash; Cache Stampede</h3>
+
+    <p data-ke-size="size16">캐시 무효화를 처음 구현할 때는 단순하게 생각했다. 데이터가 변경되면 캐시를 삭제하고, 다음 조회 시 DB에서 읽어서 다시 채우면 되지 않나?</p>
+
+    <span class="code-label">kotlin &mdash; 처음 구현: 변경 시 캐시 삭제</span>
+<pre><code>fun updateProduct(productId: Long, criteria: UpdateProductCriteria): ProductInfo {
+    val product = productRepository.findById(productId) ?: throw ...
+    product.update(...)
+    val savedProduct = productRepository.save(product)
+    productCacheService.evictProductDetail(productId)  // 캐시 삭제
+    productCacheService.evictAllProductLists()
+    return ProductInfo.from(savedProduct)
+}</code></pre>
+
+    <p data-ke-size="size16">평소에는 문제없다. 그런데 인기 상품의 캐시가 삭제되는 순간을 생각해보자. 동시에 100명이 그 상품을 조회하고 있다면?</p>
+
+    <div class="scenario">
+        <div class="step fail">시점 0: 캐시 삭제 (evict)</div>
+        <div class="step">시점 1: 요청 A &rarr; 캐시 미스 &rarr; DB 조회</div>
+        <div class="step">시점 1: 요청 B &rarr; 캐시 미스 &rarr; DB 조회</div>
+        <div class="step">시점 1: 요청 C &rarr; 캐시 미스 &rarr; DB 조회</div>
+        <div class="step fail">시점 1: 요청 100 &rarr; 캐시 미스 &rarr; DB 조회 &larr; 100개가 동시에 DB를 때린다</div>
+    </div>
+
+    <p data-ke-size="size16">이게 <b>Cache Stampede</b>(캐시 스탬피드)다. 캐시가 비어 있는 짧은 순간에 밀려든 요청이 전부 DB로 직행한다. 트래픽이 많을수록, 캐시가 보호하던 DB에 한순간 부하가 집중된다.</p>
+
+    <p data-ke-size="size16">해결은 간단하다. <b>캐시를 삭제하지 말고 교체하면 된다.</b> 변경된 데이터로 캐시를 덮어쓰면, 캐시가 비는 순간 자체가 없다.</p>
+
+    <span class="code-label">kotlin &mdash; 개선: 변경 시 캐시 교체</span>
+<pre><code>fun updateProduct(productId: Long, criteria: UpdateProductCriteria): ProductInfo {
+    val product = productRepository.findById(productId) ?: throw ...
+    product.update(...)
+    val savedProduct = productRepository.save(product)
+    productCacheService.setProductDetail(productId, ProductInfo.from(savedProduct))  // 캐시 교체
+    productCacheService.evictAllProductLists()
+    return ProductInfo.from(savedProduct)
+}</code></pre>
+
+    <p data-ke-size="size16"><code>evictProductDetail</code> &rarr; <code>setProductDetail</code>. 한 줄 차이지만, 동시 요청 100개가 전부 DB를 때리는 상황을 원천 차단한다.</p>
+
+    <p data-ke-size="size16">좋아요 증감처럼 네이티브 쿼리로 벌크 업데이트하는 경우는 엔티티가 반환되지 않으니, 업데이트 후 <code>findById</code>로 최신 데이터를 한 번 조회해서 캐시를 채운다.</p>
+
+    <span class="code-label">kotlin &mdash; 벌크 업데이트 후 캐시 교체</span>
+<pre><code>fun incrementLikeCount(productId: Long) {
+    productRepository.incrementLikeCount(productId)  // 벌크 업데이트 — 엔티티 미반환
+    val product = productRepository.findById(productId)
+    if (product != null) {
+        productCacheService.setProductDetail(productId, ProductInfo.from(product))
+    }
+    productCacheService.evictAllProductLists()
+}</code></pre>
+
+    <p data-ke-size="size16">DB 조회 1회가 추가되지만, 동시 요청 N개가 각각 DB를 치는 것보다 훨씬 낫다. <b>1회 vs N회의 트레이드오프</b>다.</p>
+
+    <p data-ke-size="size16">단, <b>삭제된 상품은 evict를 유지</b>한다. 이미 없는 데이터를 캐시에 교체할 이유가 없으니까. 목록 캐시도 여전히 evict다. 목록은 캐시 키가 brandId &times; sort &times; page &times; size 조합이라, 변경 시 어떤 조합이 영향을 받는지 특정할 수 없기 때문이다.</p>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 7 -->
+    <h2 id="section-7" data-ke-size="size26">7. 로컬 캐시 vs Redis 캐시 vs 로컬 + Redis 캐시 &mdash; K6로 비교</h2>
+
+    <p data-ke-size="size16">이론은 충분히 다뤘으니, 진짜 차이가 나는지 확인할 차례다.</p>
+
+    <h3 data-ke-size="size23">부하테스트 도구 - K6</h3>
+
+    <p data-ke-size="size16">K6는 Grafana에서 만든 오픈소스 부하 테스트 도구다. JavaScript로 테스트 시나리오를 작성하면, 지정한 수의 가상 사용자(VU)가 동시에 HTTP 요청을 보내면서 응답 시간, 처리량, 에러율 같은 지표를 측정해준다.</p>
+
+    <p data-ke-size="size16">처음에는 서비스 코드에서 직접 호출하는 방식으로 부하 테스트를 생각했다. <code>ExecutorService</code>로 스레드를 만들고, 서비스 메서드를 직접 호출해서 시간을 재는 식으로. (동시성 테스트를 그렇게 했으니까 비슷하게 하면 되겠다 싶었다.)</p>
+
+    <p data-ke-size="size16">그런데 팀원분의 블로그에서 K6로 캐시 모드별 성능을 비교하는 포스팅을 올려주셔서 확인했다. 서비스 코드 직접 호출은 <b>비즈니스 로직의 처리 시간만</b> 측정하지만, K6는 <b>HTTP 요청부터 응답까지의 전체 레이턴시</b>를 측정한다. 네트워크, 직렬화, Spring 컨텍스트 처리까지 포함된 실제 사용자 경험에 가까운 수치가 나온다.</p>
+
+    <p data-ke-size="size16">실제로 캐시의 효과는 "서비스 메서드가 몇 ms 걸리느냐"보다 "사용자가 API를 호출했을 때 몇 ms 만에 응답이 오느냐"가 중요하니까, K6가 더 적합한 도구라고 판단했다.</p>
+
+    <h3 data-ke-size="size23">3가지 캐시 모드로 부하테스트</h3>
+
+    <p data-ke-size="size16">로컬 캐시, Redis 캐시, 로컬 + Redis 캐시를 모두 비교하기 위해, 환경 변수로 모드 전환이 가능하도록 전략 패턴을 구현했다.</p>
+
+    <span class="code-label">kotlin &mdash; ProductCacheService.kt</span>
+    <pre class="reasonml"><code>@Component
+class ProductCacheService(
+    private val redisCacheRepository: ProductCacheRepository,
+    private val localCacheRepository: ProductLocalCacheRepository,
+    @Value("\${cache.mode:redis}") private val mode: String,
+) {
+    fun getProductDetail(productId: Long): ProductInfo? {
+        return when (cacheMode) {
+            CacheMode.REDIS -&gt; redisCacheRepository.getProductDetail(productId)
+            CacheMode.LOCAL -&gt; localCacheRepository.getProductDetail(productId)
+            CacheMode.LAYERED -&gt; {
+                // L1: 로컬 캐시에서 먼저 조회
+                localCacheRepository.getProductDetail(productId)?.let { return it }
+                // L2: 로컬 미스 &rarr; Redis에서 조회 &rarr; 로컬에 채움
+                redisCacheRepository.getProductDetail(productId)?.also {
+                    localCacheRepository.setProductDetail(productId, it)
+                }
+            }
+        }
+    }
+}</code></pre>
+
+    <span class="code-label">yaml &mdash; application.yml</span>
+    <pre class="yaml"><code>cache:
+  mode: ${CACHE_MODE:redis}  # redis | local | layered</code></pre>
+
+    <h3 data-ke-size="size23">테스트 시나리오</h3>
+
+    <p data-ke-size="size16">100 VUs(동시 사용자), 30초간 테스트. 각 모드마다 워밍업 10초를 선행했다.</p>
+
+    <span class="code-label">javascript &mdash; product-load-test.js</span>
+    <pre class="kotlin"><code>export default function () {
+    if (Math.random() &lt; 0.7) {
+        // 70% 목록 조회 &mdash; 랜덤 브랜드, 랜덤 정렬
+        const brandId = Math.ceil(Math.random() * 20);
+        const sort = ['LATEST', 'PRICE_ASC', 'LIKES_DESC'][Math.floor(Math.random() * 3)];
+        http.get(`${BASE_URL}/api/v1/products?brandId=${brandId}&amp;sort=${sort}&amp;page=${page}&amp;size=20`);
+    } else {
+        // 30% 상세 조회 &mdash; 랜덤 상품 ID
+        const productId = Math.ceil(Math.random() * 100000);
+        http.get(`${BASE_URL}/api/v1/products/${productId}`);
+    }
+}</code></pre>
+
+    <h3 data-ke-size="size23">Redis 캐시만 사용했을 때</h3>
+
+    <p data-ke-size="size16">모든 캐시 조회가 Redis를 거친다. 매 요청마다 네트워크 왕복이 발생한다.</p>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>지표</th>
+            <th>결과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>목록 조회 avg / p75 / p95</b></td>
+            <td>5.99ms / 6.67ms / 10.71ms</td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 avg / p75 / p95</b></td>
+            <td>7.76ms / 8.67ms / 13.62ms</td>
+        </tr>
+        <tr>
+            <td><b>처리량</b></td>
+            <td>936 req/s</td>
+        </tr>
+        <tr>
+            <td><b>목록 캐시 히트율</b></td>
+            <td>100.00%</td>
+        </tr>
+        <tr>
+            <td><b>상세 캐시 히트율</b></td>
+            <td>4.68%</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">목록 캐시는 TTL 5분이라 워밍업 이후 100% 히트. 상세는 10만 개 상품 중 랜덤 조회라 같은 상품을 두 번 조회할 확률이 낮아 히트율이 매우 낮다.</p>
+
+    <h3 data-ke-size="size23">로컬 캐시(Caffeine)만 사용했을 때</h3>
+
+    <span class="code-label">kotlin &mdash; ProductLocalCacheRepository.kt</span>
+    <pre class="reasonml"><code>private val detailCache: Cache&lt;Long, ProductInfo&gt; = Caffeine.newBuilder()
+    .maximumSize(10_000)
+    .expireAfterWrite(Duration.ofSeconds(10))
+    .build()</code></pre>
+
+    <p data-ke-size="size16">네트워크 없이 서버 메모리에서 바로 읽는다. 서버마다 다른 값을 가질 수 있기 때문에 TTL은 10초로 짧게 잡았다.</p>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>지표</th>
+            <th>결과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>목록 조회 avg / p75 / p95</b></td>
+            <td>5.42ms / 6.16ms / 10.76ms</td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 avg / p75 / p95</b></td>
+            <td><b>6.10ms</b> / 6.91ms / 10.81ms</td>
+        </tr>
+        <tr>
+            <td><b>처리량</b></td>
+            <td>944 req/s</td>
+        </tr>
+        <tr>
+            <td><b>목록 캐시 히트율</b></td>
+            <td>92.42%</td>
+        </tr>
+        <tr>
+            <td><b>상세 캐시 히트율</b></td>
+            <td>1.69%</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">네트워크 없이 메모리 직접 접근이니까 상세 조회 avg는 가장 빠르다. 하지만 <b>목록 캐시 히트율이 92%로 Redis(100%)보다 낮다.</b> TTL이 10초라 10초마다 캐시가 만료되고, 그 순간 DB를 직접 조회해야 하기 때문이다.</p>
+
+    <h3 data-ke-size="size23">로컬 + Redis(Layered) 사용했을 때</h3>
+
+    <p data-ke-size="size16">로컬 캐시 히트 &rarr; 끝. 로컬 미스 &rarr; Redis 조회 &rarr; 로컬에 채움.</p>
+
+    <div class="flowchart">
+        <div class="flow-row"><div class="flow-box start">클라이언트 요청</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-row"><div class="flow-box cache">L1 로컬 캐시 (Caffeine) 조회</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-row"><div class="flow-box decision">L1 히트?</div></div>
+        <div class="flow-arrow down">&darr;</div>
+        <div class="flow-branch">
+            <div class="flow-branch-item">
+                <div class="flow-label">YES</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box success">즉시 반환<br />(네트워크 0, 가장 빠름)</div>
+            </div>
+            <div class="flow-branch-item">
+                <div class="flow-label">NO</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box cache">L2 Redis 캐시 조회</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-box decision">L2 히트?</div>
+                <div class="flow-arrow down">&darr;</div>
+                <div class="flow-branch">
+                    <div class="flow-branch-item">
+                        <div class="flow-label">YES</div>
+                        <div class="flow-arrow down">&darr;</div>
+                        <div class="flow-box success">반환 + L1에 채움</div>
+                    </div>
+                    <div class="flow-branch-item">
+                        <div class="flow-label">NO</div>
+                        <div class="flow-arrow down">&darr;</div>
+                        <div class="flow-box db">DB 조회</div>
+                        <div class="flow-arrow down">&darr;</div>
+                        <div class="flow-box process">L2 + L1에 저장</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>지표</th>
+            <th>결과</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>목록 조회 avg / p75 / p95</b></td>
+            <td><b>4.23ms / 4.82ms / 7.08ms</b></td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 avg / p75 / p95</b></td>
+            <td>6.31ms / 7.16ms / 10.21ms</td>
+        </tr>
+        <tr>
+            <td><b>처리량</b></td>
+            <td><b>951 req/s</b></td>
+        </tr>
+        <tr>
+            <td><b>L1(로컬) 목록 히트율</b></td>
+            <td>92.58%</td>
+        </tr>
+        <tr>
+            <td><b>L2(Redis) 목록 히트율</b></td>
+            <td>64.01%</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">L1 로컬 캐시가 92%를 처리하고, 나머지 8%의 미스 중 64%를 Redis가 받아준다. <b>결과적으로 DB까지 가는 요청은 전체의 약 3%에 불과하다.</b></p>
+
+    <h3 data-ke-size="size23">한눈에 비교 &mdash; 응답 시간</h3>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>지표</th>
+            <th>Redis</th>
+            <th>Local (Caffeine)</th>
+            <th>Layered (Local+Redis)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>목록 조회 avg</b></td>
+            <td>5.99ms</td>
+            <td>5.42ms</td>
+            <td><b>4.23ms</b></td>
+        </tr>
+        <tr>
+            <td><b>목록 조회 p75</b></td>
+            <td>6.67ms</td>
+            <td>6.16ms</td>
+            <td><b>4.82ms</b></td>
+        </tr>
+        <tr>
+            <td><b>목록 조회 p95</b></td>
+            <td>10.71ms</td>
+            <td>10.76ms</td>
+            <td><b>7.08ms</b></td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 avg</b></td>
+            <td>7.76ms</td>
+            <td><b>6.10ms</b></td>
+            <td>6.31ms</td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 p75</b></td>
+            <td>8.67ms</td>
+            <td><b>6.91ms</b></td>
+            <td>7.16ms</td>
+        </tr>
+        <tr>
+            <td><b>상세 조회 p95</b></td>
+            <td>13.62ms</td>
+            <td>10.81ms</td>
+            <td><b>10.21ms</b></td>
+        </tr>
+        <tr>
+            <td><b>처리량 (req/s)</b></td>
+            <td>936/s</td>
+            <td>944/s</td>
+            <td><b>951/s</b></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 data-ke-size="size23">한눈에 비교 &mdash; 캐시 히트율</h3>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>캐시</th>
+            <th>Redis</th>
+            <th>Local (Caffeine)</th>
+            <th>Layered L1 (로컬)</th>
+            <th>Layered L2 (Redis)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>상세 캐시</b></td>
+            <td>4.68%</td>
+            <td>1.69%</td>
+            <td>1.68%</td>
+            <td>10.39%</td>
+        </tr>
+        <tr>
+            <td><b>목록 캐시</b></td>
+            <td>100.00%</td>
+            <td>92.42%</td>
+            <td>92.58%</td>
+            <td>64.01%</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16"><b>히트율이 응답 시간의 차이를 설명한다.</b></p>
+
+    <p data-ke-size="size16">Local-only의 목록 캐시 히트율은 92%다. TTL이 10초라 10초마다 캐시가 만료되고, 그 순간 DB를 직접 조회해야 한다. 이 8%의 미스가 p95를 끌어올린다 &mdash; Local(10.76ms)이 Redis(10.71ms)와 거의 같은 이유다.</p>
+
+    <p data-ke-size="size16">반면 Layered는 로컬 캐시가 만료되어도 <b>Redis가 받아준다.</b> Redis TTL은 5분이라 로컬 미스의 64%를 Redis에서 처리하고, DB까지 가는 요청은 전체의 약 3%에 불과하다. 그래서 목록 p95가 <b>7.08ms</b>로 가장 낮다.</p>
+
+    <p data-ke-size="size16">상세 조회는 10만 개 상품 중 랜덤이라 어떤 모드든 히트율이 낮다. 이 경우 네트워크 없이 바로 DB를 치는 Local이 avg 기준 가장 빠르다. 하지만 p95 기준으로는 Layered가 근소하게 앞서는데, Redis에 캐싱된 소수의 상품이 꼬리 지연을 줄여주기 때문이다.</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16">"로컬 캐시(서버 메모리)와 원격 캐시(Redis)를 함께 쓰는 2-tier 구조가 일반적이다. 로컬 캐시가 원격 캐시를 바라보는 구조로, 로컬 캐시 갱신 주기를 짧게 설정하여 최신성을 유지한다."</p>
+    </blockquote>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>모드</th>
+            <th>장점</th>
+            <th>단점</th>
+            <th>적합한 상황</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>Redis</b></td>
+            <td>서버 간 공유, 데이터 일관성</td>
+            <td>네트워크 레이턴시</td>
+            <td>서버 여러 대, 일관성 중요</td>
+        </tr>
+        <tr>
+            <td><b>Local</b></td>
+            <td>가장 낮은 레이턴시</td>
+            <td>서버별 불일치, 메모리 사용</td>
+            <td>단일 서버, 짧은 TTL 허용</td>
+        </tr>
+        <tr>
+            <td><b>Layered</b></td>
+            <td>최고 성능 + Redis로 일관성 보완</td>
+            <td>구현 복잡, 이중 무효화</td>
+            <td>트래픽 높고 성능 중요</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr data-ke-style="style1" />
+
+    <!-- Section 8 -->
+    <h2 id="section-8" data-ke-size="size26">8. 결론</h2>
+
+    <h3 data-ke-size="size23">최적화는 단계적으로</h3>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>단계</th>
+            <th>최적화</th>
+            <th>비용</th>
+            <th>효과</th>
+            <th>현재 프로젝트에서</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><b>1</b></td>
+            <td>복합 인덱스</td>
+            <td>거의 0</td>
+            <td>76~231배 개선</td>
+            <td><b>가장 효과적</b></td>
+        </tr>
+        <tr>
+            <td><b>2</b></td>
+            <td>Redis 캐시</td>
+            <td>중간</td>
+            <td>DB 접근 제거</td>
+            <td>네트워크 오버헤드 존재</td>
+        </tr>
+        <tr>
+            <td><b>3</b></td>
+            <td>로컬 캐시</td>
+            <td>중간</td>
+            <td>네트워크도 제거</td>
+            <td>서버 간 불일치</td>
+        </tr>
+        <tr>
+            <td><b>4</b></td>
+            <td>Layered 캐시</td>
+            <td>높음</td>
+            <td>최고 성능</td>
+            <td><b>목록 p95 기준 34% 추가 개선</b></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 data-ke-size="size23">목록 캐시 키 폭발 문제 &mdash; 첫 3페이지만 캐싱</h3>
+
+    <p data-ke-size="size16">앞서 Cache Stampede를 이야기하면서 이런 말을 했다. "목록 캐시는 여전히 evict다. 캐시 키가 brandId &times; sort &times; page &times; size 조합이라, 변경 시 어떤 조합이 영향을 받는지 특정할 수 없기 때문이다."</p>
+
+    <p data-ke-size="size16">그런데 이 evict가 문제였다. 좋아요 하나 누를 때마다 <code>evictAllProductLists()</code>가 호출되면서, <b>brandId &times; sort &times; page &times; size</b> 전체 조합의 목록 캐시를 한꺼번에 날린다. 캐시 키가 많을수록 evict 비용이 커지고, evict 직후에는 모든 조합이 캐시 미스 &rarr; DB 조회로 빠진다.</p>
+
+    <p data-ke-size="size16">멘토링에서 받은 조언이 정확히 이 지점을 짚었다.</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><i>"브랜드별 3페이지 정도만 캐시하고, 필터가 걸린 페이지는 캐시하지 않는다. 핫한 조합만 선택적으로 캐시하는 거다."</i></p>
+    </blockquote>
+
+    <p data-ke-size="size16">생각해보면 대부분의 사용자는 첫 페이지에서 원하는 상품을 찾는다. 3페이지 이상 넘기는 사용자는 극소수다. 그렇다면 <b>전체 페이지를 캐싱할 이유가 없다.</b></p>
+
+    <p data-ke-size="size16">해결은 단순했다. <code>MAX_CACHED_PAGE = 3</code> 상수 하나로 page 0~2만 캐싱하고, page 3 이상은 캐시를 건너뛰어 DB에서 직접 조회하도록 했다.</p>
+
+    <span class="code-label">kotlin &mdash; ProductCacheService.kt</span>
+<pre class="reasonml"><code>@Component
+class ProductCacheService(
+    private val redisCacheRepository: ProductCacheRepository,
+    private val localCacheRepository: ProductLocalCacheRepository,
+    @Value("\${cache.mode}") private val mode: String,
+) {
+    companion object {
+        private const val MAX_CACHED_PAGE = 3  // page 0, 1, 2만 캐싱
+    }
+
+    fun getProductList(brandId: Long?, sort: String, page: Int, size: Int): CachedPage&lt;ProductInfo&gt;? {
+        if (page &gt;= MAX_CACHED_PAGE) return null  // 3페이지 이상은 캐시 skip
+        return when (cacheMode) { ... }
+    }
+
+    fun setProductList(brandId: Long?, sort: String, page: Int, size: Int, data: CachedPage&lt;ProductInfo&gt;) {
+        if (page &gt;= MAX_CACHED_PAGE) return  // 3페이지 이상은 캐시에 저장하지 않음
+        when (cacheMode) { ... }
+    }
+}</code></pre>
+
+    <p data-ke-size="size16"><code>ProductService</code>는 변경하지 않았다. 캐시 미스 시 DB fallback이 이미 구현되어 있으니까, 캐시 정책은 <code>ProductCacheService</code>에서만 관리하는 구조를 유지했다. 나중에 캐시 전략을 바꾸더라도 <code>ProductCacheService</code>만 수정하면 된다.</p>
+
+    <table data-ke-align="alignLeft">
+        <thead>
+        <tr>
+            <th>장점</th>
+            <th>단점</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>캐시 키 수 대폭 감소</td>
+            <td>page 3+ 요청은 항상 DB 직접 조회</td>
+        </tr>
+        <tr>
+            <td>evict 비용 감소 (삭제 대상 키가 적음)</td>
+            <td>뒷페이지 탐색이 많으면 DB 부하 집중 가능</td>
+        </tr>
+        <tr>
+            <td>캐시 히트율 안정화 (evict 후 빠른 warm-up)</td>
+            <td><code>MAX_CACHED_PAGE = 3</code>이라는 가정에 의존</td>
+        </tr>
+        <tr>
+            <td>Redis/Local 메모리 절약</td>
+            <td>트래픽 패턴이 바뀌면 재조정 필요</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p data-ke-size="size16">단순한 상수 하나로 캐시 키 폭발과 evict 비용 문제를 상당 부분 해소할 수 있었다. 다만 "3"이라는 숫자가 실제 서비스 트래픽에서 유효한지는 모니터링으로 검증해야 한다. 운영 환경에서는 접근 로그 기반으로 적정 페이지 수를 조정하는 것도 고려해볼 만하다.</p>
+
+    <h3 data-ke-size="size23">추가로 고려해야하는 것들</h3>
+
+    <p data-ke-size="size16"><b>Read Replica를 캐시보다 먼저 검토하라.</b> <br>읽기 부하 분산은 DB 복제로도 해결 가능하고, 코드 변경이 거의 없다. "레플리카 DB와 Redis 캐시 조합으로 수백만 MAU도 충분히 처리 가능할수 있다."</p>
+
+    <h3 data-ke-size="size23">돌아보며</h3>
+
+    <p data-ke-size="size16">처음에 Redis를 처음 써보는 거라 "캐시 = 어려운 기술"이라고 생각했다. 그런데 본질은 "빠른 Map&lt;String, String&gt;"이었다. 삽입, TTL, Evict &mdash; 이 세 가지 판단을 내리면 된다.</p>
+
+    <p data-ke-size="size16">인덱스는 DB 내부에서 쿼리를 최적화하는 것이고, 캐시는 DB를 아예 안 치게 하는 것이다. 둘은 경쟁이 아니라 보완 관계다. 캐시 미스가 나면 인덱스가 빠르게 DB를 처리하고, 캐시 히트가 나면 DB 자체를 안 치니까.</p>
+
+    <blockquote data-ke-style="style1">
+        <p data-ke-size="size16"><b>"감"으로 "캐시 쓰면 빨라지겠지"가 아니라, EXPLAIN으로 인덱스 효과를 확인하고, K6로 캐시 효과를 측정하고, 숫자로 의사결정하는 것. 그게 이번 주에 배운 가장 큰 내용이다.</b></p>
+    </blockquote>
+
+    <hr data-ke-style="style1" />
+
+    <h2 data-ke-size="size26">References</h2>
+
+    <ul style="list-style-type: disc;" data-ke-list-type="disc">
+        <li><a href="https://vividswan.tistory.com/entry/Redis-%EC%95%9E%EC%97%90-%EB%A1%9C%EC%BB%AC-%EC%BA%90%EC%8B%9C%EB%A5%BC-%EB%91%90%EB%A9%B4-%EC%96%BC%EB%A7%88%EB%82%98-%EB%B9%A8%EB%9D%BC%EC%A7%88%EA%B9%8C-K6%EB%A1%9C-%ED%99%95%EC%9D%B8%ED%95%B4%EB%B3%B4%EA%B8%B0" target="_blank">Redis 앞에 로컬 캐시를 두면 얼마나 빨라질까? K6로 확인해보기</a></li>
+    </ul>
+
+    <p data-ke-size="size16">&nbsp;</p>
+</div>

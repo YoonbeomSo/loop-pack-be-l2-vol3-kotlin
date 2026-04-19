@@ -1,0 +1,665 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * {
+    box-sizing: border-box;
+}
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 1.85;
+    color: #1a1a1a;
+    word-break: keep-all;
+    overflow-x: hidden;
+}
+.container table {
+    display: table;
+    overflow-x: auto;
+}
+
+/* ===== 헤더 ===== */
+.post-header {
+    text-align: center;
+    padding: 20px 0 10px;
+    margin-bottom: 8px;
+}
+.post-header h1 {
+    font-size: 1.7em;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+}
+.subtitle {
+    font-size: 1.05em;
+    color: #666;
+    font-style: italic;
+}
+
+/* ===== TL;DR 섹션 ===== */
+.tldr blockquote {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    border-left: 4px solid #006dd7;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 0.97em;
+    line-height: 1.9;
+}
+
+/* ===== 코드 라벨 ===== */
+.code-label {
+    display: inline-block;
+    background: #2d2d2d;
+    color: #ccc;
+    font-size: 0.78em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    padding: 4px 14px;
+    border-radius: 6px 6px 0 0;
+    margin-top: 18px;
+    margin-bottom: -2px;
+    letter-spacing: 0.03em;
+}
+
+/* ===== 코드 블록 ===== */
+.container pre {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 0 6px 6px 6px;
+    padding: 20px 22px;
+    margin-top: 0;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.65;
+    border: 1px solid #333;
+}
+.container pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+.container p + pre,
+.container blockquote + pre {
+    border-radius: 6px;
+}
+
+/* ===== 인라인 코드 ===== */
+.container code {
+    background: #f1f3f5;
+    color: #c7254e;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 테이블 ===== */
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.93em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.container table thead tr {
+    background: #2c3e50;
+    color: #fff;
+}
+.container table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+    letter-spacing: 0.02em;
+}
+.container table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+.container table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+.container table tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.15s ease;
+}
+
+/* ===== 시나리오 박스 ===== */
+.scenario {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 18px 0;
+}
+.step {
+    padding: 10px 16px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 0.94em;
+    background: #fff;
+    border-left: 4px solid #adb5bd;
+    color: #333;
+}
+.step.success {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+    color: #15803d;
+    font-weight: 500;
+}
+.step.fail {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+    color: #b91c1c;
+    font-weight: 500;
+}
+
+/* ===== 인용구 ===== */
+.container blockquote {
+    border-left: 3px solid #3b82f6;
+    background: #f8fafc;
+    margin: 16px 0;
+    padding: 14px 20px;
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+}
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul {
+    margin: 14px 0;
+    padding-left: 24px;
+}
+.container ul li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+/* ===== 구분선 ===== */
+.container hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin: 36px 0;
+}
+
+/* ===== h2 ===== */
+.container h2 {
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #111;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+    letter-spacing: -0.01em;
+}
+
+/* ===== h3 ===== */
+.container h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+.source {
+    font-size: 0.85em;
+    color: #999;
+    text-align: right;
+}
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+<!-- Header -->
+<header class="post-header">
+    <h1>[랭킹] 조회수 조작을 막는<br />랭킹 시스템 설계</h1>
+    <p class="subtitle" data-ke-size="size16">봇이 100번 조회해도 정상 유저 50명보다 점수가 낮은 구조를 만들 수 있을까?</p>
+</header>
+
+<!-- TL;DR -->
+<div class="tldr">
+    <blockquote data-ke-style="style3">
+        <span style="color: #006dd7;">TL;DR</span><br />
+        랭킹 시스템에서 조회수는 가장 조작하기 쉬운 시그널이다<br />
+        Layer 1(userId/IP 중복 제거) + Layer 2(Trust Score 기반 점수 차등)으로 방어<br />
+        k6 테스트 결과, 봇 100회 조회가 정상 유저 50명의 1.4% 수준으로 억제됨
+    </blockquote>
+</div>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 1 -->
+<h2 data-ke-size="size26">랭킹 시스템의 약한 고리 &mdash; 조회수</h2>
+
+<p data-ke-size="size16">Redis ZSET 기반 실시간 랭킹 시스템을 구현했습니다. 점수 공식은 이렇습니다.</p>
+
+<pre class="yaml"><code>Score = view &times; 0.1 + like &times; 0.2 + order금액 &times; 0.6</code></pre>
+
+<p data-ke-size="size16">좋아요는 로그인이 필요하고, 주문은 결제가 필요합니다. 조작하려면 비용이 큽니다.</p>
+<p data-ke-size="size16">그런데 조회는? <b>GET 요청 하나면 됩니다.</b> 인증도 불필요합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">봇이 특정 상품을 1만 번 조회하면 <code>10,000 &times; 0.1 = 1,000점</code>. 정상적으로 좋아요 5,000건 받은 상품(1,000점)과 동급이 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><i>&ldquo;조회수가 랭킹에 들어가는 한, 이건 반드시 막아야 하는 거 아닌가?&rdquo;</i></p>
+</blockquote>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 2 -->
+<h2 data-ke-size="size26">빅테크는 어떻게 하고 있을까?</h2>
+
+<p data-ke-size="size16">YouTube를 조사해봤습니다. YouTube는 3단계 방어를 씁니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>Layer 1 (기본 필터)</b>: 같은 IP 반복 조회 감지, 30초 미만 시청 미반영</li>
+    <li><b>Layer 2 (패턴 인식)</b>: &ldquo;수백 개 계정이 정확히 30초만 시청 후 이탈&rdquo; 같은 봇 패턴 탐지</li>
+    <li><b>Layer 3 (머신러닝)</b>: ML 모델이 96% 이상의 인공 트래픽 식별</li>
+</ul>
+
+<p data-ke-size="size16">Layer 1은 우리도 할 수 있습니다. Layer 3은 데이터 사이언스 영역이고요.</p>
+<p data-ke-size="size16">흥미로운 건 <b>Layer 2의 접근법</b>이었습니다. 차단이 아니라 &ldquo;행동 분석&rdquo;입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><i>시스템 설계에서는 단순 계산식보다 <b>대용량 트래픽 처리, 데이터 파이프라인 구성, 실시간 데이터 서빙 방법</b>이 더 중요하다.</i></p>
+</blockquote>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 3 -->
+<h2 data-ke-size="size26">첫 번째 시도 &mdash; 차단 방식의 한계</h2>
+
+<p data-ke-size="size16">처음에는 단순하게 생각했습니다. &ldquo;같은 사람이 같은 상품을 여러 번 보면 1회만 반영하자.&rdquo;</p>
+
+<h3 data-ke-size="size23">상품 단위 감쇠를 검토했지만...</h3>
+
+<p data-ke-size="size16">IP를 바꿔가며 조회하는 봇을 막으려면 상품 자체에 cap을 걸어야 합니다.</p>
+
+<pre class="yaml"><code>상품101의 시간당 조회:
+  1~500건:    100% 반영
+  501~1000건: 50% 반영
+  2001건~:    0%</code></pre>
+
+<p data-ke-size="size16">그런데 블랙프라이데이 세일로 진짜 5,000명이 몰리면? <b>정상 트래픽도 감쇠됩니다.</b></p>
+<p data-ke-size="size16">서버 입장에서 &ldquo;진짜 인기&rdquo;와 &ldquo;봇 공격&rdquo;을 구분할 수 없습니다. 두 경우 모두 &ldquo;한 상품에 조회가 몰린다&rdquo;는 패턴은 동일하니까요.</p>
+
+<h3 data-ke-size="size23">검토하고 버린 전략들</h3>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>전략</th>
+        <th>왜 버렸는가</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>상품 단위 감쇠</b></td>
+        <td>이벤트로 진짜 인기 몰릴 때도 감쇠됨</td>
+    </tr>
+    <tr>
+        <td><b>User-Agent 필터</b></td>
+        <td>위조가 너무 쉬움 (문자열 하나 바꾸면 끝)</td>
+    </tr>
+    <tr>
+        <td><b>조회 속도 감지</b></td>
+        <td>Layer 1에서 하루 1회로 이미 잡고 있어서 추가 효과 미미</td>
+    </tr>
+    <tr>
+        <td><b>후속 행동 기반</b></td>
+        <td>구현 복잡도 높고 실시간 반영 어려움</td>
+    </tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">모든 전략이 <b>&ldquo;진짜 트래픽을 해칠 수 있다&rdquo;</b>는 공통 문제가 있었습니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 4 -->
+<h2 data-ke-size="size26">발상의 전환 &mdash; 차단이 아니라 신뢰도</h2>
+
+<p data-ke-size="size16">여기서 접근을 바꿨습니다.</p>
+
+<div class="scenario">
+    <div class="step fail">기존 사고: 정상이면 반영, 비정상이면 차단 (이진적)</div>
+    <div class="step success">새로운 사고: 얼마나 신뢰할 수 있는 조회인가? (연속적)</div>
+</div>
+
+<p data-ke-size="size16"><b>차단하지 않되, 신뢰도에 따라 반영되는 점수가 달라지는 구조</b>입니다.</p>
+<p data-ke-size="size16">정상 로그인 유저는 풀 점수, 의심스러운 트래픽은 낮은 점수, 봇은 거의 0점.</p>
+<p data-ke-size="size16">이러면 이벤트로 정상 트래픽이 몰려도 로그인 유저들이니 풀 점수가 반영됩니다. <b>진짜 트래픽을 해치지 않습니다.</b></p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 5 -->
+<h2 data-ke-size="size26">구현: 2계층 방어</h2>
+
+<h3 data-ke-size="size23">Layer 1: userId/IP 기반 일간 중복 제거</h3>
+
+<p data-ke-size="size16">같은 사람이 같은 상품을 하루에 여러 번 조회해도 <b>1회만 반영</b>합니다.</p>
+<p data-ke-size="size16"><b>판단 우선순위</b>: userId가 있으면 userId로, 없으면 IP로 판단합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step success">로그인 유저A가 회사에서 조회 &rarr; dedup key 없음 &rarr; 반영</div>
+    <div class="step fail">로그인 유저A가 집에서 재조회 &rarr; 같은 userId &rarr; skip</div>
+    <div class="step success">같은 IP, 다른 유저B 조회 &rarr; 다른 userId &rarr; 반영</div>
+    <div class="step success">비로그인 새 IP에서 조회 &rarr; dedup key 없음 &rarr; 반영</div>
+    <div class="step fail">비로그인 같은 IP 재조회 &rarr; 같은 IP &rarr; skip</div>
+</div>
+
+<p data-ke-size="size16">같은 IP여도 로그인 유저끼리는 각각 반영됩니다. 회사 와이파이에서 직원 10명이 보면 10명 다 반영.</p>
+
+<span class="code-label">kotlin &mdash; ViewDedupRedisRepository.kt</span>
+<pre class="kotlin"><code>fun isDuplicate(productId: Long, loginId: String?, clientIp: String?, date: LocalDate): Boolean {
+    val key = buildKey(productId, loginId, clientIp, date)
+    return masterRedisTemplate.hasKey(key)
+}
+
+private fun buildKey(productId: Long, loginId: String?, clientIp: String?, date: LocalDate): String {
+    val dateStr = date.format(DATE_FORMAT)
+    return if (loginId != null) {
+        "$KEY_PREFIX$dateStr:$productId:user:$loginId"     // 로그인: userId 기준
+    } else {
+        "$KEY_PREFIX$dateStr:$productId:ip:${clientIp}"    // 비로그인: IP 기준
+    }
+}</code></pre>
+
+<h3 data-ke-size="size23">Layer 2: Trust Score &mdash; 5개 시그널 기반 점수 차등</h3>
+
+<p data-ke-size="size16">Layer 1을 통과한 조회에 대해 <b>신뢰도를 0~1.0으로 계산</b>합니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>시그널</th>
+        <th>정상</th>
+        <th>의심</th>
+        <th>점수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>로그인 여부</b></td>
+        <td>로그인</td>
+        <td>비로그인</td>
+        <td>0.3 vs 0.05</td>
+    </tr>
+    <tr>
+        <td><b>User-Agent</b></td>
+        <td>있음</td>
+        <td>없음</td>
+        <td>0.1 vs 0</td>
+    </tr>
+    <tr>
+        <td><b>Referer</b></td>
+        <td>있음</td>
+        <td>없음</td>
+        <td>0.1 vs 0</td>
+    </tr>
+    <tr>
+        <td><b>분당 요청 수</b></td>
+        <td>1~3회</td>
+        <td>10회 이상</td>
+        <td>0.3 vs 0</td>
+    </tr>
+    <tr>
+        <td><b>상품 다양성</b></td>
+        <td>3개 이상 탐색</td>
+        <td>1개만 반복</td>
+        <td>0.2 vs 0</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3 data-ke-size="size23">각 시그널에 이 가중치를 준 이유</h3>
+
+<p data-ke-size="size16"><b>로그인 여부 (0.3 vs 0.05)</b> &mdash; 가장 큰 배점입니다. 로그인 계정은 회원가입이 필요해서 <b>생성 비용</b>이 있습니다. 봇이 조회수를 조작하려면 비로그인은 GET 요청만 보내면 되지만, 로그인은 계정을 만들어야 하니까 대량 생성이 어렵고 추적도 가능합니다.</p>
+<p data-ke-size="size16">비로그인에 0이 아닌 0.05를 준 이유는, 처음 방문한 정상 유저가 로그인 없이 상품을 둘러보는 건 자연스러운 행동이기 때문입니다. 완전히 무시하면 정상 유저를 해치게 됩니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<p data-ke-size="size16"><b>분당 요청 수 (0.3 vs 0)</b> &mdash; 로그인과 동일한 배점입니다. 사람은 1분에 상품을 1~3개 정도 보지만, 봇은 수십 건을 보냅니다. 분당 10회 이상이면 사람이 아닐 가능성이 높아서 0점을 줬습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<p data-ke-size="size16"><b>10분 내 상품 다양성 (0.2)</b> &mdash; 정상 유저는 여러 상품을 탐색합니다. &ldquo;에어맥스 보고, 울트라부스트 보고, 운동화 비교하고...&rdquo; 반면 봇은 특정 상품 하나만 반복 조회합니다. 3개 이상 다양한 상품을 본 유저는 정상일 가능성이 높습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<p data-ke-size="size16"><b>UA/Referer (각 0.1)</b> &mdash; 보조 시그널입니다. 브라우저에서 접속하면 자동으로 붙는 헤더인데, 단순 스크립트 봇은 이걸 안 보냅니다. 다만 위조가 쉬워서 배점은 낮게 잡았습니다.</p>
+
+<h3 data-ke-size="size23">합산 예시</h3>
+
+<pre class="yaml"><code>정상 로그인 유저:
+  로그인(0.3) + UA(0.1) + Referer(0.1) + 분당 2회(0.3) + 상품 5개(0.2) = 1.0
+
+비로그인 정상 유저:
+  비로그인(0.05) + UA(0.1) + Referer(0.1) + 분당 2회(0.3) + 상품 3개(0.2) = 0.75
+
+봇 (UA 없음, 단일 상품 반복):
+  비로그인(0.05) + UA 없음(0) + Referer 없음(0) + 분당 15회(0) + 상품 1개(0) = 0.05</code></pre>
+
+<p data-ke-size="size16"><b>최종 점수 = 기본 조회 점수(0.1) &times; Trust Score</b></p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<pre class="yaml"><code>정상 로그인 유저: 0.1 &times; 1.0 = 0.1점
+비로그인 정상:    0.1 &times; 0.75 = 0.075점
+의심 봇:         0.1 &times; 0.05 = 0.005점
+
+같은 &ldquo;1회 조회&rdquo;인데 정상과 봇 사이에 20배 차이</code></pre>
+
+<span class="code-label">kotlin &mdash; ViewTrustScoreCalculator.kt</span>
+<pre class="kotlin"><code>fun calculate(signals: ViewSignals): Double {
+    var score = 0.0
+    score += if (signals.isLoggedIn) 0.3 else 0.05      // 로그인 여부
+    score += if (signals.hasUserAgent) 0.1 else 0.0      // UA 존재
+    score += if (signals.hasReferer) 0.1 else 0.0        // Referer 존재
+    score += calculateRateScore(signals.requestsPerMinute)     // 분당 요청 수
+    score += calculateDiversityScore(signals.distinctProductsIn10Min)  // 상품 다양성
+    return score.coerceIn(0.0, 1.0)
+}</code></pre>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 6 -->
+<h2 data-ke-size="size26">왜 진짜 트래픽을 해치지 않는가</h2>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>시나리오</th>
+        <th>Layer 1</th>
+        <th>Layer 2</th>
+        <th>결과</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>정상 유저 100명</b></td>
+        <td>100명 모두 통과</td>
+        <td>&times;1.0</td>
+        <td>높은 점수</td>
+    </tr>
+    <tr>
+        <td><b>봇 1대 100회</b></td>
+        <td>1회만 통과</td>
+        <td>&times;0.05</td>
+        <td>매우 낮은 점수</td>
+    </tr>
+    <tr>
+        <td><b>봇 IP 100개</b></td>
+        <td>100개 통과</td>
+        <td>&times;0.05</td>
+        <td>낮은 점수</td>
+    </tr>
+    <tr>
+        <td><b>이벤트 유저 1000명</b></td>
+        <td>1000명 통과</td>
+        <td>&times;1.0</td>
+        <td>매우 높은 점수</td>
+    </tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16"><b>봇은 여러 시그널에서 동시에 낮은 점수를 받습니다.</b> UA를 위조해도 로그인이 없으면 0.3 &rarr; 0.05. 하나만 위조해선 다른 시그널에서 걸립니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 7 -->
+<h2 data-ke-size="size26">k6로 검증: 봇 vs 정상 유저</h2>
+
+<p data-ke-size="size16">말로만 하면 안 되니까 k6 부하 테스트로 실제 검증했습니다.</p>
+
+<h3 data-ke-size="size23">소규모 테스트 (1x)</h3>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>시나리오</th>
+        <th>VU</th>
+        <th>반복</th>
+        <th>특징</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>정상 유저</b></td>
+        <td>5명</td>
+        <td>2회</td>
+        <td>로그인 + UA + Referer</td>
+    </tr>
+    <tr>
+        <td><b>단일 IP 봇</b></td>
+        <td>1대</td>
+        <td>10회</td>
+        <td>비로그인, 50ms 간격</td>
+    </tr>
+    <tr>
+        <td><b>UA없는 봇</b></td>
+        <td>5개</td>
+        <td>1회</td>
+        <td>비로그인, UA/Referer 없음</td>
+    </tr>
+    </tbody>
+</table>
+
+<pre class="yaml"><code>1위: 상품1 (score: 0.4000) &larr; 정상 유저
+2위: 상품3 (score: 0.0550) &larr; UA없는 봇
+3위: 상품2 (score: 0.0450) &larr; 단일 IP 봇</code></pre>
+
+<p data-ke-size="size16"><b>봇이 10회 조회해도 정상 유저 5명의 11% 수준.</b></p>
+
+<h3 data-ke-size="size23">10배 스케일 테스트 (10x)</h3>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>시나리오</th>
+        <th>VU</th>
+        <th>반복</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>정상 유저</b></td>
+        <td>50명</td>
+        <td>2회</td>
+    </tr>
+    <tr>
+        <td><b>단일 IP 봇</b></td>
+        <td>1대</td>
+        <td>100회</td>
+    </tr>
+    <tr>
+        <td><b>UA없는 봇</b></td>
+        <td>50개</td>
+        <td>1회</td>
+    </tr>
+    </tbody>
+</table>
+
+<pre class="yaml"><code>1위: 상품1 (score: 4.0000) &larr; 정상 유저 50명
+2위: 상품2 (score: 0.0550) &larr; 단일 IP 봇 100회
+3위: 상품3 (score: 0.0450) &larr; UA없는 봇 50개</code></pre>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>상품</th>
+        <th>시나리오</th>
+        <th>요청 수</th>
+        <th>점수</th>
+        <th>정상 대비</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>상품1</b></td>
+        <td>정상 유저 50명</td>
+        <td>100회</td>
+        <td><b>4.0000</b></td>
+        <td>100%</td>
+    </tr>
+    <tr>
+        <td><b>상품2</b></td>
+        <td>단일 IP 봇</td>
+        <td>100회</td>
+        <td>0.0550</td>
+        <td><b>1.4%</b></td>
+    </tr>
+    <tr>
+        <td><b>상품3</b></td>
+        <td>UA없는 봇 50개</td>
+        <td>50회</td>
+        <td>0.0450</td>
+        <td><b>1.1%</b></td>
+    </tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16"><b>봇이 100회 조회해도 정상 유저 50명의 1.4%.</b></p>
+<p data-ke-size="size16">핵심: 봇 점수는 Layer 1에서 1회로 제한되어 <b>고정</b>, 정상 유저 점수는 인원에 비례해 <b>선형 증가</b>. 유저가 늘어날수록 봇의 영향력은 더 작아집니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 8 -->
+<h2 data-ke-size="size26">완벽하지 않다는 걸 안다</h2>
+
+<p data-ke-size="size16">이 방어가 완벽한 건 아닙니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>IP 우회 + 로그인 계정 대량 생성</b>: 봇이 수천 개의 가짜 계정을 만들면 Layer 1도 Layer 2도 뚫립니다</li>
+    <li><b>계정 연령 시그널</b>: 신규 계정은 Trust Score를 낮추려 했지만, 유저 서비스 조회 비용 때문에 이번에는 제외</li>
+    <li><b>ML 없는 한계</b>: YouTube가 96% 탐지율을 달성하는 건 ML 때문이고, 규칙 기반으로는 한계가 있습니다</li>
+</ul>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><i>대규모 기업에서는 데이터 사이언티스트들이 복잡한 모델과 계산식을 개발하여 고도화된 스코어링 로직을 운영한다.</i></p>
+</blockquote>
+
+<p data-ke-size="size16">하지만 <b>Layer 1(중복 제거)은 빅테크에서도 기본으로 까는 정석</b>이고, Trust Score는 ML 없이 &ldquo;행동 분석&rdquo;을 규칙 기반으로 근사한 시도입니다. &ldquo;완벽한 차단&rdquo;이 아니라 &ldquo;합리적인 수준의 방어&rdquo;가 목표였고, k6 결과가 그걸 증명했다고 생각합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- 마무리 -->
+<h2 data-ke-size="size26">마무리</h2>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>&ldquo;어뷰징 방지는 완벽한 차단이 목표가 아니라, 합리적인 수준의 방어가 목표다.<br />진짜 트래픽을 해치지 않으면서 봇의 영향력을 최소화하는 것 &mdash; 그 균형을 찾는 과정이 설계의 핵심이었다.&rdquo;</b></p>
+</blockquote>
+
+</div>

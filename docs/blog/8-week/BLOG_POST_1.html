@@ -1,0 +1,321 @@
+<style>
+.container, .container * { box-sizing: border-box; }
+.container { max-width: 100%; margin: 0 auto; line-height: 1.85; color: #1a1a1a; word-break: keep-all; overflow-x: hidden; }
+.container table { display: table; overflow-x: auto; }
+.post-header { text-align: center; padding: 20px 0 10px; margin-bottom: 8px; }
+.post-header h1 { font-size: 1.7em; font-weight: 800; line-height: 1.4; color: #111; margin-bottom: 12px; letter-spacing: -0.02em; }
+.subtitle { font-size: 1.05em; color: #666; font-style: italic; }
+.tldr blockquote { background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%); border-left: 4px solid #006dd7; border-radius: 0 8px 8px 0; padding: 20px 24px; margin: 16px 0; font-size: 0.97em; line-height: 1.9; }
+.code-label { display: inline-block; background: #2d2d2d; color: #ccc; font-size: 0.78em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; padding: 4px 14px; border-radius: 6px 6px 0 0; margin-top: 18px; margin-bottom: -2px; letter-spacing: 0.03em; }
+.container pre { background: #1e1e1e !important; color: #d4d4d4 !important; border-radius: 0 6px 6px 6px; padding: 20px 22px; margin-top: 0; margin-bottom: 18px; overflow-x: auto; font-size: 0.88em; line-height: 1.65; border: 1px solid #333; }
+.container pre code { background: transparent !important; color: inherit !important; padding: 0; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+.container p + pre, .container blockquote + pre { border-radius: 6px; }
+.container code { background: #f1f3f5; color: #c7254e; padding: 2px 7px; border-radius: 4px; font-size: 0.88em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+.container table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.93em; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.container table thead tr { background: #2c3e50; color: #fff; }
+.container table th { padding: 13px 16px; text-align: left; font-weight: 600; font-size: 0.92em; letter-spacing: 0.02em; }
+.container table td { padding: 12px 16px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+.container table tbody tr:nth-child(even) { background: #f8f9fa; }
+.container table tbody tr:hover { background: #e9f5ff; transition: background 0.15s ease; }
+.scenario { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 18px 0; }
+.step { padding: 10px 16px; margin: 6px 0; border-radius: 6px; font-size: 0.94em; background: #fff; border-left: 4px solid #adb5bd; color: #333; }
+.step.success { background: #f0fdf4; border-left-color: #22c55e; color: #15803d; font-weight: 500; }
+.step.fail { background: #fef2f2; border-left-color: #ef4444; color: #b91c1c; font-weight: 500; }
+.container blockquote { border-left: 3px solid #3b82f6; background: #f8fafc; margin: 16px 0; padding: 14px 20px; border-radius: 0 6px 6px 0; color: #374151; }
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+.container ul { margin: 14px 0; padding-left: 24px; }
+.container ul li { margin-bottom: 8px; line-height: 1.8; }
+.container hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #d1d5db, transparent); margin: 36px 0; }
+.container h2 { font-size: 1.45em; font-weight: 700; color: #111; margin-top: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3b82f6; letter-spacing: -0.01em; }
+.container h3 { font-size: 1.15em; font-weight: 600; color: #1e3a5f; margin-top: 28px; margin-bottom: 12px; }
+.container b { color: #111; }
+.source { font-size: 0.85em; color: #999; text-align: right; }
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+<header class="post-header">
+    <h1>k6로 1,000명을 줄 세워봤다<br />&mdash; 대기열의 진짜 병목은 대기열이 아니었다</h1>
+    <p class="subtitle" data-ke-size="size16">175 TPS를 설계했는데 10.7이 나왔습니다. 그런데 대기열은 잘 하고 있었습니다.</p>
+</header>
+
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="tldr">
+    <blockquote data-ke-style="style3"><span style="color: #006dd7;">TL;DR</span><br />이론 175 TPS vs 실측 10.7 TPS, 16배 괴리의 원인은 대기열(Redis)이 아니라 주문 처리(DB)였다.<br />주문 병목(1,298ms)이 Tomcat 스레드를 잡아먹으면서 대기열 API까지 느려지는 캐스케이드가 발생했다.<br />가정을 세우고, 실측으로 깨뜨리고, 괴리를 분석하는 사이클이 성능 설계의 본질이다.</blockquote>
+</div>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">175 TPS &mdash; 이 숫자는 어디서 나왔나</h2>
+
+<p data-ke-size="size16">대기열 시스템을 설계할 때 가장 먼저 한 건, &ldquo;서버가 초당 몇 명을 처리할 수 있는가?&rdquo;를 산출하는 것이었습니다.</p>
+
+<pre class="yaml"><code>DB 커넥션 풀: 50 (HikariCP 설정)
+주문 1건 처리 시간: 200ms (가정)
+이론 최대 TPS: 50 / 0.2 = 250
+안전 마진 70%: 175 TPS</code></pre>
+
+<p data-ke-size="size16">이 숫자로 모든 걸 설계했습니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li>스케줄러: 100ms마다 18명씩 토큰 발급 (초당 ~180명 = 175 TPS 매칭)</li>
+    <li>예상 대기시간: <code>position / 175</code></li>
+    <li>배치 크기: 175 / 10 batches = 18</li>
+</ul>
+
+<p data-ke-size="size16">깔끔합니다. 이론적으로는요.</p>
+
+<p data-ke-size="size16"><b>문제는, 이 숫자들이 전부 &ldquo;가정&rdquo;이었다는 겁니다.</b> 200ms는 실측이 아닌 추정이고, 커넥션 풀 50도 설정이 아닌 계획이었습니다. 이 가정을 검증하려면 실제 부하를 걸어봐야 합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">k6 시나리오 &mdash; 1,000명을 줄 세우는 법</h2>
+
+<p data-ke-size="size16">k6로 3가지 시나리오를 설계했습니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>시나리오</th><th>VU</th><th>동작</th><th>목적</th></tr></thead>
+    <tbody>
+    <tr><td><b>blackfriday_enter</b></td><td>1,000</td><td>5초 ramp-up &rarr; 30초 유지</td><td>대기열 진입 대량 부하</td></tr>
+    <tr><td><b>full_flow</b></td><td>100</td><td>진입 &rarr; Polling &rarr; 토큰 &rarr; 주문</td><td>실제 유저 경험 시뮬레이션</td></tr>
+    <tr><td><b>spike</b></td><td>1,000</td><td>1초 만에 1,000명 폭증</td><td>스파이크 안정성</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">핵심은 <code>full_flow</code>입니다. 실제 유저가 하는 것과 동일한 흐름을 시뮬레이션합니다.</p>
+
+<span class="code-label">javascript &mdash; k6/queue-load-test.js</span>
+<pre class="kotlin"><code>// 1. 대기열 진입
+const enterRes = http.post(`${BASE_URL}/api/v1/queue/enter`, null, { headers });
+
+// 2. Polling으로 토큰 대기
+for (let i = 0; i &lt; 20; i++) {
+    const posRes = http.get(`${BASE_URL}/api/v1/queue/position`, { headers });
+    if (body.data &amp;&amp; body.data.token) {
+        token = body.data.token;
+        break;
+    }
+    sleep(2); // 2초마다 Polling
+}
+
+// 3. 토큰이 있으면 주문
+if (token) {
+    const orderRes = http.post(`${BASE_URL}/api/v1/orders`, orderBody, { headers });
+}</code></pre>
+
+<p data-ke-size="size16">setup에서 1,000명의 테스트 유저, 브랜드, 상품(재고 999,999)을 생성합니다. 재고를 충분히 줘서 재고 부족이 아닌 순수한 처리량을 측정하기 위해서입니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">실측 결과 &mdash; 이론이 산산조각 나는 순간</h2>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>항목</th><th>이론값</th><th>실측값</th></tr></thead>
+    <tbody>
+    <tr><td><b>DB 커넥션 풀</b></td><td>50</td><td><b>10</b> (HikariCP 기본값)</td></tr>
+    <tr><td><b>주문 처리 시간</b></td><td>200ms</td><td><b>1,298ms</b></td></tr>
+    <tr><td><b>최대 TPS</b></td><td>175</td><td><b>10.7</b></td></tr>
+    <tr><td><b>주문 성공 건수</b></td><td>&mdash;</td><td>2,238건</td></tr>
+    <tr><td><b>주문 에러율</b></td><td>&mdash;</td><td><b>0%</b></td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">175 TPS를 기대했는데 10.7 TPS. <b>16배 괴리.</b></p>
+
+<p data-ke-size="size16">처음엔 &ldquo;뭘 잘못한 거지?&rdquo;라고 당황했습니다. 대기열 코드에 버그가 있나? Redis 설정이 잘못됐나?</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">병목 추적 &mdash; 대기열이 아니었다, 그런데 대기열도 느렸다?</h2>
+
+<p data-ke-size="size16">원인을 찾기 위해 각 구간의 응답 시간을 뜯어봤습니다.</p>
+
+<h3 data-ke-size="size23">주문 처리 (POST /orders)</h3>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>메트릭</th><th>값</th></tr></thead>
+    <tbody>
+    <tr><td><b>avg</b></td><td><b>1,298ms</b></td></tr>
+    <tr><td><b>P95</b></td><td><b>1,700ms</b></td></tr>
+    <tr><td>에러율</td><td>0%</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">주문 처리가 1,298ms. 200ms를 가정했는데 6.5배 느립니다. 재고 비관적 락, 쿠폰 적용, 트랜잭션 오버헤드가 복합적으로 작용한 결과입니다.</p>
+
+<p data-ke-size="size16">여기까지는 예상 가능했습니다. 그런데 의외의 결과가 하나 더 있었습니다.</p>
+
+<h3 data-ke-size="size23">대기열 진입 (POST /queue/enter)</h3>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>메트릭</th><th>값</th></tr></thead>
+    <tbody>
+    <tr><td>avg</td><td>4,607ms</td></tr>
+    <tr><td><b>P95</b></td><td><b>8,798ms</b></td></tr>
+    <tr><td>에러율</td><td>0%</td></tr>
+    </tbody>
+</table>
+
+<h3 data-ke-size="size23">Polling 순번 조회 (GET /queue/position)</h3>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>메트릭</th><th>값</th></tr></thead>
+    <tbody>
+    <tr><td>avg</td><td>3,681ms</td></tr>
+    <tr><td><b>P95</b></td><td><b>8,829ms</b></td></tr>
+    <tr><td>에러율</td><td>0%</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">대기열 진입 P95가 <b>8,798ms</b>? Redis <code>ZADD</code>와 <code>ZRANK</code>는 O(log N)인데 왜 8초나 걸리는 걸까요?</p>
+
+<h3 data-ke-size="size23">병목의 캐스케이드 &mdash; Tomcat 스레드가 원인이었다</h3>
+
+<p data-ke-size="size16">Redis 자체는 빠릅니다. 문제는 <b>Redis에 도달하기 전 단계</b>에 있었습니다.</p>
+
+<div class="scenario">
+    <div class="step">1,000명 동시 요청 &rarr; Tomcat 워커 스레드 200개</div>
+    <div class="step fail">주문 처리(1,298ms)가 스레드를 오래 점유</div>
+    <div class="step fail">대기열 API 요청이 Tomcat 스레드 큐에서 대기</div>
+    <div class="step">Redis 조회 자체는 수 ms인데, 스레드를 받기까지 수 초 대기</div>
+    <div class="step fail">대기열 P95 = 8,798ms (대부분이 스레드 대기 시간)</div>
+</div>
+
+<p data-ke-size="size16">주문 처리가 느리면 Tomcat 스레드를 오래 점유하고, 남는 스레드가 없으니 대기열 API(Redis만 찌르면 되는 가벼운 요청)까지 줄 서서 기다리게 됩니다. <b>DB 병목이 Tomcat 스레드 고갈로 전이되고, 그게 전체 API 응답 지연으로 퍼진 겁니다.</b></p>
+
+<p data-ke-size="size16">이건 대기열이 느린 게 아니라, <b>느린 주문 처리가 전체 시스템을 잡아먹은 것</b>입니다. 대기열의 진짜 병목은 대기열이 아니었습니다.</p>
+
+<h3 data-ke-size="size23">에러율 0% &mdash; 대기열은 제 역할을 하고 있었다</h3>
+
+<p data-ke-size="size16">응답이 느려졌음에도 <b>에러율은 0%</b>였습니다. 1,000명이 몰려도 단 한 건의 실패 없이 처리했습니다. 대기열이 초당 ~11명만 통과시키면서 시스템을 보호하고 있었던 겁니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">16배 괴리의 진짜 원인 &mdash; 가정 두 개가 틀렸다</h2>
+
+<h3 data-ke-size="size23">가정 1: 커넥션 풀 50 &rarr; 실제 10</h3>
+
+<p data-ke-size="size16"><code>application.yml</code>에 커넥션 풀을 명시하지 않았습니다. HikariCP 기본값은 10입니다. 이론은 50 기준이었는데 실제로는 1/5만 열려있었습니다.</p>
+
+<p data-ke-size="size16">이건 설계 문서에 &ldquo;50&rdquo;이라고 적어놓고 설정에 반영하지 않은 순수한 실수입니다. <b>부하 테스트를 안 했으면 절대 발견하지 못했을 겁니다.</b></p>
+
+<h3 data-ke-size="size23">가정 2: 처리 시간 200ms &rarr; 실제 1,298ms</h3>
+
+<p data-ke-size="size16">주문 1건에 200ms를 가정했는데, 실제로는 1,298ms였습니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li>재고 비관적 락 (<code>SELECT FOR UPDATE</code>)</li>
+    <li>쿠폰 낙관적 락 (<code>@Version</code>)</li>
+    <li>트랜잭션 내 다수 엔티티 조회/저장</li>
+    <li>로컬 Docker 환경 오버헤드</li>
+    <li>1,000 VU 동시 부하로 인한 DB 경합 증가</li>
+</ul>
+
+<h3 data-ke-size="size23">복합 효과 계산</h3>
+
+<pre class="yaml"><code>실제 TPS = 커넥션 풀 / 처리 시간
+         = 10 / 1.298
+         = 7.7
+실측: 10.7 (파이프라인 효과로 약간 높음)</code></pre>
+
+<p data-ke-size="size16">가정 두 개가 동시에 틀렸고, 그 괴리가 곱셈으로 작용해서 16배 차이가 난 겁니다. 커넥션 풀 1/5 &times; 처리 시간 6.5배 = 이론의 1/32. 실측 10.7이 나온 건 스케줄러가 파이프라인 방식으로 토큰을 발급하면서 커넥션을 효율적으로 재사용했기 때문입니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">대기열이 없었다면 어떻게 됐을까?</h2>
+
+<p data-ke-size="size16">커넥션 풀이 10개이고 처리 시간이 1,298ms이면, 동시에 10건만 처리 가능합니다. 나머지 990명은 HikariCP 내부 큐에서 기다리다가, <code>connectionTimeout</code>(기본 30초)을 넘기면 예외가 발생합니다.</p>
+
+<div class="scenario">
+    <div class="step">1,000명 동시 요청 &rarr; 10개 커넥션 점유 &rarr; 990명 HikariCP 대기</div>
+    <div class="step fail">connectionTimeout 초과 &rarr; 대량 500 에러</div>
+    <div class="step fail">유저: &ldquo;결제 됐나? 안 됐나?&rdquo; &rarr; 재시도 &rarr; 더 몰림</div>
+</div>
+
+<p data-ke-size="size16">대기열이 있으면? 스케줄러가 초당 ~11명만 통과시키니, 커넥션 풀이 고갈되지 않습니다. 나머지는 Redis에서 기다리면서 &ldquo;342번째입니다&rdquo;를 봅니다.</p>
+
+<p data-ke-size="size16">앞에서 본 Tomcat 스레드 문제로 대기열 API 응답도 느려졌지만, <b>에러율 0%</b>라는 사실이 핵심입니다. 느려진 것과 실패하는 것은 다릅니다. 1,000명을 받으면서도 단 한 건의 에러 없이 처리했다는 건, 대기열이 시스템을 보호하고 있다는 뜻입니다.</p>
+
+<p data-ke-size="size16">이 Tomcat 스레드 병목은 대기열 API와 주문 API의 <b>스레드 풀을 격리</b>하면 해결할 수 있습니다. 대기열 API 전용 스레드를 확보하면, 주문 처리가 아무리 느려도 대기열 Polling은 Redis 응답 속도(수 ms)에 근접할 겁니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">Thundering Herd는 실제로 관찰됐는가?</h2>
+
+<p data-ke-size="size16">스케줄러가 100ms마다 18명씩 토큰을 발급합니다. 이 18명이 동시에 주문 API를 호출하면 순간적으로 부하가 몰릴 수 있습니다.</p>
+
+<p data-ke-size="size16">실측에서는 주문 P95가 1,700ms로, avg(1,298ms) 대비 1.3배 수준이었습니다. 극단적인 스파이크는 아니었는데, 이유가 있었습니다.</p>
+
+<p data-ke-size="size16"><b>Polling 자체가 자연스러운 Jitter 역할을 하고 있었습니다.</b></p>
+
+<p data-ke-size="size16">유저마다 대기열 진입 시각이 다르고, Polling 주기도 2초입니다. 스케줄러가 18명에게 동시에 토큰을 발급해도, 유저A는 0.3초 뒤에 Polling하고 유저B는 1.7초 뒤에 Polling합니다. 토큰을 발견하는 시점이 자연스럽게 분산되는 겁니다.</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><i>&ldquo;2초 동안 쌓이면 한꺼번에 터지는 거 아닌가?&rdquo; 싶었는데, 유저별 Polling 타이밍이 다르다는 걸 깨달으니 납득됐다. 오히려 SSE로 토큰 발급 즉시 Push하면 18명이 정확히 같은 시점에 주문 API를 호출하게 되어 Thundering Herd가 더 심해질 수 있다.</i></p>
+</blockquote>
+
+<p data-ke-size="size16">그래도 추가 완화를 위해 4가지 전략을 적용했습니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>전략</th><th>동작</th><th>효과</th></tr></thead>
+    <tbody>
+    <tr><td><b>스케줄러 배치 분산</b></td><td>100ms마다 18명 (1초 10회)</td><td>피크 부하 10배 평탄화</td></tr>
+    <tr><td><b>Jitter</b></td><td>토큰에 0~2초 랜덤 딜레이</td><td>같은 배치 내 분산</td></tr>
+    <tr><td><b>동적 Polling</b></td><td>순번별 1s/3s/5s 간격</td><td>Polling 자체 부하 감소</td></tr>
+    <tr><td><b>Graceful Degradation</b></td><td>BLOCK/BYPASS 전략 전환</td><td>Redis 장애 시 대응</td></tr>
+    </tbody>
+</table>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">10,000 req/s가 들어오면 뭘 바꿔야 하나?</h2>
+
+<p data-ke-size="size16">과제 시나리오는 10,000 req/s 트래픽입니다. 이건 대기열 진입 트래픽이고, TPS(초당 주문 처리 수)는 DB 용량으로 결정됩니다. 유입량이 늘어도 TPS는 변하지 않고, 대기열 길이와 대기 시간만 증가합니다. 핵심은 <b>TPS를 높여 대기 시간을 줄이는 것</b>입니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead><tr><th>보정 항목</th><th>현재</th><th>목표</th><th>효과</th></tr></thead>
+    <tbody>
+    <tr><td><b>커넥션 풀</b></td><td>10</td><td>100</td><td>TPS 상한 10배 &uarr;</td></tr>
+    <tr><td><b>주문 처리시간</b></td><td>1,298ms</td><td>200ms 이하</td><td>같은 커넥션으로 6.5배 &uarr;</td></tr>
+    <tr><td><b>Tomcat 스레드</b></td><td>공유</td><td>대기열/주문 격리</td><td>대기열 API 응답 정상화</td></tr>
+    <tr><td><b>인스턴스</b></td><td>1대</td><td>N대</td><td>TPS를 곱하기로 확장</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">커넥션 100 + 처리시간 200ms면 <code>100 / 0.2 = 500 TPS</code>. 10,000 req/s 유입 시 초당 9,500명이 누적되고, 30초 후 예상 대기시간은 약 28분. 2대로 확장하면 14분.</p>
+
+<p data-ke-size="size16">Redis는 10만+ ops/s를 처리하므로 10,000 ZADD/s는 여유입니다. <b>병목은 항상 DB 쪽</b>이고, 대기열은 그 병목을 보호하는 역할입니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">이 경험에서 배운 것</h2>
+
+<h3 data-ke-size="size23">1. 가정은 틀린다, 실측이 진실이다</h3>
+
+<p data-ke-size="size16">&ldquo;커넥션 풀 50, 처리시간 200ms&rdquo;라고 적어두고 검증하지 않으면, 그건 설계가 아니라 소설입니다. 16배 괴리를 경험하고 나니, <b>숫자를 내놓을 때 &ldquo;이건 가정이다&rdquo;를 명시하고, 실측 계획을 함께 세우는 게</b> 당연해졌습니다.</p>
+
+<h3 data-ke-size="size23">2. 성능 설계는 가정 &rarr; 실측 &rarr; 괴리 분석 &rarr; 보정의 반복이다</h3>
+
+<p data-ke-size="size16">한 번에 정확한 설계를 하는 게 아니라, 가정을 세우고 부수고 다시 세우는 반복입니다. k6 같은 도구는 이 사이클을 빠르게 돌리기 위해 존재합니다.</p>
+
+<h3 data-ke-size="size23">3. 대기열의 가치는 에러율로 증명된다</h3>
+
+<p data-ke-size="size16">TPS가 낮고 응답이 느려져도 에러율 0%라면, 대기열은 제 역할을 하고 있는 겁니다. 대기열 없이 1,000명이 직접 주문 API를 호출했다면, 커넥션 풀 고갈 &rarr; 500 에러 &rarr; 재시도 폭풍이 발생했을 겁니다. Tomcat 스레드 병목으로 대기열 API까지 느려진 건 문제지만, 이건 스레드 풀 격리로 해결 가능한 문제입니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">마무리</h2>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>&ldquo;대기열의 진짜 병목은 대기열이 아니었다.&rdquo;</b></p>
+</blockquote>
+
+<p data-ke-size="size16">주문 처리가 1,298ms로 느려지면서 Tomcat 스레드를 잡아먹었고, 그 여파로 Redis만 찌르면 되는 대기열 API까지 8초대로 밀렸습니다. 병목은 주문 처리(DB)에 있었고, 대기열은 그 병목이 시스템 전체를 무너뜨리지 않도록 보호하고 있었습니다.</p>
+
+<p data-ke-size="size16">설계 문서에 적힌 숫자를 믿지 마세요. k6를 돌리세요. 이론이 산산조각 나는 순간이 진짜 설계가 시작되는 순간입니다.</p>
+
+</div>

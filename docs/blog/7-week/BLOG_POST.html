@@ -1,0 +1,581 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * { box-sizing: border-box; }
+.container { max-width: 100%; margin: 0 auto; line-height: 1.85; color: #1a1a1a; word-break: keep-all; overflow-x: hidden; }
+.container table { display: block; overflow-x: auto; }
+
+/* ===== 헤더 ===== */
+.post-header { text-align: center; padding: 20px 0 10px; margin-bottom: 8px; }
+.post-header h1 { font-size: 1.7em; font-weight: 800; line-height: 1.4; color: #111; margin-bottom: 12px; letter-spacing: -0.02em; }
+.subtitle { font-size: 1.05em; color: #666; font-style: italic; }
+
+/* ===== TL;DR 섹션 ===== */
+.tldr blockquote { background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%); border-left: 4px solid #006dd7; border-radius: 0 8px 8px 0; padding: 20px 24px; margin: 16px 0; font-size: 0.97em; line-height: 1.9; }
+
+/* ===== 코드 라벨 ===== */
+.code-label { display: inline-block; background: #2d2d2d; color: #ccc; font-size: 0.78em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; padding: 4px 14px; border-radius: 6px 6px 0 0; margin-top: 18px; margin-bottom: -2px; letter-spacing: 0.03em; }
+
+/* ===== 코드 블록 ===== */
+.container pre { background: #1e1e1e !important; color: #d4d4d4 !important; border-radius: 0 6px 6px 6px; padding: 20px 22px; margin-top: 0; margin-bottom: 18px; overflow-x: auto; font-size: 0.88em; line-height: 1.65; border: 1px solid #333; }
+.container pre code { background: transparent !important; color: inherit !important; padding: 0; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+.container p + pre, .container blockquote + pre { border-radius: 6px; }
+
+/* ===== 인라인 코드 ===== */
+.container code { background: #f1f3f5; color: #c7254e; padding: 2px 7px; border-radius: 4px; font-size: 0.88em; font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+
+/* ===== 테이블 ===== */
+.container table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.93em; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.container table thead tr { background: #2c3e50; color: #fff; }
+.container table th { padding: 13px 16px; text-align: left; font-weight: 600; font-size: 0.92em; letter-spacing: 0.02em; }
+.container table td { padding: 12px 16px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+.container table tbody tr:nth-child(even) { background: #f8f9fa; }
+.container table tbody tr:hover { background: #e9f5ff; transition: background 0.15s ease; }
+
+/* ===== 시나리오 박스 ===== */
+.scenario { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 18px 0; }
+.step { padding: 10px 16px; margin: 6px 0; border-radius: 6px; font-size: 0.94em; background: #fff; border-left: 4px solid #adb5bd; color: #333; }
+.step.success { background: #f0fdf4; border-left-color: #22c55e; color: #15803d; font-weight: 500; }
+.step.fail { background: #fef2f2; border-left-color: #ef4444; color: #b91c1c; font-weight: 500; }
+
+/* ===== 인용구 ===== */
+.container blockquote { border-left: 3px solid #3b82f6; background: #f8fafc; margin: 16px 0; padding: 14px 20px; border-radius: 0 6px 6px 0; color: #374151; }
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul { margin: 14px 0; padding-left: 24px; }
+.container ul li { margin-bottom: 8px; line-height: 1.8; }
+
+/* ===== 구분선 ===== */
+.container hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #d1d5db, transparent); margin: 36px 0; }
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 { font-size: 1.45em; font-weight: 700; color: #111; margin-top: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3b82f6; letter-spacing: -0.01em; }
+
+/* ===== h3 소제목 ===== */
+.container h3 { font-size: 1.15em; font-weight: 600; color: #1e3a5f; margin-top: 28px; margin-bottom: 12px; }
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+
+/* ===== source 클래스 ===== */
+.source { font-size: 0.85em; color: #999; text-align: right; }
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+<header class="post-header">
+    <h1>Kafka 메시지는 어디서 사라지는가?<br />(Producer부터 Consumer까지, 유실을 막는 설정들)</h1>
+    <p class="subtitle" data-ke-size="size16">acks=all만 설정하면 끝인 줄 알았습니다..</p>
+</header>
+
+<p data-ke-size="size16">&nbsp;</p>
+
+<!-- TL;DR -->
+<div class="tldr">
+    <blockquote data-ke-style="style3"><span style="color: #006dd7;">TL;DR</span><br />Kafka 메시지는 Producer &rarr; Broker &rarr; Consumer, 3개 구간 어디서든 유실될 수 있다.<br />각 구간마다 acks=all, idempotence, manual ACK 등 설정이 필요하고, 하나라도 빠지면 구멍이 뚫린다.<br />&ldquo;유실은 복구 불가, 중복은 멱등 처리로 해결&rdquo; &mdash; 그래서 ACK은 항상 마지막이어야 한다.</blockquote>
+</div>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 1: 메시지가 사라지는 3가지 구간 -->
+<h2 data-ke-size="size26">메시지가 사라지는 3가지 구간</h2>
+
+<p data-ke-size="size16">Kafka를 처음 도입하면서 &ldquo;메시지 유실을 막아야 한다&rdquo;는 건 알았는데, 정확히 <b>어디서</b> 유실되는지는 생각해보지 않았습니다.</p>
+<p data-ke-size="size16">정리해보니 3개 구간이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>구간</th><th>유실 시나리오</th><th>결과</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>발행했는데 Broker가 저장 못 함</td><td>이벤트 자체가 사라짐</td></tr>
+    <tr><td><b>Broker 내부</b></td><td>Leader에만 저장되고 Follower 복제 전 Leader 죽음</td><td>저장된 줄 알았는데 없음</td></tr>
+    <tr><td><b>Broker &rarr; Consumer</b></td><td>Consumer가 가져갔는데 처리 전에 죽음</td><td>처리 안 됐는데 메시지 사라짐</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">각 구간별로 어떤 설정이 이걸 막는지, 안 했으면 어떤 일이 벌어지는지 살펴보겠습니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 2: 구간 1 — acks 설정 -->
+<h2 data-ke-size="size26">구간 1: Producer &rarr; Broker &mdash; acks 설정</h2>
+
+<h3 data-ke-size="size23">acks에는 3가지 옵션이 있다</h3>
+
+<p data-ke-size="size16">Producer가 메시지를 보낸 후 &ldquo;성공&rdquo;으로 판단하는 기준이 <code>acks</code>입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>acks</th><th>동작</th><th>속도</th><th>안전성</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><code>0</code></td><td>Broker 응답을 기다리지 않음. 보내고 끝</td><td>가장 빠름</td><td>유실 가능 (Broker가 받았는지조차 모름)</td></tr>
+    <tr><td><code>1</code></td><td>Leader 파티션에 저장되면 성공</td><td>보통</td><td>Leader 죽으면 유실 가능</td></tr>
+    <tr><td><code>all</code></td><td>Leader + 모든 Follower(ISR)에 저장되면 성공</td><td>가장 느림</td><td>유실 없음</td></tr>
+    </tbody>
+</table>
+
+<h3 data-ke-size="size23">acks=1일 때 무슨 일이 벌어지는가?</h3>
+
+<p data-ke-size="size16">기본값 <code>acks=1</code>이면 Leader 파티션에 저장되는 순간 성공 응답을 보냅니다.</p>
+<p data-ke-size="size16">문제는 Leader에만 저장된 상태에서 Leader가 죽으면, Follower로 승격된 새 Leader에는 그 메시지가 없다는 겁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step">1. Producer &rarr; &ldquo;주문 생성 이벤트 발행&rdquo;</div>
+    <div class="step success">2. Broker Leader: 저장 완료 &rarr; Producer에 &ldquo;성공&rdquo; 응답</div>
+    <div class="step">3. Broker Follower: 아직 복제 안 됨</div>
+    <div class="step fail">4. Leader 죽음 &rarr; Follower가 새 Leader</div>
+    <div class="step fail">5. 메시지 없음. 주문은 됐는데 이벤트는 사라짐.</div>
+</div>
+
+<p data-ke-size="size16"><code>acks=0</code>은 더 심합니다. Broker가 메시지를 받았는지조차 확인하지 않으니, 네트워크 장애면 Producer는 성공으로 알고 있는데 Broker에는 아무것도 없는 상태가 됩니다. 로그 수집처럼 일부 유실이 괜찮은 경우에만 쓸 수 있습니다.</p>
+
+<h3 data-ke-size="size23">acks=all로 설정하면?</h3>
+
+<p data-ke-size="size16">모든 ISR(In-Sync Replica)이 저장을 확인한 후에만 성공 응답을 보냅니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<span class="code-label">yaml &mdash; kafka.yml</span>
+<pre class="yaml"><code>producer:
+  acks: all  # 모든 ISR 저장 확인 후 성공</code></pre>
+
+<div class="scenario">
+    <div class="step">1. Producer &rarr; &ldquo;주문 생성 이벤트 발행&rdquo;</div>
+    <div class="step success">2. Broker Leader: 저장 완료</div>
+    <div class="step success">3. Broker Follower 1: 복제 완료</div>
+    <div class="step success">4. Broker Follower 2: 복제 완료</div>
+    <div class="step success">5. 이제서야 Producer에 &ldquo;성공&rdquo; 응답</div>
+    <div class="step success">6. Leader가 죽어도 Follower에 이미 있음. 유실 없음.</div>
+</div>
+
+<p data-ke-size="size16">Leader가 죽어도 Follower에 이미 복제되어 있으니 메시지가 유실되지 않습니다. 대신 Leader 혼자 저장하면 끝나는 걸 모든 Follower 복제까지 기다려야 하니, 그만큼 응답이 느려지는 트레이드오프가 있습니다.</p>
+<p data-ke-size="size16">우리 프로젝트에서는 주문/결제/쿠폰 이벤트가 유실되면 후속 처리가 안 되므로 <code>acks=all</code>을 선택했습니다. 속도보다 안전이 중요한 경우입니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 3: 구간 1 보완 — idempotence -->
+<h2 data-ke-size="size26">구간 1 보완: enable.idempotence=true &mdash; 리트라이 시 중복 방지</h2>
+
+<p data-ke-size="size16"><code>acks=all</code>로 유실은 막았는데, 또 다른 문제가 있었습니다.</p>
+
+<h3 data-ke-size="size23">리트라이가 만드는 중복</h3>
+
+<p data-ke-size="size16">네트워크 타임아웃으로 Producer가 성공 응답을 못 받으면 리트라이합니다. 그런데 실제로는 Broker에 이미 저장된 상태라면?</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step">1. Producer &rarr; Broker: &ldquo;주문 이벤트 발행&rdquo;</div>
+    <div class="step success">2. Broker: 저장 완료, 응답 전송 중...</div>
+    <div class="step fail">3. 네트워크 타임아웃 &rarr; Producer: &ldquo;실패로 판단, 리트라이&rdquo;</div>
+    <div class="step">4. Producer &rarr; Broker: &ldquo;주문 이벤트 발행&rdquo; (같은 메시지)</div>
+    <div class="step fail">5. Broker에 동일 메시지 2건 저장</div>
+</div>
+
+<p data-ke-size="size16">Consumer 입장에서는 같은 주문 이벤트를 2번 받게 됩니다. 좋아요 수가 2번 올라가거나, 쿠폰이 2장 발급될 수 있습니다.</p>
+
+<h3 data-ke-size="size23">idempotence가 이걸 어떻게 막는가?</h3>
+
+<p data-ke-size="size16"><code>enable.idempotence=true</code>를 설정하면 Producer가 메시지에 <b>PID(Producer ID) + 시퀀스 번호</b>를 붙입니다. Broker는 이 조합을 보고 이미 저장된 메시지인지 판단합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step success">메시지 1: PID=1, seq=0 &rarr; Broker 저장 &#10003;</div>
+    <div class="step fail">메시지 1: PID=1, seq=0 &rarr; Broker: &ldquo;이미 있네, 무시&rdquo; (중복 방지)</div>
+    <div class="step success">메시지 2: PID=1, seq=1 &rarr; Broker 저장 &#10003; (새 메시지)</div>
+</div>
+
+<p data-ke-size="size16">시퀀스 번호는 Producer가 자동으로 관리하므로 우리가 신경 쓸 건 설정을 켜는 것뿐입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<span class="code-label">yaml &mdash; kafka.yml</span>
+<pre class="yaml"><code>producer:
+  properties:
+    enable.idempotence: true              # 리트라이 시 중복 저장 방지
+    max.in.flight.requests.per.connection: 5  # idempotence 시 5 이하 필수</code></pre>
+
+<h3 data-ke-size="size23">max.in.flight.requests.per.connection=5는 왜?</h3>
+
+<p data-ke-size="size16">이건 &ldquo;Broker 응답을 기다리지 않고 동시에 보낼 수 있는 요청 수&rdquo;입니다. idempotence를 사용하면 Broker가 시퀀스 번호로 순서를 추적하는데, 동시 요청이 너무 많으면 순서가 꼬일 수 있습니다.</p>
+<p data-ke-size="size16">Kafka 공식 문서에서 idempotence 사용 시 5 이하를 권장합니다. 5개까지는 Broker가 시퀀스 번호로 순서를 보장할 수 있고, 그 이상이면 보장할 수 없습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step">max.in.flight=1: 한 번에 하나만 &rarr; 순서 확실하지만 느림</div>
+    <div class="step success">max.in.flight=5: 동시 5개 &rarr; 속도와 순서 보장의 균형 (idempotence 시 최대)</div>
+    <div class="step fail">max.in.flight=10: idempotence 순서 보장 깨짐</div>
+</div>
+
+<h3 data-ke-size="size23">retries를 MAX로 설정한 이유</h3>
+
+<p data-ke-size="size16">처음에 <code>retries=3</code>으로 했다가 MAX(2147483647)로 바꿨습니다.</p>
+<p data-ke-size="size16">idempotence가 중복을 막아주니까, 재시도를 많이 해도 부작용이 없습니다. 오히려 retries=3이면 일시적 네트워크 장애에서 불필요하게 실패합니다.</p>
+<p data-ke-size="size16">그런데 &ldquo;무한 재시도면 영원히 안 끝나는 거 아닌가?&rdquo;라는 의문이 들었습니다. 여기서 <code>delivery.timeout.ms</code>가 실질적 상한 역할을 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<span class="code-label">yaml &mdash; kafka.yml</span>
+<pre class="yaml"><code>producer:
+  retries: 2147483647  # 횟수 제한 없음
+  properties:
+    delivery.timeout.ms: 120000  # 120초가 지나면 아무리 재시도해도 실패 처리</code></pre>
+
+<p data-ke-size="size16">동작을 정리하면:</p>
+<ul>
+    <li><code>retries</code> = &ldquo;몇 번까지 시도할지&rdquo; (횟수)</li>
+    <li><code>delivery.timeout.ms</code> = &ldquo;최대 몇 초까지 시도할지&rdquo; (시간)</li>
+    <li>둘 중 하나라도 걸리면 실패</li>
+</ul>
+
+<p data-ke-size="size16">retries=3이면 3번 만에 안 되면 포기하지만, retries=MAX이면 120초 동안 계속 시도합니다. 네트워크가 5초 후에 복구되면 retries=3은 이미 포기했지만, retries=MAX는 성공합니다.</p>
+<p data-ke-size="size16">설정값은 단독으로 보면 안 되고, 다른 설정과의 조합으로 봐야 합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 4: 구간 3 — auto-commit의 함정 -->
+<h2 data-ke-size="size26">구간 3: Broker &rarr; Consumer &mdash; auto-commit의 함정</h2>
+
+<p data-ke-size="size16">이게 가장 함정이었습니다.</p>
+
+<h3 data-ke-size="size23">auto-commit은 정확히 언제 커밋하는가?</h3>
+
+<p data-ke-size="size16"><code>enable.auto.commit=true</code>(기본값)이면 Consumer가 <code>poll()</code>을 호출할 때마다 이전 poll의 offset을 자동 커밋합니다. 정확히는 <code>auto.commit.interval.ms</code>(기본 5초) 간격으로 커밋합니다.</p>
+<p data-ke-size="size16">문제는 <b>&ldquo;가져온 시점&rdquo;과 &ldquo;처리 완료 시점&rdquo;이 다르다</b>는 겁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step">1. t=0s: poll() &rarr; 메시지 10건 가져옴</div>
+    <div class="step success">2. t=1s: 3건 처리 완료</div>
+    <div class="step fail">3. t=5s: auto-commit 타이머 동작 &rarr; offset 10으로 커밋 (10건 전부 커밋됨!)</div>
+    <div class="step fail">4. t=6s: 4번째 메시지 처리 중 서버 죽음</div>
+    <div class="step fail">5. 재기동: offset 10부터 시작 &rarr; 4~10번 메시지는 다시 안 옴 &rarr; 7건 유실</div>
+</div>
+
+<p data-ke-size="size16">auto-commit은 &ldquo;처리했는지&rdquo;가 아니라 &ldquo;가져갔는지&rdquo;를 기준으로 커밋합니다. 이 차이가 유실을 만듭니다.</p>
+
+<h3 data-ke-size="size23"><code>auto.commit.interval.ms</code>를 줄이면 해결되나?</h3>
+
+<p data-ke-size="size16">간격을 1초로 줄이면 유실 범위가 줄어들긴 하지만, 근본적으로 &ldquo;가져간 것 = 처리한 것&rdquo;이라는 가정이 틀린 거라서 해결이 안 됩니다. 1초 안에 서버가 죽으면 여전히 유실됩니다.</p>
+
+<h3 data-ke-size="size23">enable-auto-commit=false + ack-mode=manual로 바꾸면?</h3>
+
+<p data-ke-size="size16">처리가 완전히 끝난 후에만 <code>acknowledgment.acknowledge()</code>를 호출하여 offset을 커밋합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<span class="code-label">yaml &mdash; kafka.yml</span>
+<pre class="yaml"><code>consumer:
+  properties:
+    enable-auto-commit: false  # 자동 커밋 끄기
+listener:
+  ack-mode: manual  # 수동 ACK</code></pre>
+
+<p data-ke-size="size16">&nbsp;</p>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumer.kt</span>
+<pre class="kotlin"><code>fun consume(message: KafkaEventMessage, acknowledgment: Acknowledgment) {
+    // 1. 멱등 체크
+    if (idempotencyService.isAlreadyHandled(message.eventId)) {
+        acknowledgment.acknowledge()
+        return
+    }
+
+    // 2. 비즈니스 로직
+    metricsAggregationService.incrementLikeCount(productId, message.version)
+
+    // 3. 처리 완료 기록
+    idempotencyService.markHandled(message.eventId, ...)
+
+    // 4. 여기서만 offset 커밋
+    acknowledgment.acknowledge()
+}</code></pre>
+
+<p data-ke-size="size16">이제 offset 커밋 시점 = 처리 완료 시점이 됩니다. 처리가 끝나지 않으면 절대 커밋하지 않습니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 5: ACK은 왜 항상 마지막인가? -->
+<h2 data-ke-size="size26">ACK은 왜 항상 마지막인가?</h2>
+
+<p data-ke-size="size16">manual ACK을 쓰면 &ldquo;처리 완료 후 ACK&rdquo;이 되는데, 그러면 비즈니스 로직은 성공했는데 ACK 전에 서버가 죽으면 어떻게 될까요? 같은 메시지를 다시 받게 됩니다. 이때 <code>event_handled</code> 테이블이 필요합니다.</p>
+
+<h3 data-ke-size="size23">event_handled 테이블이 없으면?</h3>
+
+<div class="scenario">
+    <div class="step">1. 메시지 수신 &rarr; 비즈니스 로직 (likeCount +1)</div>
+    <div class="step fail">2. ACK 전에 서버 죽음</div>
+    <div class="step">3. 재기동 &rarr; 같은 메시지 재수신</div>
+    <div class="step fail">4. 비즈니스 로직 다시 실행 (likeCount +1) &rarr; 좋아요가 2번 올라감 (중복 처리)</div>
+</div>
+
+<h3 data-ke-size="size23">event_handled 테이블이 있으면?</h3>
+
+<div class="scenario">
+    <div class="step">1. 메시지 수신 &rarr; 멱등 체크 (없음) &rarr; 비즈니스 로직 (likeCount +1) &rarr; event_handled INSERT</div>
+    <div class="step fail">2. ACK 전에 서버 죽음</div>
+    <div class="step">3. 재기동 &rarr; 같은 메시지 재수신</div>
+    <div class="step success">4. 멱등 체크 (있음!) &rarr; skip &rarr; ACK &rarr; 좋아요는 1번만 올라감 (중복 방지)</div>
+</div>
+
+<p data-ke-size="size16"><code>event_handled</code> 테이블은 eventId를 PK로 가진 단순한 테이블입니다. 메시지를 처리할 때마다 eventId를 INSERT하고, 재수신 시 PK 존재 여부만 체크합니다.</p>
+
+<h3 data-ke-size="size23">각 단계 사이 서버 죽으면?</h3>
+
+<p data-ke-size="size16">이 순서에서 각 단계 사이에 서버가 죽으면 어떻게 되는지 생각해봤습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>장애 시점</th><th>결과</th><th>대응</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>비즈니스 로직 처리 전</b></td><td>offset 미커밋 &rarr; 재수신 &rarr; 멱등 체크에서 없으니 정상 처리</td><td>자동 복구</td></tr>
+    <tr><td><b>비즈니스 로직 성공, ACK 전</b></td><td>offset 미커밋 &rarr; 재수신 &rarr; 멱등 체크에서 있으니 skip</td><td>멱등 처리</td></tr>
+    <tr><td><b>ACK 성공</b></td><td>완료</td><td>&mdash;</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">만약 ACK을 비즈니스 로직 <b>전에</b> 보냈다면?</p>
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="scenario">
+    <div class="step fail">1. ACK 먼저 &rarr; offset 커밋됨</div>
+    <div class="step">2. 비즈니스 로직 실행 중 서버 죽음</div>
+    <div class="step fail">3. 재기동 시 offset이 이미 커밋 &rarr; 이 메시지는 다시 안 옴</div>
+    <div class="step fail">4. 처리 안 됐는데 메시지 유실. 복구 불가.</div>
+</div>
+
+<p data-ke-size="size16">정리하면:</p>
+<ul>
+    <li>ACK을 먼저 보내면 &rarr; <b>유실</b> (복구 불가)</li>
+    <li>ACK을 나중에 보내면 &rarr; <b>중복</b> (멱등 처리로 해결 가능)</li>
+</ul>
+
+<p data-ke-size="size16">유실은 되돌릴 수 없지만, 중복은 <code>event_handled</code> 테이블로 걸러낼 수 있습니다. 그래서 ACK은 항상 마지막입니다.</p>
+<p data-ke-size="size16">이게 바로 &ldquo;At Least Once 수신 + 멱등 처리 = Exactly Once 효과&rdquo;입니다. 진짜 Exactly Once는 존재하지 않고, &ldquo;여러 번 받되 한 번만 처리되도록&rdquo; 만드는 겁니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 6: 설정이 정말 동작하는지, 테스트로 증명하기 -->
+<h2 data-ke-size="size26">설정이 정말 동작하는지, 테스트로 증명하기</h2>
+
+<p data-ke-size="size16">앞에서 <code>enable-auto-commit: false</code>, <code>ack-mode: manual</code>, <code>event_handled</code> 멱등 처리 &mdash; 이런 설정을 했습니다. 그런데 한 가지 찝찝한 게 있었습니다.</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><i>&ldquo;이 설정들이 정말로 의도대로 동작하고 있는 건 맞나?&rdquo;</i></p>
+</blockquote>
+
+<p data-ke-size="size16">블로그에 &ldquo;이 설정을 하면 안전합니다&rdquo;라고 쓰려면, 실제로 동작한다는 증거가 있어야 합니다. 시나리오만 나열하면 그건 예측이지 검증이 아닙니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">그래서 실제로 Kafka 메시지를 발행하고, Consumer가 처리하고, DB에 반영되는 <b>전체 흐름을 통합 테스트로 검증</b>하기로 했습니다.</p>
+
+<h3 data-ke-size="size23">검증 1: 멱등 처리가 진짜 동작하는가?</h3>
+
+<p data-ke-size="size16">검증하고 싶었던 핵심 질문은 이겁니다:</p>
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li>같은 <code>eventId</code>로 메시지를 2번 보내면, <code>likeCount</code>가 1만 올라가는가?</li>
+    <li>아니면 <code>event_handled</code> 체크를 빠져나가서 2번 올라가는가?</li>
+</ul>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumerIntegrationTest.kt</span>
+<pre class="kotlin"><code>@SpringBootTest
+class CatalogEventConsumerIntegrationTest {
+
+    @Test
+    fun likeCountRemainsOne_whenDuplicateEventIdPublished() {
+        // arrange
+        val eventId = UUID.randomUUID().toString()
+        val duplicateMessage = createLikedMessage(productId = 2, version = 1L, eventId = eventId)
+        val checkMessage = createViewedMessage(productId = 2, version = 2L)
+
+        // act &mdash; 1차 발행
+        kafkaTemplate.send(KafkaTopics.CATALOG_EVENTS, "2", duplicateMessage)
+
+        // assert &mdash; 1차 처리 대기
+        await atMost Duration.ofSeconds(15) untilAsserted {
+            val metrics = productMetricsJpaRepository.findByProductId(2)
+            assertThat(metrics!!.likeCount).isEqualTo(1)
+        }
+
+        // act &mdash; 같은 eventId로 2차 발행(중복) + 확인용 VIEWED 이벤트
+        kafkaTemplate.send(KafkaTopics.CATALOG_EVENTS, "2", duplicateMessage)
+        kafkaTemplate.send(KafkaTopics.CATALOG_EVENTS, "2", checkMessage)
+
+        // assert &mdash; VIEWED가 처리됐으면, 중복도 이미 처리(skip)된 것
+        await atMost Duration.ofSeconds(15) untilAsserted {
+            val metrics = productMetricsJpaRepository.findByProductId(2)
+            assertThat(metrics!!.viewCount).isEqualTo(1) // 확인용 메시지 처리됨
+            assertThat(metrics.likeCount).isEqualTo(1)   // 중복은 skip됨
+        }
+    }
+}</code></pre>
+
+<p data-ke-size="size16">같은 <code>eventId</code>를 2번 보내고, 중복 메시지 뒤에 <code>PRODUCT_VIEWED</code> 이벤트를 하나 더 보냅니다. 같은 파티션 키(<code>"2"</code>)이므로 순서가 보장됩니다. <code>viewCount=1</code>이 되었다는 건, 그 앞의 중복 메시지도 Consumer가 이미 받았다(그리고 skip했다)는 증거입니다.</p>
+
+<h3 data-ke-size="size23">검증 2: 테스트가 발견한 진짜 버그</h3>
+
+<p data-ke-size="size16">그런데 테스트를 처음 돌렸을 때, <b>전부 실패</b>했습니다.</p>
+
+<pre class="bash"><code>java.lang.IllegalArgumentException:
+  Cannot construct instance of `KafkaEventMessage`:
+  no String-argument constructor/factory method to deserialize
+  from String value ('{"eventId":"...","eventType":"PRODUCT_LIKED",...}')</code></pre>
+
+<p data-ke-size="size16">Consumer가 메시지를 받긴 받았는데, 역직렬화에서 터진 겁니다. 원인을 추적해보니 <b>두 가지 설정 오류</b>가 숨어 있었습니다.</p>
+
+<p data-ke-size="size16"><b>오류 1: kafka.yml 오타</b></p>
+
+<span class="code-label">yaml &mdash; kafka.yml (수정 전)</span>
+<pre class="yaml"><code># consumer에 "value-serializer"라는 속성은 없음 &rarr; Spring Boot가 무시
+# 기본값 StringDeserializer가 적용됨
+consumer:
+  value-serializer: org.apache.kafka.common.serialization.ByteArrayDeserializer</code></pre>
+
+<span class="code-label">yaml &mdash; kafka.yml (수정 후)</span>
+<pre class="yaml"><code>consumer:
+  value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer</code></pre>
+
+<p data-ke-size="size16"><code>value-serializer</code>는 Consumer에 존재하지 않는 속성입니다. Spring Boot가 이걸 무시하고 기본값인 <code>StringDeserializer</code>를 사용합니다. 그래서 메시지가 <code>byte[]</code>가 아닌 <code>String</code>으로 들어온 겁니다.</p>
+
+<p data-ke-size="size16"><b>오류 2: Consumer의 역직렬화 방식</b></p>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumer.kt (수정 전)</span>
+<pre class="kotlin"><code>// convertValue는 Map &rarr; Object 변환용. byte[]이나 String은 처리 못 함
+val message = objectMapper.convertValue(record.value(), KafkaEventMessage::class.java)</code></pre>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumer.kt (수정 후)</span>
+<pre class="kotlin"><code>// readValue는 byte[] &rarr; Object 역직렬화 전용
+val message = objectMapper.readValue(record.value() as ByteArray, KafkaEventMessage::class.java)</code></pre>
+
+<p data-ke-size="size16"><code>convertValue()</code>는 이미 역직렬화된 객체(Map 등)를 타입 변환할 때 쓰는 메서드입니다. <code>ByteArrayDeserializer</code>로 받은 raw byte[]를 역직렬화하려면 <code>readValue()</code>를 써야 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">두 가지를 수정하고 테스트를 다시 돌리니 <b>전부 통과</b>했습니다.</p>
+
+<div class="scenario">
+    <div class="step">1. 정상 발행 &rarr; likeCount=1 증가</div>
+    <div class="step success">2. 같은 eventId 중복 발행 &rarr; likeCount=1 유지 (멱등 처리 동작 확인)</div>
+    <div class="step success">3. 서로 다른 eventId 발행 &rarr; likeCount=2 (대조군 통과)</div>
+</div>
+
+<h3 data-ke-size="size23">검증 3: manual ACK이 정말 &ldquo;처리 후에만&rdquo; offset을 커밋하는가?</h3>
+
+<p data-ke-size="size16">멱등 처리 검증은 끝났지만, 하나 더 확인하고 싶은 게 있었습니다. 앞에서 &ldquo;auto-commit은 처리 여부와 무관하게 커밋하고, manual ACK은 처리 완료 후에만 커밋한다&rdquo;고 설명했는데 &mdash; 이것도 진짜 그런지 확인해봐야 합니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Kafka <code>AdminClient</code>로 Consumer Group의 committed offset을 직접 조회해서 검증했습니다.</p>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumerIntegrationTest.kt</span>
+<pre class="kotlin"><code>@Test
+fun committedOffsetAdvances_afterMessageProcessed() {
+    // arrange
+    val adminClient = AdminClient.create(mapOf("bootstrap.servers" to "localhost:19092"))
+    val message = createLikedMessage(productId = 100, version = 1L)
+
+    // act &mdash; 메시지 발행, 어느 파티션의 몇 번 offset에 들어갔는지 기록
+    val sendResult = kafkaTemplate.send(KafkaTopics.CATALOG_EVENTS, "100", message).get()
+    val sentPartition = sendResult.recordMetadata.partition()
+    val sentOffset = sendResult.recordMetadata.offset()
+
+    // 처리 완료 대기 (DB 반영 확인)
+    await atMost Duration.ofSeconds(15) untilAsserted {
+        val metrics = productMetricsJpaRepository.findByProductId(100)
+        assertThat(metrics!!.likeCount).isEqualTo(1)
+    }
+
+    // assert &mdash; committed offset이 발행된 메시지 이후로 이동했는지 확인
+    val tp = TopicPartition(KafkaTopics.CATALOG_EVENTS, sentPartition)
+    val afterOffsets = adminClient
+        .listConsumerGroupOffsets("metrics-consumer")
+        .partitionsToOffsetAndMetadata().get()
+    assertThat(afterOffsets[tp]?.offset()).isGreaterThan(sentOffset)
+}</code></pre>
+
+<p data-ke-size="size16">이 테스트의 흐름은 이렇습니다:</p>
+
+<div class="scenario">
+    <div class="step">1. 메시지 발행 &rarr; 파티션 번호와 offset 기록</div>
+    <div class="step">2. Consumer가 처리 완료할 때까지 대기 (DB 반영 확인)</div>
+    <div class="step success">3. AdminClient로 committed offset 조회 &rarr; 발행된 offset 이후로 이동 확인</div>
+</div>
+
+<p data-ke-size="size16">&ldquo;처리 완료 &rarr; offset 커밋&rdquo; 순서가 보장되는지를 AdminClient로 직접 확인하는 겁니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">추가로, <b>메시지를 발행하지 않으면 offset이 변하지 않는다</b>는 것도 테스트했습니다. auto-commit이었다면 <code>poll()</code> 할 때마다 offset이 커밋되지만, manual ACK에서는 <code>acknowledge()</code>를 호출하지 않는 한 offset이 그대로입니다.</p>
+
+<span class="code-label">kotlin &mdash; CatalogEventConsumerIntegrationTest.kt</span>
+<pre class="kotlin"><code>@Test
+fun committedOffsetUnchanged_whenNoMessagePublished() {
+    val beforeOffsets = getCommittedOffsets("metrics-consumer")
+    Thread.sleep(5000)  // auto-commit 간격(5초)만큼 대기
+    val afterOffsets = getCommittedOffsets("metrics-consumer")
+
+    // offset 변화 없음 &mdash; manual ACK이므로 acknowledge() 없이는 커밋 안 됨
+    for ((tp, beforeMeta) in beforeOffsets) {
+        assertThat(afterOffsets[tp]?.offset()).isEqualTo(beforeMeta.offset())
+    }
+}</code></pre>
+
+<p data-ke-size="size16">두 테스트 모두 통과했습니다. manual ACK 설정이 의도대로 동작하고 있다는 증거입니다.</p>
+
+<h3 data-ke-size="size23">이 경험에서 느낀 것</h3>
+
+<p data-ke-size="size16">솔직히 이 오류들은 설정 시점에는 절대 발견할 수 없는 종류였습니다. 컴파일 에러도 안 나고, 앱 기동도 정상이고, Kafka Consumer가 파티션 할당까지 잘 받습니다. <b>실제 메시지가 흘러야만</b> 터지는 문제입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&ldquo;설정했으니 될 거야&rdquo;라고 생각했던 것들이 실은 하나도 동작하지 않고 있었다는 게, 테스트를 안 쓰면 이런 일이 벌어진다는 걸 직접 경험한 순간이었습니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">테스트를 3가지로 나눠서 검증한 걸 정리하면:</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>검증</th><th>질문</th><th>결과</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>멱등 처리</b></td><td>같은 eventId 2번 보내면 likeCount가 1인가?</td><td>통과 &mdash; event_handled에서 skip</td></tr>
+    <tr><td><b>버그 발견</b></td><td>설정이 진짜 동작하고 있었나?</td><td>yaml 오타 + 역직렬화 버그 발견</td></tr>
+    <tr><td><b>manual ACK</b></td><td>offset이 처리 후에만 커밋되나?</td><td>통과 &mdash; AdminClient로 확인</td></tr>
+    </tbody>
+</table>
+
+<hr data-ke-style="style1" />
+
+<!-- Section 7: 전체 설정 정리 -->
+<h2 data-ke-size="size26">전체 설정 정리 &mdash; 한 눈에 보기</h2>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr><th>구간</th><th>설정</th><th>값</th><th>안 하면?</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>acks</td><td>all</td><td>Leader에만 저장 &rarr; Leader 죽으면 유실</td></tr>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>enable.idempotence</td><td>true</td><td>리트라이 시 동일 메시지 중복 저장</td></tr>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>max.in.flight</td><td>5</td><td>idempotence 시 5 초과하면 순서 깨짐</td></tr>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>retries</td><td>MAX</td><td>3회면 일시 장애에서 불필요하게 실패</td></tr>
+    <tr><td><b>Producer &rarr; Broker</b></td><td>delivery.timeout.ms</td><td>120000</td><td>retries=MAX와 세트, 120초가 실제 상한</td></tr>
+    <tr><td><b>Broker &rarr; Consumer</b></td><td>enable-auto-commit</td><td>false</td><td>처리 전에 offset 커밋 &rarr; 유실</td></tr>
+    <tr><td><b>Broker &rarr; Consumer</b></td><td>ack-mode</td><td>manual</td><td>자동 커밋과 동일한 문제</td></tr>
+    <tr><td><b>Consumer 내부</b></td><td>event_handled 테이블</td><td>PK 중복 체크</td><td>재수신 시 중복 처리</td></tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">이 설정들은 하나만 빠져도 구멍이 뚫립니다. <code>acks=all</code>로 Broker까지 안전하게 보내도, Consumer에서 auto-commit이면 처리 전에 유실될 수 있습니다. Producer부터 Consumer까지 <b>전 구간을 관통하는 설계</b>가 필요합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<!-- 마무리 -->
+<h2 data-ke-size="size26">마무리</h2>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>&ldquo;유실은 복구 불가, 중복은 멱등 처리로 해결 가능. 그래서 모든 설정은 유실 방지 쪽으로 기울어야 한다.&rdquo;</b></p>
+</blockquote>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">Kafka 설정을 하면서 가장 크게 느낀 건, 설정값 하나하나가 독립적이지 않다는 겁니다. <code>acks=all</code>은 <code>enable.idempotence=true</code>와 세트이고, <code>retries=MAX</code>는 <code>delivery.timeout.ms</code>와 세트이며, <code>manual ACK</code>은 <code>event_handled</code> 멱등 처리와 세트입니다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">설정값을 외우는 게 아니라, <b>&ldquo;이 구간에서 무슨 일이 벌어질 수 있고, 그걸 어떻게 막는가&rdquo;</b>라는 질문으로 접근하면 왜 이 조합이 필요한지 자연스럽게 이해됩니다.</p>
+
+</div>

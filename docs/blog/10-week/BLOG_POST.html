@@ -1,0 +1,582 @@
+<style>
+/* ===== 전체 레이아웃 ===== */
+.container, .container * {
+    box-sizing: border-box;
+}
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 1.85;
+    color: #1a1a1a;
+    word-break: keep-all;
+    overflow-x: hidden;
+}
+.container table {
+    display: block;
+    overflow-x: auto;
+}
+
+/* ===== 헤더 ===== */
+.post-header {
+    text-align: center;
+    padding: 20px 0 10px;
+    margin-bottom: 8px;
+}
+.post-header h1 {
+    font-size: 1.7em;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+}
+.subtitle {
+    font-size: 1.05em;
+    color: #666;
+    font-style: italic;
+}
+
+/* ===== TL;DR 섹션 ===== */
+.tldr blockquote {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    border-left: 4px solid #006dd7;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 0.97em;
+    line-height: 1.9;
+}
+
+/* ===== 코드 라벨 ===== */
+.code-label {
+    display: inline-block;
+    background: #2d2d2d;
+    color: #ccc;
+    font-size: 0.78em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    padding: 4px 14px;
+    border-radius: 6px 6px 0 0;
+    margin-top: 18px;
+    margin-bottom: -2px;
+    letter-spacing: 0.03em;
+}
+
+/* ===== 코드 블록 ===== */
+.container pre {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 0 6px 6px 6px;
+    padding: 20px 22px;
+    margin-top: 0;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.65;
+    border: 1px solid #333;
+}
+.container pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+.container p + pre,
+.container blockquote + pre {
+    border-radius: 6px;
+}
+
+/* ===== 인라인 코드 ===== */
+.container code {
+    background: #f1f3f5;
+    color: #c7254e;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+/* ===== 테이블 ===== */
+.container table {
+    display: table;
+    overflow-x: auto;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.93em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.container table thead tr {
+    background: #2c3e50;
+    color: #fff;
+}
+.container table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.92em;
+    letter-spacing: 0.02em;
+}
+.container table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+.container table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+.container table tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.15s ease;
+}
+
+/* ===== 시나리오 박스 ===== */
+.scenario {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 18px 0;
+}
+.step {
+    padding: 10px 16px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 0.94em;
+    background: #fff;
+    border-left: 4px solid #adb5bd;
+    color: #333;
+}
+.step.success {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+    color: #15803d;
+    font-weight: 500;
+}
+.step.fail {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+    color: #b91c1c;
+    font-weight: 500;
+}
+
+/* ===== 인용구 ===== */
+.container blockquote {
+    border-left: 3px solid #3b82f6;
+    background: #f8fafc;
+    margin: 16px 0;
+    padding: 14px 20px;
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+}
+.container blockquote i { color: #555; }
+.container blockquote b { color: #1e3a5f; }
+
+/* ===== 리스트 ===== */
+.container ul {
+    margin: 14px 0;
+    padding-left: 24px;
+}
+.container ul li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+/* ===== 구분선 ===== */
+.container hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin: 36px 0;
+}
+
+/* ===== h2 섹션 제목 ===== */
+.container h2 {
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #111;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+    letter-spacing: -0.01em;
+}
+
+/* ===== h3 소제목 ===== */
+.container h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* ===== 강조 ===== */
+.container b { color: #111; }
+
+/* ===== source 클래스 ===== */
+.source {
+    font-size: 0.85em;
+    color: #999;
+    text-align: right;
+}
+</style>
+
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<div class="container">
+
+<header class="post-header">
+    <h1>Spring Batch가 뭘까?<br />주기적으로? "탈락"</h1>
+    <p class="subtitle" data-ke-size="size16">스케줄러가 배치라고 생각했던 내가, Spring Batch를 만나고 깨달은 것들</p>
+</header>
+
+<p data-ke-size="size16">&nbsp;</p>
+
+<div class="tldr">
+    <blockquote data-ke-style="style3">
+        <span style="color: #006dd7;">TL;DR</span><br />
+        스케줄러는 "언제 실행할지"를 정하는 것이고, 배치는 "대량 데이터를 안전하게 처리하는 것"이다. 둘은 독립적인 개념이다.<br />
+        Spring Batch가 제공하는 청크 트랜잭션, Skip/Retry, 커서 스트리밍, 메타데이터를 스케줄러에서 직접 구현하면 결국 프레임워크를 재발명하는 꼴이 된다.<br />
+        주간/월간 랭킹 배치를 직접 구현하면서 각 기능이 왜 필요한지 확인했다.
+    </blockquote>
+</div>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">1. 스케줄러든 Spring Batch든, 나한텐 다 같았다</h2>
+
+<p data-ke-size="size16">회사에서는 주기적으로 도는 작업을 "스케줄러"라고 부르고, Jenkins에서 시간을 설정해서 Spring Batch Task를 실행시키는 걸 "배치"라고 불렀습니다. 스케줄러는 5분마다 캐시를 갱신하거나 상태를 체크하는 용도로, 배치는 매일 새벽에 통계를 집계하는 용도로 쓰이고 있었습니다.</p>
+
+<p data-ke-size="size16">저는 솔직히 이렇게 이해하고 있었습니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>스케줄러</b> = 주기별로 계속 도는 것 (5분마다, 1시간마다)</li>
+    <li><b>Spring Batch</b> = 정해진 시간에 한 번 돌리는 것 (매일 새벽 2시)</li>
+</ul>
+
+<p data-ke-size="size16">둘 다 결국 "정해진 시간에 코드를 실행하는 것" 아닌가? 돌리는 주기가 다를 뿐이지.</p>
+
+<p data-ke-size="size16">그런데 배치를 직접 구현해보니 이 이해가 틀렸습니다.</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>"Spring Batch가 뭘까? 주기적으로? &mdash; 탈락."</b></p>
+</blockquote>
+
+<p data-ke-size="size16">배치의 핵심은 "언제 돌리느냐"가 아니었습니다.</p>
+
+<blockquote data-ke-style="style1">
+    <p data-ke-size="size16"><b>Batch Processing</b> = 모아놓고 한번에 처리하는 작업. 일괄처리.</p>
+    <p data-ke-size="size16"><b>Scheduling</b> = 언제 실행하냐를 정하는 것.</p>
+    <p data-ke-size="size16">배치는 <b>"무엇을 어떻게"</b>, 스케줄링은 <b>"언제"</b>의 문제.</p>
+</blockquote>
+
+<p data-ke-size="size16">직접 만들어보니 이 구분이 체감됩니다.</p>
+
+<p data-ke-size="size16">Jenkins가 매일 새벽 2시에 배치를 트리거하는 건 스케줄링이고,<br />그 안에서 100만 건을 청크 단위로 읽고 집계해서 저장하는 건 배치 처리입니다.</p>
+
+<p data-ke-size="size16">Jenkins를 Cron으로 바꿔도 배치 로직은 그대로지만,<br />Spring Batch를 단순 스케줄러로 바꾸면 대량 처리 안전장치가 전부 사라집니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>개념</th>
+        <th>역할</th>
+        <th>예시</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>배치(Batch)</b></td>
+        <td>무엇을, 어떻게 처리할지</td>
+        <td>100만 건 이벤트 로그를 집계해서 랭킹 생성</td>
+    </tr>
+    <tr>
+        <td><b>스케줄링(Scheduling)</b></td>
+        <td>언제 실행할지</td>
+        <td>매일 새벽 2시, 매주 월요일 01:00</td>
+    </tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16"><code>@Scheduled</code>, 크론, 젠킨스, 에어플로우는 전부 "언제"의 영역입니다. "어떻게"의 영역은 Spring Batch가 담당합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">2. 스케줄러로 대량 데이터를 처리하면 생기는 문제</h2>
+
+<p data-ke-size="size16">데이터가 수백 건이면 스케줄러로 충분합니다. 문제는 데이터가 커질 때 시작됩니다.</p>
+
+<p data-ke-size="size16">100만 건의 이벤트 로그를 집계해서 랭킹을 만드는 시나리오를 생각해보겠습니다.</p>
+
+<h3 data-ke-size="size23">@Scheduled + JPA로 구현했다면</h3>
+
+<span class="code-label">kotlin &mdash; ScheduledRanking.kt</span>
+<pre class="kotlin"><code>@Scheduled(cron = "0 0 2 * * *")
+fun aggregateRanking() {
+    val events = eventLogRepository.findAll() // 100만 건 전부 메모리에
+    val grouped = events.groupBy { it.productId }
+    val rankings = grouped.map { (productId, events) &rarr;
+        // 집계 로직...
+    }
+    rankingRepository.saveAll(rankings) // 한 트랜잭션에 전부
+}</code></pre>
+
+<p data-ke-size="size16">이 코드가 50만 건째에서 OOM으로 터지면:</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>재시작 불가</b> &mdash; 어디까지 처리했는지 기록이 없으므로 처음부터 100만 건을 다시 읽어야 합니다. 이미 처리한 50만 건도 다시.</li>
+    <li><b>전체 롤백</b> &mdash; <code>saveAll()</code>이 하나의 <code>@Transactional</code> 안에서 실행되므로, 50만 건째에서 터지면 이전에 저장한 것까지 전부 롤백됩니다. DB 입장에서는 아무 일도 안 한 것과 같습니다.</li>
+    <li><b>부분 실패 처리 불가</b> &mdash; 100만 건 중 100건이 데이터 오류(null 필드, 제약조건 위반 등)여도 전체가 실패합니다. 정상인 999,900건도 같이 죽습니다.</li>
+    <li><b>실행 이력 없음</b> &mdash; 지난번에 이 작업이 성공했는지, 몇 건을 처리했는지, 얼마나 걸렸는지 확인할 방법이 없습니다. 로그를 뒤져봐야 합니다.</li>
+</ul>
+
+<p data-ke-size="size16">이 문제들을 하나씩 해결하려고 체크포인트 테이블을 만들고, 트랜잭션을 분리하고, try-catch로 에러를 잡고, 실행 이력 테이블을 설계하다 보면... 결국 Spring Batch를 재발명하게 됩니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">3. Spring Batch가 해결해주는 것들</h2>
+
+<p data-ke-size="size16">직접 구현하면서 "이건 스케줄러로는 안 되겠다"고 느낀 지점들입니다.</p>
+
+<h3 data-ke-size="size23">3-1. 실패 복구</h3>
+
+<p data-ke-size="size16">스케줄러로 짠 코드가 50만 건째에서 터지면, 처음부터 다시 돌려야 합니다. 100만 건을 다시 읽고, 이미 처리한 50만 건도 다시 계산합니다.</p>
+
+<p data-ke-size="size16">Spring Batch는 두 가지 재시작 전략을 제공합니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><b>체크포인트 기반 재시작</b> &mdash; 청크가 커밋될 때마다 <code>BATCH_STEP_EXECUTION</code> 테이블에 <code>read_count</code>, <code>write_count</code>를 기록합니다. 실패 후 재실행하면 마지막 커밋 지점부터 이어서 처리합니다. 대량 INSERT처럼 데이터를 누적하는 작업에 적합합니다.</li>
+    <li><b>Cleanup &rarr; Aggregate (전체 재실행)</b> &mdash; 기존 데이터를 DELETE한 후 처음부터 다시 실행합니다. 집계/랭킹처럼 전체 데이터를 합산해야 결과가 의미 있는 작업에 적합합니다.</li>
+</ul>
+
+<p data-ke-size="size16">이번에 만든 랭킹 배치에서는 2번을 선택했습니다. Top 100 랭킹은 "4월 13일~19일의 모든 이벤트를 합산한 결과"이므로, 50만 건째에서 멈추고 이어서 처리하면 불완전한 랭킹이 됩니다. 깨끗하게 지우고 다시 만드는 게 정합성이 확실합니다.</p>
+
+<p data-ke-size="size16">어떤 전략을 선택하든 Spring Batch가 메타데이터 관리와 Job 실행 상태 추적을 제공하기 때문에 직접 구현할 필요가 없었습니다.</p>
+
+<h3 data-ke-size="size23">3-2. 청크 트랜잭션</h3>
+
+<p data-ke-size="size16">100만 건을 한 트랜잭션으로 처리하면, 실패 시 100만 건 전체가 롤백됩니다. DB는 롤백을 위해 undo 로그를 보관하고 있어야 하므로, 트랜잭션이 길어질수록 DB 부담도 커집니다.</p>
+
+<p data-ke-size="size16">Spring Batch는 청크 단위(예: 500건)로 읽고 &rarr; 가공하고 &rarr; 저장하고 &rarr; 커밋합니다.</p>
+
+<pre class="bash"><code>[Reader] 500건 읽기 &rarr; [Processor] 500건 가공 &rarr; [Writer] 500건 저장 &rarr; 커밋
+[Reader] 500건 읽기 &rarr; [Processor] 500건 가공 &rarr; [Writer] 500건 저장 &rarr; 커밋
+...</code></pre>
+
+<p data-ke-size="size16">100만 건이면 2,000번의 커밋이 발생합니다. 1,500번째 청크에서 실패해도 이전 1,499번의 커밋은 이미 완료되어 있으므로, 롤백 범위는 마지막 500건뿐입니다.</p>
+
+<p data-ke-size="size16">실제로 chunk size를 500으로 설정하고 돌려보니 이 단위가 트랜잭션 경계가 되는 걸 확인했습니다. <code>ChunkListener</code>에서 매 청크마다 <code>readCount</code>, <code>writeCount</code>가 500씩 증가하는 로그가 찍힙니다.</p>
+
+<h3 data-ke-size="size23">3-3. Skip/Retry</h3>
+
+<p data-ke-size="size16">1000만 건 중 100건이 데이터 오류(null 필드, 타입 불일치, 제약조건 위반 등)라고 해보겠습니다. 스케줄러에서 이걸 직접 처리하려면 건별 try-catch에 오류 로깅, 재시도 횟수 관리, 스킵 카운트 추적까지 직접 짜야 합니다.</p>
+
+<p data-ke-size="size16">Spring Batch는 설정 몇 줄로 됩니다.</p>
+
+<span class="code-label">kotlin &mdash; Step 설정</span>
+<pre class="kotlin"><code>.faultTolerant()
+.skipLimit(100)
+.skip(DataIntegrityViolationException::class.java)
+.retryLimit(3)
+.retry(TransientDataAccessException::class.java)</code></pre>
+
+<p data-ke-size="size16"><code>DataIntegrityViolationException</code>(제약조건 위반)은 100건까지 스킵하고, <code>TransientDataAccessException</code>(일시적 DB 연결 오류)은 3번까지 재시도합니다. 스킵된 건수는 <code>BATCH_STEP_EXECUTION</code>의 <code>skip_count</code>에 자동 기록되므로 모니터링도 됩니다.</p>
+
+<h3 data-ke-size="size23">3-4. 커서 스트리밍</h3>
+
+<p data-ke-size="size16"><code>findAll()</code>은 결과를 <code>List</code>로 한꺼번에 메모리에 올립니다. 100만 건이면 OOM입니다.</p>
+
+<p data-ke-size="size16"><code>JdbcCursorItemReader</code>는 DB 커서(<code>ResultSet</code>)를 열어두고 한 건씩 가져오되, <code>fetchSize</code> 단위로 네트워크 전송을 묶어서 효율적으로 스트리밍합니다.</p>
+
+<p data-ke-size="size16">처음에 <code>List</code>로 전체를 올리는 Reader를 만들었다가 전환했습니다. Chunk가 500건씩 끊어서 처리하는 구조인데, Reader가 이미 전부 올려버리면 청크의 의미가 사라지기 때문입니다.</p>
+
+<span class="code-label">kotlin &mdash; Before: 전체 메모리 적재</span>
+<pre class="kotlin"><code>val results = jdbcTemplate.query(sql, params) { rs, _ &rarr; ... }
+// results에 100만 건이 다 올라감 &mdash; Chunk의 의미가 없음</code></pre>
+
+<span class="code-label">kotlin &mdash; After: 커서 스트리밍</span>
+<pre class="kotlin"><code>JdbcCursorItemReaderBuilder&lt;ProductRankAggregation&gt;()
+    .dataSource(dataSource)
+    .sql(sql)
+    .fetchSize(500) // DB &rarr; 앱 네트워크 전송을 500건 단위로 묶음
+    .rowMapper { rs, _ &rarr; ... }
+    .build()
+// 메모리에는 청크 크기(500건)만큼만 존재</code></pre>
+
+<h3 data-ke-size="size23">3-5. 메타데이터</h3>
+
+<p data-ke-size="size16">Spring Batch는 실행할 때마다 메타데이터 테이블에 자동으로 기록합니다.</p>
+
+<ul style="list-style-type: disc;" data-ke-list-type="disc">
+    <li><code>BATCH_JOB_EXECUTION</code> &mdash; Job 시작/종료 시간, 상태(COMPLETED/FAILED), 파라미터</li>
+    <li><code>BATCH_STEP_EXECUTION</code> &mdash; Step별 read/write/skip count, 커밋 횟수, 실행 시간</li>
+</ul>
+
+<p data-ke-size="size16"><code>@Scheduled</code>에서 이런 이력을 남기려면 실행 이력 테이블을 설계하고, 시작/종료 시간을 기록하고, 처리 건수를 카운팅하고, 에러 시 상태를 업데이트하는 코드를 직접 짜야 합니다.</p>
+
+<p data-ke-size="size16">배치 모니터링에서 중요한 지표는 실행시간(스케줄링 겹침 방지), TPS(처리량), read/write/skip count(데이터 정합성), error rate(품질)인데, Spring Batch는 이걸 기본으로 제공합니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">4. 실제 구현에서 확인한 것들</h2>
+
+<p data-ke-size="size16">주간/월간 랭킹 배치를 만들면서 추가로 확인한 포인트들입니다.</p>
+
+<h3 data-ke-size="size23">배치에서 JPA 대신 JDBC를 쓰는 이유</h3>
+
+<p data-ke-size="size16">JPA <code>saveAll()</code>은 내부적으로 <code>save()</code>를 반복 호출하고, <code>save()</code>는 <code>isNew()</code> 상태에 따라 <code>persist()</code> 또는 <code>merge()</code>를 실행합니다. ID가 할당된 엔티티면 <code>merge()</code> 경로를 타서 건별 SELECT가 먼저 발생합니다.</p>
+
+<p data-ke-size="size16">100건이면 SELECT 100번 + INSERT 100번 = 200번 쿼리.<br />JDBC <code>batchUpdate()</code>는 같은 100건을 1번의 네트워크 전송으로 처리합니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>구분</th>
+        <th>JPA saveAll()</th>
+        <th>JDBC batchUpdate()</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>내부 동작</b></td>
+        <td>merge() &rarr; 건별 SELECT + INSERT</td>
+        <td>INSERT N건을 한 번에 전송</td>
+    </tr>
+    <tr>
+        <td><b>100건 기준 쿼리 수</b></td>
+        <td>~200회</td>
+        <td>~1회 (batch)</td>
+    </tr>
+    <tr>
+        <td><b>1차 캐시</b></td>
+        <td>100건 엔티티 객체 보유 (메모리)</td>
+        <td>없음</td>
+    </tr>
+    <tr>
+        <td><b>더티 체킹</b></td>
+        <td>활성 (불필요한 오버헤드)</td>
+        <td>없음</td>
+    </tr>
+    <tr>
+        <td><b>용도</b></td>
+        <td>API 레이어 (단건 CRUD)</td>
+        <td>배치 레이어 (대량 처리)</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3 data-ke-size="size23">집계 SQL &mdash; DB에서 최대한 계산하고 가져오기</h3>
+
+<p data-ke-size="size16">Reader의 SQL은 ranking_event_log에서 상품별로 가중치를 적용한 점수를 합산하고, 상위 100건만 가져옵니다.</p>
+
+<span class="code-label">sql &mdash; 집계 쿼리</span>
+<pre class="sql"><code>SELECT
+    rel.product_id,
+    SUM(CASE WHEN rel.event_type = 'VIEW'  THEN rel.event_value * ? ELSE 0 END) +
+    SUM(CASE WHEN rel.event_type = 'LIKE'  THEN rel.event_value * ? ELSE 0 END) +
+    SUM(CASE WHEN rel.event_type = 'ORDER' THEN rel.event_value * ? ELSE 0 END) AS total_score,
+    COUNT(CASE WHEN rel.event_type = 'VIEW'  THEN 1 END) AS view_count,
+    COUNT(CASE WHEN rel.event_type = 'LIKE'  THEN 1 END) AS like_count,
+    COUNT(CASE WHEN rel.event_type = 'ORDER' THEN 1 END) AS order_count
+FROM ranking_event_log rel
+WHERE rel.occurred_date BETWEEN ? AND ?
+GROUP BY rel.product_id
+ORDER BY total_score DESC
+LIMIT 100</code></pre>
+
+<p data-ke-size="size16">가중치(VIEW=0.1, LIKE=0.2, ORDER=0.6)는 <code>ranking_score_config</code> 테이블에서 읽어오므로 코드 변경 없이 동적으로 조정할 수 있습니다. <code>WHERE occurred_date BETWEEN</code>으로 날짜 범위를 고정하는 건 스냅샷 전략으로, 배치 실행 중에 새로 유입되는 이벤트는 다음 배치에서 처리됩니다.</p>
+
+<h3 data-ke-size="size23">Parallel Flow로 주간 + 월간 동시 집계</h3>
+
+<p data-ke-size="size16">주간 집계와 월간 집계는 서로 다른 테이블(<code>mv_product_rank_weekly</code>, <code>mv_product_rank_monthly</code>)에 쓰기 때문에 데이터 의존성이 없습니다. 순서대로 실행하면 시간이 2배 걸립니다.</p>
+
+<p data-ke-size="size16">Spring Batch의 <code>FlowBuilder.split(SimpleAsyncTaskExecutor())</code>로 두 작업을 동시에 실행했습니다.</p>
+
+<pre class="bash"><code>Job: rankingAggregationJob
+  [Parallel Flow]
+  ├── Weekly: Cleanup &rarr; Aggregation (Reader&rarr;Processor&rarr;Writer)
+  └── Monthly: Cleanup &rarr; Aggregation (Reader&rarr;Processor&rarr;Writer)</code></pre>
+
+<p data-ke-size="size16">각 Flow 안에서 Cleanup(DELETE) &rarr; Aggregation(READ&rarr;PROCESS&rarr;WRITE)이 순차적으로 실행되고, Weekly Flow와 Monthly Flow는 병렬로 실행됩니다. @StepScope Bean을 Flow별로 각각 생성해서 Reader/Writer의 상태가 겹치지 않도록 했습니다.</p>
+
+<h3 data-ke-size="size23">Cleanup &rarr; Aggregate 패턴으로 멱등성 확보</h3>
+
+<p data-ke-size="size16">배치가 중간에 실패하고 다시 실행하면 데이터가 중복될 수 있습니다. 예를 들어 INSERT만 하는 구조에서 50건을 저장한 뒤 실패하면, 재실행 시 다시 100건을 INSERT하려고 하면서 UNIQUE 제약조건 위반이 발생하거나, 제약이 없다면 150건이 됩니다.</p>
+
+<p data-ke-size="size16">집계 전에 해당 기간의 기존 데이터를 먼저 삭제하면 이 문제가 해결됩니다.</p>
+
+<div class="scenario">
+    <div class="step">1차 실행: DELETE (0건 삭제) &rarr; INSERT 50건</div>
+    <div class="step fail">실패! (나머지 50건 미저장)</div>
+    <div class="step">2차 실행: DELETE (50건 삭제) &rarr; INSERT 100건</div>
+    <div class="step success">성공!</div>
+</div>
+
+<p data-ke-size="size16">DELETE가 항상 먼저 실행되기 때문에, 이전 실행에서 불완전하게 들어간 데이터가 있어도 싹 지우고 새로 시작합니다. 몇 번을 실행해도 결과가 동일합니다. 이게 멱등성이고, 실제로 E2E 테스트에서 동일 파라미터로 2회 실행해도 데이터가 정확히 유지되는 걸 확인했습니다.</p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">5. 스케줄러가 나쁜 게 아니다</h2>
+
+<p data-ke-size="size16"><code>@Scheduled</code>는 스케줄링 도구로서 충분합니다. 캐시 갱신, 상태 체크, 만료 데이터 삭제처럼 데이터 건수가 적고 실패해도 다음 주기에 다시 처리되는 작업에는 <code>@Scheduled</code>가 맞습니다.</p>
+
+<p data-ke-size="size16">문제는 대량 데이터 처리까지 스케줄러에 맡기는 것입니다.</p>
+
+<table data-ke-align="alignLeft">
+    <thead>
+    <tr>
+        <th>상황</th>
+        <th>선택</th>
+        <th>이유</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>5분마다 캐시 갱신 (수십 건)</td>
+        <td>@Scheduled</td>
+        <td>실패해도 다음 주기에 재갱신</td>
+    </tr>
+    <tr>
+        <td>매일 만료 쿠폰 삭제 (수백 건)</td>
+        <td>@Scheduled</td>
+        <td>건수가 적고 단순 DELETE</td>
+    </tr>
+    <tr>
+        <td>매일 100만 건 이벤트 로그 집계</td>
+        <td><b>Spring Batch</b></td>
+        <td>메모리 관리, 청크 트랜잭션 필요</td>
+    </tr>
+    <tr>
+        <td>중간 실패 시 재시작이 필요</td>
+        <td><b>Spring Batch</b></td>
+        <td>체크포인트 / Cleanup-Aggregate</td>
+    </tr>
+    <tr>
+        <td>처리 이력과 모니터링이 필요</td>
+        <td><b>Spring Batch</b></td>
+        <td>메타데이터 테이블 자동 기록</td>
+    </tr>
+    <tr>
+        <td>부분 실패(Skip/Retry)가 필요</td>
+        <td><b>Spring Batch</b></td>
+        <td>faultTolerant 설정</td>
+    </tr>
+    </tbody>
+</table>
+
+<p data-ke-size="size16">Spring Batch가 필요한 기준은 명확합니다. <b>데이터가 많거나, 실패 복구가 필요하거나, 실행 이력을 추적해야 할 때.</b></p>
+
+<hr data-ke-style="style1" />
+
+<h2 data-ke-size="size26">마무리</h2>
+
+<p data-ke-size="size16">이전에는 스케줄러와 배치의 차이를 "돌리는 주기"로 구분했는데, 직접 Spring Batch로 랭킹 집계를 구현하면서 그 구분이 틀렸다는 걸 확인했습니다.</p>
+
+<p data-ke-size="size16">스케줄러는 "언제", 배치는 "어떻게"의 문제입니다. 그리고 Spring Batch가 제공하는 청크 트랜잭션, 커서 스트리밍, 실패 복구, 메타데이터는 대량 데이터를 다루는 순간 직접 만들기엔 부담이 큰 것들이었습니다.</p>
+
+<p data-ke-size="size16">다음에 대량 데이터 처리를 만나면 "이거 스케줄러로 충분한가, 배치 프레임워크가 필요한가"를 먼저 따져볼 수 있게 됐습니다.</p>
+
+<p data-ke-size="size16">&nbsp;</p>
+</div>
